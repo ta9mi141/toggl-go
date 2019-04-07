@@ -1,0 +1,97 @@
+{
+  "total_grand": 43393000,
+  "total_billable": null,
+  "total_currencies": [
+    {
+      "currency": null,
+      "amount": null
+    }
+  ],
+  "data": [
+    {
+      "title": {
+        "user": "SampleUser1"
+      },
+      "uid": 2076381,
+      "totals": [
+        7668000,
+        1429000,
+        896000,
+        2778000,
+        24485000,
+        215000,
+        5922000,
+        43393000
+      ],
+      "details": [
+        {
+          "pid": 13580938,
+          "title": {
+            "client": null,
+            "project": "SampleProject1",
+            "color": "13",
+            "hex_color": "#bc2d07"
+          },
+          "totals": [
+            6287000,
+            null,
+            null,
+            null,
+            5400000,
+            null,
+            3600000,
+            15287000
+          ]
+        },
+        {
+          "pid": 13580884,
+          "title": {
+            "client": null,
+            "project": "SampleProject2",
+            "color": "0",
+            "hex_color": "#06aaf5"
+          },
+          "totals": [
+            1381000,
+            1429000,
+            896000,
+            2778000,
+            1085000,
+            215000,
+            2322000,
+            10106000
+          ]
+        },
+        {
+          "pid": 36498939,
+          "title": {
+            "client": null,
+            "project": "SampleProject3",
+            "color": "0",
+            "hex_color": "#000000"
+          },
+          "totals": [
+            null,
+            null,
+            null,
+            null,
+            18000000,
+            null,
+            null,
+            18000000
+          ]
+        }
+      ]
+    }
+  ],
+  "week_totals": [
+    7668000,
+    1429000,
+    896000,
+    2778000,
+    24485000,
+    215000,
+    5922000,
+    43393000
+  ]
+}

@@ -1,0 +1,210 @@
+{
+  "total_grand": 217089000,
+  "total_billable": null,
+  "total_currencies": [
+    {
+      "currency": null,
+      "amount": null
+    }
+  ],
+  "data": [
+    {
+      "id": 13580938,
+      "title": {
+        "project": "SampleProject1",
+        "client": null,
+        "color": "13",
+        "hex_color": "#bc2d07"
+      },
+      "time": 15287000,
+      "total_currencies": [
+        {
+          "currency": null,
+          "amount": null
+        }
+      ],
+      "items": [
+        {
+          "title": {
+            "time_entry": "SampleProject1-Item1"
+          },
+          "time": 6287000,
+          "cur": null,
+          "sum": null,
+          "rate": null
+        },
+        {
+          "title": {
+            "time_entry": "SampleProject1-Item2"
+          },
+          "time": 3600000,
+          "cur": null,
+          "sum": null,
+          "rate": null
+        },
+        {
+          "title": {
+            "time_entry": "SampleProject1-Item3"
+          },
+          "time": 5400000,
+          "cur": null,
+          "sum": null,
+          "rate": null
+        }
+      ]
+    },
+    {
+      "id": 13581088,
+      "title": {
+        "project": "SampleProject2",
+        "client": null,
+        "color": "3",
+        "hex_color": "#f68d38"
+      },
+      "time": 12712000,
+      "total_currencies": [
+        {
+          "currency": null,
+          "amount": null
+        }
+      ],
+      "items": [
+        {
+          "title": {
+            "time_entry": "SampleProject2-Item1"
+          },
+          "time": 12712000,
+          "cur": null,
+          "sum": null,
+          "rate": null
+        }
+      ]
+    },
+    {
+      "id": 13580884,
+      "title": {
+        "project": "SampleProject3",
+        "client": null,
+        "color": "0",
+        "hex_color": "#06aaf5"
+      },
+      "time": 55410000,
+      "total_currencies": [
+        {
+          "currency": null,
+          "amount": null
+        }
+      ],
+      "items": [
+        {
+          "title": {
+            "time_entry": "SampleProject3-Item1"
+          },
+          "time": 2440000,
+          "cur": null,
+          "sum": null,
+          "rate": null
+        },
+        {
+          "title": {
+            "time_entry": "SampleProject3-Item2"
+          },
+          "time": 9453000,
+          "cur": null,
+          "sum": null,
+          "rate": null
+        },
+        {
+          "title": {
+            "time_entry": "SampleProject3-Item3"
+          },
+          "time": 3125000,
+          "cur": null,
+          "sum": null,
+          "rate": null
+        },
+        {
+          "title": {
+            "time_entry": "SampleProject3-Item4"
+          },
+          "time": 2672000,
+          "cur": null,
+          "sum": null,
+          "rate": null
+        },
+        {
+          "title": {
+            "time_entry": "SampleProject3-Item5"
+          },
+          "time": 3395000,
+          "cur": null,
+          "sum": null,
+          "rate": null
+        },
+        {
+          "title": {
+            "time_entry": "SampleProject3-Item6"
+          },
+          "time": 34325000,
+          "cur": null,
+          "sum": null,
+          "rate": null
+        }
+      ]
+    },
+    {
+      "id": 36498939,
+      "title": {
+        "project": "SampleProject4",
+        "client": null,
+        "color": "0",
+        "hex_color": "#000000"
+      },
+      "time": 133680000,
+      "total_currencies": [
+        {
+          "currency": null,
+          "amount": null
+        }
+      ],
+      "items": [
+        {
+          "title": {
+            "time_entry": "SampleProject4-Item1"
+          },
+          "time": 19800000,
+          "cur": null,
+          "sum": null,
+          "rate": null
+        },
+        {
+          "title": {
+            "time_entry": "SampleProject4-Item2"
+          },
+          "time": 18000000,
+          "cur": null,
+          "sum": null,
+          "rate": null
+        },
+        {
+          "title": {
+            "time_entry": "SampleProject4-Item3"
+          },
+          "time": 18000000,
+          "cur": null,
+          "sum": null,
+          "rate": null
+        },
+        {
+          "title": {
+            "time_entry": "SampleProject4-Item4"
+          },
+          "time": 77880000,
+          "cur": null,
+          "sum": null,
+          "rate": null
+        }
+      ]
+    }
+  ]
+}

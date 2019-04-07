@@ -1,0 +1,54 @@
+{
+  "total_grand": 9993000,
+  "total_billable": null,
+  "total_currencies": [
+    {
+      "currency": null,
+      "amount": null
+    }
+  ],
+  "data": [
+    {
+      "id": 2076381,
+      "title": {
+        "user": "SampleUser1"
+      },
+      "time": 9993000,
+      "total_currencies": [
+        {
+          "currency": null,
+          "amount": null
+        }
+      ],
+      "items": [
+        {
+          "title": {
+            "time_entry": "SampleTimeEntry1"
+          },
+          "time": 6287000,
+          "cur": null,
+          "sum": null,
+          "rate": null
+        },
+        {
+          "title": {
+            "time_entry": "SampleTimeEntry2"
+          },
+          "time": 896000,
+          "cur": null,
+          "sum": null,
+          "rate": null
+        },
+        {
+          "title": {
+            "time_entry": "SampleTimeEntry3"
+          },
+          "time": 2810000,
+          "cur": null,
+          "sum": null,
+          "rate": null
+        }
+      ]
+    }
+  ]
+}
