@@ -24,20 +24,26 @@ type client struct {
 }
 
 type ReportsError struct {
-	Error struct {
+	Err struct {
 		Message    string `json:"message"`
 		Tip        string `json:"tip"`
 		StatusCode int    `json:"code"`
 	} `json:"error"`
 }
 
-// TODO: implement Error interface
-func (e ReportsError) Error() string {}
+func (e ReportsError) Error() string {
+	return fmt.Sprintf(
+		"HTTP Status: %d\n%s\n\n%s\n",
+		e.Err.StatusCode,
+		e.Err.Message,
+		e.Err.Tip,
+	)
+}
 
 type Option func(c *client)
 
 // Configurable baseURL makes client testable
-func BaseURL(rawurl string) option {
+func BaseURL(rawurl string) Option {
 	return func(c *client) {
 		url, _ := url.Parse(rawurl)
 		c.url = url
