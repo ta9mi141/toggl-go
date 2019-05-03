@@ -23,6 +23,68 @@ type client struct {
 	url      *url.URL
 }
 
+type StandardRequestParameters struct {
+	UserAgent   string
+	WorkSpaceId string
+	Since       time.Time
+	Until       time.Time
+}
+
+func (params *StandardRequestParameters) values() url.Values {
+	values := url.Values{}
+	values.Add("user_agent", params.UserAgent)
+	values.Add("workspace_id", params.WorkSpaceId)
+	// If since or until parameters aren't set explicitly, enable to
+	// use default values, which aren't same as zero value of time.Time
+	// Toggl Reports API requires ISO 8601 date (YYYY-MM-DD) format
+	if !params.Since.IsZero() {
+		values.Add("since", params.Since.Format("2006-01-02"))
+	}
+	if !params.Until.IsZero() {
+		values.Add("until", params.Until.Format("2006-01-02"))
+	}
+
+	return values
+}
+
+type urlEncoder interface {
+	urlEncode() string
+}
+
+type DetailedRequestParameters struct {
+	*StandardRequestParameters
+	Page int
+}
+
+func (params *DetailedRequestParameters) urlEncode() string {
+	values := params.StandardRequestParameters.values()
+	return values.Encode()
+}
+
+type SummaryRequestParameters struct {
+	*StandardRequestParameters
+	Grouping            string
+	Subgrouping         string
+	SubgroupingIds      bool
+	GroupedTimeEntryIds bool
+}
+
+func (params *SummaryRequestParameters) urlEncode() string {
+	values := params.StandardRequestParameters.values()
+	return values.Encode()
+}
+
+type WeeklyRequestParameters struct {
+	*StandardRequestParameters
+	Grouping  string
+	Calculate string
+}
+
+func (params *WeeklyRequestParameters) urlEncode() string {
+	values := params.StandardRequestParameters.values()
+	return values.Encode()
+}
+
 type ReportsError struct {
 	Err struct {
 		Message    string `json:"message"`
@@ -65,32 +127,34 @@ func NewClient(apiToken string, options ...Option) *client {
 	return newClient
 }
 
-func (c *client) GetDetailed(detailedReport interface{}) error {
-	err := c.get(c.buildURL(detailedEndpoint), report)
+func (c *client) GetDetailed(params *DetailedRequestParameters, detailedReport interface{}) error {
+	err := c.get(c.buildURL(detailedEndpoint, params), detailedReport)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (c *client) GetSummary(summaryReport interface{}) error {
-	err := c.get(c.buildURL(summaryEndpoint), report)
+func (c *client) GetSummary(params *SummaryRequestParameters, summaryReport interface{}) error {
+	err := c.get(c.buildURL(summaryEndpoint, params), summaryReport)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (c *client) GetWeekly(weeklyReport interface{}) error {
-	err := c.get(c.buildURL(weeklyEndpoint), report)
+func (c *client) GetWeekly(params *WeeklyRequestParameters, weeklyReport interface{}) error {
+	err := c.get(c.buildURL(weeklyEndpoint, params), weeklyReport)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-// TODO: encode parameters
-// TODO: define buildURL
+func (c *client) buildURL(endpoint string, params urlEncoder) string {
+	c.url.Path = endpoint
+	return c.url.String() + "?" + params.urlEncode()
+}
 
 func (c *client) get(url string, report interface{}) error {
 	req, err := http.NewRequest("GET", url, nil)
