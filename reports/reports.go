@@ -32,11 +32,11 @@ type StandardRequestParameters struct {
 
 func (params *StandardRequestParameters) values() url.Values {
 	values := url.Values{}
+
+	// user_agent and workspace_id are required.
 	values.Add("user_agent", params.UserAgent)
 	values.Add("workspace_id", params.WorkSpaceId)
-	// If since or until parameters aren't set explicitly, enable to
-	// use default values, which aren't same as zero value of time.Time
-	// Toggl Reports API requires ISO 8601 date (YYYY-MM-DD) format
+	// since and until must be ISO 8601 date (YYYY-MM-DD) format
 	if !params.Since.IsZero() {
 		values.Add("since", params.Since.Format("2006-01-02"))
 	}
@@ -58,6 +58,11 @@ type DetailedRequestParameters struct {
 
 func (params *DetailedRequestParameters) urlEncode() string {
 	values := params.StandardRequestParameters.values()
+
+	if params.Page != 0 {
+		values.Add("page", fmt.Sprint(params.Page))
+	}
+
 	return values.Encode()
 }
 
@@ -71,6 +76,20 @@ type SummaryRequestParameters struct {
 
 func (params *SummaryRequestParameters) urlEncode() string {
 	values := params.StandardRequestParameters.values()
+
+	if params.Grouping != "" {
+		values.Add("grouping", params.Grouping)
+	}
+	if params.Subgrouping != "" {
+		values.Add("subgrouping", params.Subgrouping)
+	}
+	if params.GroupedTimeEntryIds == true {
+		values.Add("grouped_time_entry_ids", "true")
+	}
+	if params.SubgroupingIds == true {
+		values.Add("subgrouping_ids", "true")
+	}
+
 	return values.Encode()
 }
 
@@ -82,6 +101,14 @@ type WeeklyRequestParameters struct {
 
 func (params *WeeklyRequestParameters) urlEncode() string {
 	values := params.StandardRequestParameters.values()
+
+	if params.Grouping != "" {
+		values.Add("grouping", params.Grouping)
+	}
+	if params.Calculate != "" {
+		values.Add("calculate", params.Calculate)
+	}
+
 	return values.Encode()
 }
 
