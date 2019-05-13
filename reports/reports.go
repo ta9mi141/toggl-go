@@ -24,10 +24,26 @@ type client struct {
 }
 
 type StandardRequestParameters struct {
-	UserAgent   string
-	WorkSpaceId string
-	Since       time.Time
-	Until       time.Time
+	UserAgent           string
+	WorkSpaceId         string
+	Since               time.Time
+	Until               time.Time
+	Billable            string
+	ClientIds           string
+	ProjectIds          string
+	UserIds             string
+	MembersOfGroupIds   string
+	OrMembersOfGroupIds string
+	TagIds              string
+	TaskIds             string
+	TimeEntryIds        string
+	Description         string
+	WithoutDescription  bool
+	OrderField          string
+	OrderDesc           bool
+	DistinctRates       bool
+	Rounding            bool
+	DisplayHours        string
 }
 
 func (params *StandardRequestParameters) values() url.Values {
@@ -42,6 +58,54 @@ func (params *StandardRequestParameters) values() url.Values {
 	}
 	if !params.Until.IsZero() {
 		values.Add("until", params.Until.Format("2006-01-02"))
+	}
+	if params.Billable != "" {
+		values.Add("billable", params.Billable)
+	}
+	if params.ClientIds != "" {
+		values.Add("client_ids", params.ClientIds)
+	}
+	if params.ProjectIds != "" {
+		values.Add("project_ids", params.ProjectIds)
+	}
+	if params.UserIds != "" {
+		values.Add("user_ids", params.UserIds)
+	}
+	if params.MembersOfGroupIds != "" {
+		values.Add("members_of_group_ids", params.MembersOfGroupIds)
+	}
+	if params.OrMembersOfGroupIds != "" {
+		values.Add("or_members_of_group_ids", params.OrMembersOfGroupIds)
+	}
+	if params.TagIds != "" {
+		values.Add("tag_ids", params.TagIds)
+	}
+	if params.TaskIds != "" {
+		values.Add("task_ids", params.TaskIds)
+	}
+	if params.TimeEntryIds != "" {
+		values.Add("time_entry_ids", params.TimeEntryIds)
+	}
+	if params.Description != "" {
+		values.Add("description", params.Description)
+	}
+	if params.WithoutDescription == true {
+		values.Add("without_description", "true")
+	}
+	if params.OrderField != "" {
+		values.Add("order_field", params.OrderField)
+	}
+	if params.OrderDesc == true {
+		values.Add("order_desc", "on")
+	}
+	if params.DistinctRates == true {
+		values.Add("distinct_rates", "on")
+	}
+	if params.Rounding == true {
+		values.Add("rounding", "on")
+	}
+	if params.DisplayHours != "" {
+		values.Add("display_hours", params.DisplayHours)
 	}
 
 	return values
