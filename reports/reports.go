@@ -196,7 +196,7 @@ func (e ReportsError) Error() string {
 type Option func(c *client)
 
 // Configurable baseURL makes client testable
-func BaseURL(rawurl string) Option {
+func baseURL(rawurl string) Option {
 	return func(c *client) {
 		url, _ := url.Parse(rawurl)
 		c.url = url
