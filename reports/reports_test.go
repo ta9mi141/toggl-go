@@ -42,21 +42,41 @@ type detailedReport struct {
 	} `json:"data"`
 }
 
-func TestGetDetailedWithOk(t *testing.T) {
-	detailedTestData, err := ioutil.ReadFile("testdata/detailed.json")
+func setupMockServerWithOk(t *testing.T, testdataFilePath string) (*httptest.Server, []byte) {
+	testdata, err := ioutil.ReadFile(testdataFilePath)
 	if err != nil {
 		t.Error(err.Error())
 	}
 
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, string(detailedTestData))
+		fmt.Fprintf(w, string(testdata))
 	}))
+
+	return mockServer, testdata
+}
+
+func setupMockServerWithError(t *testing.T) (*httptest.Server, []byte) {
+	errorTestData, err := ioutil.ReadFile("testdata/error.json")
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusUnauthorized)
+		fmt.Fprintf(w, string(errorTestData))
+	}))
+
+	return mockServer, errorTestData
+}
+
+func TestGetDetailedWithOk(t *testing.T) {
+	mockServer, detailedTestData := setupMockServerWithOk(t, "testdata/detailed.json")
 	defer mockServer.Close()
 
 	actualDetailedReport := new(detailedReport)
 	client := NewClient(apiToken, baseURL(mockServer.URL))
-	err = client.GetDetailed(&DetailedRequestParameters{
+	err := client.GetDetailed(&DetailedRequestParameters{
 		StandardRequestParameters: &StandardRequestParameters{
 			UserAgent:   userAgent,
 			WorkSpaceId: workSpaceId,
@@ -76,25 +96,17 @@ func TestGetDetailedWithOk(t *testing.T) {
 }
 
 func TestGetDetailedWithError(t *testing.T) {
-	errorTestData, err := ioutil.ReadFile("testdata/error.json")
-	if err != nil {
-		t.Error(err.Error())
-	}
-
-	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusUnauthorized)
-		fmt.Fprintf(w, string(errorTestData))
-	}))
+	mockServer, errorTestData := setupMockServerWithError(t)
 	defer mockServer.Close()
 
 	client := NewClient(apiToken, baseURL(mockServer.URL))
-	err = client.GetDetailed(&DetailedRequestParameters{
+	actualReportsError := client.GetDetailed(&DetailedRequestParameters{
 		StandardRequestParameters: &StandardRequestParameters{
 			UserAgent:   userAgent,
 			WorkSpaceId: workSpaceId,
 		},
 	}, new(detailedReport))
-	if err == nil {
+	if actualReportsError == nil {
 		t.Error("GetDetailed doesn't return error though it gets '401 Unauthorized'")
 	}
 
@@ -102,7 +114,7 @@ func TestGetDetailedWithError(t *testing.T) {
 	if err := json.Unmarshal(errorTestData, expectedReportsError); err != nil {
 		t.Error(err.Error())
 	}
-	if !reflect.DeepEqual(err, expectedReportsError) {
+	if !reflect.DeepEqual(actualReportsError, expectedReportsError) {
 		t.Error("GetDetailed fails to decode ReportsError though it returns error as expected")
 	}
 }
