@@ -34,7 +34,46 @@ const (
 	workSpaceId string = "workspace_id"
 )
 
-type detailed struct{}
+type detailedReport struct {
+	Data []struct {
+		User        string `json:"user"`
+		Project     string `json:"project"`
+		Description string `json:"description"`
+	} `json:"data"`
+}
+
+func TestGetDetailedWithOk(t *testing.T) {
+	detailedTestData, err := ioutil.ReadFile("testdata/detailed.json")
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, string(detailedTestData))
+	}))
+	defer mockServer.Close()
+
+	actualDetailedReport := new(detailedReport)
+	client := NewClient(apiToken, baseURL(mockServer.URL))
+	err = client.GetDetailed(&DetailedRequestParameters{
+		StandardRequestParameters: &StandardRequestParameters{
+			UserAgent:   userAgent,
+			WorkSpaceId: workSpaceId,
+		},
+	}, actualDetailedReport)
+	if err != nil {
+		t.Error("GetDetailed returns error though it gets '200 OK'")
+	}
+
+	expectedDetailedReport := new(detailedReport)
+	if err := json.Unmarshal(detailedTestData, expectedDetailedReport); err != nil {
+		t.Error(err.Error())
+	}
+	if !reflect.DeepEqual(actualDetailedReport, expectedDetailedReport) {
+		t.Error("GetDetailed fails to decode detailedReport")
+	}
+}
 
 func TestGetDetailedWithError(t *testing.T) {
 	errorTestData, err := ioutil.ReadFile("testdata/error.json")
@@ -54,7 +93,7 @@ func TestGetDetailedWithError(t *testing.T) {
 			UserAgent:   userAgent,
 			WorkSpaceId: workSpaceId,
 		},
-	}, new(detailed))
+	}, new(detailedReport))
 	if err == nil {
 		t.Error("GetDetailed doesn't return error though it gets '401 Unauthorized'")
 	}
