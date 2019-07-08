@@ -35,14 +35,16 @@ const (
 )
 
 type detailedReport struct {
-	Data []struct {
+	TotalCount int `json:"total_count"`
+	PerPage    int `json:"per_page"`
+	Data       []struct {
 		User        string `json:"user"`
 		Project     string `json:"project"`
 		Description string `json:"description"`
 	} `json:"data"`
 }
 
-func setupMockServerWithOk(t *testing.T, testdataFilePath string) (*httptest.Server, []byte) {
+func setupMockServer_200_Ok(t *testing.T, testdataFilePath string) (*httptest.Server, []byte) {
 	testdata, err := ioutil.ReadFile(testdataFilePath)
 	if err != nil {
 		t.Error(err.Error())
@@ -56,8 +58,8 @@ func setupMockServerWithOk(t *testing.T, testdataFilePath string) (*httptest.Ser
 	return mockServer, testdata
 }
 
-func setupMockServerWithError(t *testing.T) (*httptest.Server, []byte) {
-	errorTestData, err := ioutil.ReadFile("testdata/error.json")
+func setupMockServer_401_Unauthorized(t *testing.T) (*httptest.Server, []byte) {
+	errorTestData, err := ioutil.ReadFile("testdata/401_unauthorized.json")
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -70,8 +72,8 @@ func setupMockServerWithError(t *testing.T) (*httptest.Server, []byte) {
 	return mockServer, errorTestData
 }
 
-func TestGetDetailedWithOk(t *testing.T) {
-	mockServer, detailedTestData := setupMockServerWithOk(t, "testdata/detailed.json")
+func TestGetDetailed_200_Ok(t *testing.T) {
+	mockServer, detailedTestData := setupMockServer_200_Ok(t, "testdata/detailed.json")
 	defer mockServer.Close()
 
 	actualDetailedReport := new(detailedReport)
@@ -95,8 +97,8 @@ func TestGetDetailedWithOk(t *testing.T) {
 	}
 }
 
-func TestGetDetailedWithError(t *testing.T) {
-	mockServer, errorTestData := setupMockServerWithError(t)
+func TestGetDetailed_401_Unauthorized(t *testing.T) {
+	mockServer, unauthorizedTestData := setupMockServer_401_Unauthorized(t)
 	defer mockServer.Close()
 
 	client := NewClient(apiToken, baseURL(mockServer.URL))
@@ -111,7 +113,7 @@ func TestGetDetailedWithError(t *testing.T) {
 	}
 
 	expectedReportsError := new(ReportsError)
-	if err := json.Unmarshal(errorTestData, expectedReportsError); err != nil {
+	if err := json.Unmarshal(unauthorizedTestData, expectedReportsError); err != nil {
 		t.Error(err.Error())
 	}
 	if !reflect.DeepEqual(actualReportsError, expectedReportsError) {
