@@ -11,9 +11,6 @@ import (
 const (
 	basicAuthPassword string = "api_token" // Defined in Toggl Reports API
 	defaultBaseURL    string = "https://toggl.com"
-	detailedEndpoint  string = "/reports/api/v2/details"
-	summaryEndpoint   string = "/reports/api/v2/summary"
-	weeklyEndpoint    string = "/reports/api/v2/weekly"
 )
 
 type client struct {
@@ -115,67 +112,6 @@ type urlEncoder interface {
 	urlEncode() string
 }
 
-type DetailedRequestParameters struct {
-	*StandardRequestParameters
-	Page int
-}
-
-func (params *DetailedRequestParameters) urlEncode() string {
-	values := params.StandardRequestParameters.values()
-
-	if params.Page != 0 {
-		values.Add("page", fmt.Sprint(params.Page))
-	}
-
-	return values.Encode()
-}
-
-type SummaryRequestParameters struct {
-	*StandardRequestParameters
-	Grouping            string
-	Subgrouping         string
-	SubgroupingIds      bool
-	GroupedTimeEntryIds bool
-}
-
-func (params *SummaryRequestParameters) urlEncode() string {
-	values := params.StandardRequestParameters.values()
-
-	if params.Grouping != "" {
-		values.Add("grouping", params.Grouping)
-	}
-	if params.Subgrouping != "" {
-		values.Add("subgrouping", params.Subgrouping)
-	}
-	if params.GroupedTimeEntryIds == true {
-		values.Add("grouped_time_entry_ids", "true")
-	}
-	if params.SubgroupingIds == true {
-		values.Add("subgrouping_ids", "true")
-	}
-
-	return values.Encode()
-}
-
-type WeeklyRequestParameters struct {
-	*StandardRequestParameters
-	Grouping  string
-	Calculate string
-}
-
-func (params *WeeklyRequestParameters) urlEncode() string {
-	values := params.StandardRequestParameters.values()
-
-	if params.Grouping != "" {
-		values.Add("grouping", params.Grouping)
-	}
-	if params.Calculate != "" {
-		values.Add("calculate", params.Calculate)
-	}
-
-	return values.Encode()
-}
-
 type ReportsError struct {
 	Err struct {
 		Message    string `json:"message"`
@@ -216,30 +152,6 @@ func NewClient(apiToken string, options ...Option) *client {
 	}
 	newClient.header.Set("Content-type", "application/json")
 	return newClient
-}
-
-func (c *client) GetDetailed(params *DetailedRequestParameters, detailedReport interface{}) error {
-	err := c.get(c.buildURL(detailedEndpoint, params), detailedReport)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (c *client) GetSummary(params *SummaryRequestParameters, summaryReport interface{}) error {
-	err := c.get(c.buildURL(summaryEndpoint, params), summaryReport)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (c *client) GetWeekly(params *WeeklyRequestParameters, weeklyReport interface{}) error {
-	err := c.get(c.buildURL(weeklyEndpoint, params), weeklyReport)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 func (c *client) buildURL(endpoint string, params urlEncoder) string {
