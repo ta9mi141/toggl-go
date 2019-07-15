@@ -1,6 +1,7 @@
 package reports
 
 import (
+	"context"
 	"encoding/json"
 	"reflect"
 	"testing"
@@ -32,12 +33,16 @@ func TestGetWeekly_200_Ok(t *testing.T) {
 
 	actualWeeklyReport := new(weeklyReport)
 	client := NewClient(apiToken, baseURL(mockServer.URL))
-	err := client.GetWeekly(&WeeklyRequestParameters{
-		StandardRequestParameters: &StandardRequestParameters{
-			UserAgent:   userAgent,
-			WorkSpaceId: workSpaceId,
+	err := client.GetWeekly(
+		context.Background(),
+		&WeeklyRequestParameters{
+			StandardRequestParameters: &StandardRequestParameters{
+				UserAgent:   userAgent,
+				WorkSpaceId: workSpaceId,
+			},
 		},
-	}, actualWeeklyReport)
+		actualWeeklyReport,
+	)
 	if err != nil {
 		t.Error("GetWeekly returns error though it gets '200 OK'")
 	}
@@ -56,12 +61,16 @@ func TestGetWeekly_401_Unauthorized(t *testing.T) {
 	defer mockServer.Close()
 
 	client := NewClient(apiToken, baseURL(mockServer.URL))
-	actualReportsError := client.GetWeekly(&WeeklyRequestParameters{
-		StandardRequestParameters: &StandardRequestParameters{
-			UserAgent:   userAgent,
-			WorkSpaceId: workSpaceId,
+	actualReportsError := client.GetWeekly(
+		context.Background(),
+		&WeeklyRequestParameters{
+			StandardRequestParameters: &StandardRequestParameters{
+				UserAgent:   userAgent,
+				WorkSpaceId: workSpaceId,
+			},
 		},
-	}, new(weeklyReport))
+		new(weeklyReport),
+	)
 	if actualReportsError == nil {
 		t.Error("GetWeekly doesn't return error though it gets '401 Unauthorized'")
 	}
@@ -72,5 +81,25 @@ func TestGetWeekly_401_Unauthorized(t *testing.T) {
 	}
 	if !reflect.DeepEqual(actualReportsError, expectedReportsError) {
 		t.Error("GetWeekly fails to decode ReportsError though it returns error as expected")
+	}
+}
+
+func TestGetWeekly_WithoutContext(t *testing.T) {
+	mockServer, _ := setupMockServer_200_Ok(t, "testdata/weekly.json")
+	defer mockServer.Close()
+
+	client := NewClient(apiToken, baseURL(mockServer.URL))
+	err := client.GetWeekly(
+		nil,
+		&WeeklyRequestParameters{
+			StandardRequestParameters: &StandardRequestParameters{
+				UserAgent:   userAgent,
+				WorkSpaceId: workSpaceId,
+			},
+		},
+		new(weeklyReport),
+	)
+	if err == nil {
+		t.Error("GetWeekly doesn't return error though it gets nil context")
 	}
 }

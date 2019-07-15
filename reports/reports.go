@@ -1,6 +1,7 @@
 package reports
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -159,12 +160,18 @@ func (c *client) buildURL(endpoint string, params urlEncoder) string {
 	return c.url.String() + "?" + params.urlEncode()
 }
 
-func (c *client) get(url string, report interface{}) error {
+func (c *client) get(ctx context.Context, url string, report interface{}) error {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return err
 	}
 	req.SetBasicAuth(c.apiToken, basicAuthPassword)
+
+	if ctx == nil {
+		return fmt.Errorf("The provided ctx must be non-nil")
+	}
+	req = req.WithContext(ctx)
+
 	resp, err := checkResponse(c.client.Do(req))
 	if err != nil {
 		return err

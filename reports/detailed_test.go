@@ -1,6 +1,7 @@
 package reports
 
 import (
+	"context"
 	"encoding/json"
 	"reflect"
 	"testing"
@@ -22,12 +23,16 @@ func TestGetDetailed_200_Ok(t *testing.T) {
 
 	actualDetailedReport := new(detailedReport)
 	client := NewClient(apiToken, baseURL(mockServer.URL))
-	err := client.GetDetailed(&DetailedRequestParameters{
-		StandardRequestParameters: &StandardRequestParameters{
-			UserAgent:   userAgent,
-			WorkSpaceId: workSpaceId,
+	err := client.GetDetailed(
+		context.Background(),
+		&DetailedRequestParameters{
+			StandardRequestParameters: &StandardRequestParameters{
+				UserAgent:   userAgent,
+				WorkSpaceId: workSpaceId,
+			},
 		},
-	}, actualDetailedReport)
+		actualDetailedReport,
+	)
 	if err != nil {
 		t.Error("GetDetailed returns error though it gets '200 OK'")
 	}
@@ -46,12 +51,16 @@ func TestGetDetailed_401_Unauthorized(t *testing.T) {
 	defer mockServer.Close()
 
 	client := NewClient(apiToken, baseURL(mockServer.URL))
-	actualReportsError := client.GetDetailed(&DetailedRequestParameters{
-		StandardRequestParameters: &StandardRequestParameters{
-			UserAgent:   userAgent,
-			WorkSpaceId: workSpaceId,
+	actualReportsError := client.GetDetailed(
+		context.Background(),
+		&DetailedRequestParameters{
+			StandardRequestParameters: &StandardRequestParameters{
+				UserAgent:   userAgent,
+				WorkSpaceId: workSpaceId,
+			},
 		},
-	}, new(detailedReport))
+		new(detailedReport),
+	)
 	if actualReportsError == nil {
 		t.Error("GetDetailed doesn't return error though it gets '401 Unauthorized'")
 	}
@@ -62,5 +71,25 @@ func TestGetDetailed_401_Unauthorized(t *testing.T) {
 	}
 	if !reflect.DeepEqual(actualReportsError, expectedReportsError) {
 		t.Error("GetDetailed fails to decode ReportsError though it returns error as expected")
+	}
+}
+
+func TestGetDetailed_WithoutContext(t *testing.T) {
+	mockServer, _ := setupMockServer_200_Ok(t, "testdata/detailed.json")
+	defer mockServer.Close()
+
+	client := NewClient(apiToken, baseURL(mockServer.URL))
+	err := client.GetDetailed(
+		nil,
+		&DetailedRequestParameters{
+			StandardRequestParameters: &StandardRequestParameters{
+				UserAgent:   userAgent,
+				WorkSpaceId: workSpaceId,
+			},
+		},
+		new(detailedReport),
+	)
+	if err == nil {
+		t.Error("GetDetailed doesn't return error though it gets nil context")
 	}
 }

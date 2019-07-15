@@ -1,6 +1,7 @@
 package reports
 
 import (
+	"context"
 	"encoding/json"
 	"reflect"
 	"testing"
@@ -32,12 +33,16 @@ func TestGetSummary_200_Ok(t *testing.T) {
 
 	actualSummaryReport := new(summaryReport)
 	client := NewClient(apiToken, baseURL(mockServer.URL))
-	err := client.GetSummary(&SummaryRequestParameters{
-		StandardRequestParameters: &StandardRequestParameters{
-			UserAgent:   userAgent,
-			WorkSpaceId: workSpaceId,
+	err := client.GetSummary(
+		context.Background(),
+		&SummaryRequestParameters{
+			StandardRequestParameters: &StandardRequestParameters{
+				UserAgent:   userAgent,
+				WorkSpaceId: workSpaceId,
+			},
 		},
-	}, actualSummaryReport)
+		actualSummaryReport,
+	)
 	if err != nil {
 		t.Error("GetSummary returns error though it gets '200 OK'")
 	}
@@ -56,12 +61,16 @@ func TestGetSummary_401_Unauthorized(t *testing.T) {
 	defer mockServer.Close()
 
 	client := NewClient(apiToken, baseURL(mockServer.URL))
-	actualReportsError := client.GetSummary(&SummaryRequestParameters{
-		StandardRequestParameters: &StandardRequestParameters{
-			UserAgent:   userAgent,
-			WorkSpaceId: workSpaceId,
+	actualReportsError := client.GetSummary(
+		context.Background(),
+		&SummaryRequestParameters{
+			StandardRequestParameters: &StandardRequestParameters{
+				UserAgent:   userAgent,
+				WorkSpaceId: workSpaceId,
+			},
 		},
-	}, new(summaryReport))
+		new(summaryReport),
+	)
 	if actualReportsError == nil {
 		t.Error("GetSummary doesn't return error though it gets '401 Unauthorized'")
 	}
@@ -72,5 +81,25 @@ func TestGetSummary_401_Unauthorized(t *testing.T) {
 	}
 	if !reflect.DeepEqual(actualReportsError, expectedReportsError) {
 		t.Error("GetSummary fails to decode ReportsError though it returns error as expected")
+	}
+}
+
+func TestGetSummary_WithoutContext(t *testing.T) {
+	mockServer, _ := setupMockServer_200_Ok(t, "testdata/summary.json")
+	defer mockServer.Close()
+
+	client := NewClient(apiToken, baseURL(mockServer.URL))
+	err := client.GetSummary(
+		nil,
+		&SummaryRequestParameters{
+			StandardRequestParameters: &StandardRequestParameters{
+				UserAgent:   userAgent,
+				WorkSpaceId: workSpaceId,
+			},
+		},
+		new(summaryReport),
+	)
+	if err == nil {
+		t.Error("GetSummary doesn't return error though it gets nil context")
 	}
 }

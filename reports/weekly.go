@@ -1,5 +1,9 @@
 package reports
 
+import (
+	"context"
+)
+
 const (
 	weeklyEndpoint string = "/reports/api/v2/weekly"
 )
@@ -23,8 +27,8 @@ func (params *WeeklyRequestParameters) urlEncode() string {
 	return values.Encode()
 }
 
-func (c *client) GetWeekly(params *WeeklyRequestParameters, weeklyReport interface{}) error {
-	err := c.get(c.buildURL(weeklyEndpoint, params), weeklyReport)
+func (c *client) GetWeekly(ctx context.Context, params *WeeklyRequestParameters, weeklyReport interface{}) error {
+	err := c.get(ctx, c.buildURL(weeklyEndpoint, params), weeklyReport)
 	if err != nil {
 		return err
 	}

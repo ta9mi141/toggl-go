@@ -1,5 +1,9 @@
 package reports
 
+import (
+	"context"
+)
+
 const (
 	summaryEndpoint string = "/reports/api/v2/summary"
 )
@@ -31,8 +35,8 @@ func (params *SummaryRequestParameters) urlEncode() string {
 	return values.Encode()
 }
 
-func (c *client) GetSummary(params *SummaryRequestParameters, summaryReport interface{}) error {
-	err := c.get(c.buildURL(summaryEndpoint, params), summaryReport)
+func (c *client) GetSummary(ctx context.Context, params *SummaryRequestParameters, summaryReport interface{}) error {
+	err := c.get(ctx, c.buildURL(summaryEndpoint, params), summaryReport)
 	if err != nil {
 		return err
 	}
