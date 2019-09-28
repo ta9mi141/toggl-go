@@ -8,6 +8,7 @@ const (
 	summaryEndpoint string = "/reports/api/v2/summary"
 )
 
+// SummaryRequestParameters represents request parameters used in the summary report.
 type SummaryRequestParameters struct {
 	*StandardRequestParameters
 	Grouping            string

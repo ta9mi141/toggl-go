@@ -1,3 +1,13 @@
+/*
+Package reports is a library of Toggl Reports API v2 for Go programming language.
+
+This package deals with 3 types of reports, detailed report, summary report, and weekly report.
+Though each report has their own data structure of successful response, they're not defined in this package.
+Users must define a structure corresponding responses of each report to use before sending request.
+
+See API documentation for more details.
+https://github.com/toggl/toggl_api_docs/blob/master/reports.md
+*/
 package reports
 
 import (
@@ -21,6 +31,7 @@ type client struct {
 	url      *url.URL
 }
 
+// StandardRequestParameters represents request parameters used in all of the reports.
 type StandardRequestParameters struct {
 	UserAgent           string
 	WorkSpaceId         string
@@ -113,6 +124,7 @@ type urlEncoder interface {
 	urlEncode() string
 }
 
+// ReportsError represents a response of unsuccessful request.
 type ReportsError struct {
 	Err struct {
 		Message    string `json:"message"`

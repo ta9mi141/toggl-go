@@ -9,6 +9,7 @@ const (
 	detailedEndpoint string = "/reports/api/v2/details"
 )
 
+// DetailedRequestParameters represents request parameters used in the detailed report.
 type DetailedRequestParameters struct {
 	*StandardRequestParameters
 	Page int

@@ -8,6 +8,7 @@ const (
 	weeklyEndpoint string = "/reports/api/v2/weekly"
 )
 
+// WeeklyRequestParameters represents request parameters used in the weekly report.
 type WeeklyRequestParameters struct {
 	*StandardRequestParameters
 	Grouping  string
