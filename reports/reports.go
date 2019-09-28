@@ -24,7 +24,7 @@ const (
 	defaultBaseURL    string = "https://toggl.com"
 )
 
-type client struct {
+type Client struct {
 	client   *http.Client
 	header   http.Header
 	apiToken string
@@ -142,19 +142,19 @@ func (e ReportsError) Error() string {
 	)
 }
 
-type Option func(c *client)
+type Option func(c *Client)
 
 // Configurable baseURL makes client testable
 func baseURL(rawurl string) Option {
-	return func(c *client) {
+	return func(c *Client) {
 		url, _ := url.Parse(rawurl)
 		c.url = url
 	}
 }
 
-func NewClient(apiToken string, options ...Option) *client {
+func NewClient(apiToken string, options ...Option) *Client {
 	url, _ := url.Parse(defaultBaseURL)
-	newClient := &client{
+	newClient := &Client{
 		client:   &http.Client{},
 		header:   make(http.Header),
 		apiToken: apiToken,
@@ -167,12 +167,12 @@ func NewClient(apiToken string, options ...Option) *client {
 	return newClient
 }
 
-func (c *client) buildURL(endpoint string, params urlEncoder) string {
+func (c *Client) buildURL(endpoint string, params urlEncoder) string {
 	c.url.Path = endpoint
 	return c.url.String() + "?" + params.urlEncode()
 }
 
-func (c *client) get(ctx context.Context, url string, report interface{}) error {
+func (c *Client) get(ctx context.Context, url string, report interface{}) error {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return err

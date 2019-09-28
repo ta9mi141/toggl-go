@@ -25,7 +25,7 @@ func (params *DetailedRequestParameters) urlEncode() string {
 	return values.Encode()
 }
 
-func (c *client) GetDetailed(ctx context.Context, params *DetailedRequestParameters, detailedReport interface{}) error {
+func (c *Client) GetDetailed(ctx context.Context, params *DetailedRequestParameters, detailedReport interface{}) error {
 	err := c.get(ctx, c.buildURL(detailedEndpoint, params), detailedReport)
 	if err != nil {
 		return err

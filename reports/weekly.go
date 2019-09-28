@@ -28,7 +28,7 @@ func (params *WeeklyRequestParameters) urlEncode() string {
 	return values.Encode()
 }
 
-func (c *client) GetWeekly(ctx context.Context, params *WeeklyRequestParameters, weeklyReport interface{}) error {
+func (c *Client) GetWeekly(ctx context.Context, params *WeeklyRequestParameters, weeklyReport interface{}) error {
 	err := c.get(ctx, c.buildURL(weeklyEndpoint, params), weeklyReport)
 	if err != nil {
 		return err
