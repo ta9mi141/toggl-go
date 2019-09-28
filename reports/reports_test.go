@@ -10,7 +10,7 @@ import (
 
 func TestNewClient(t *testing.T) {
 	expectedAPIToken := "api_token"
-	client := NewClient(expectedAPIToken)
+	client := NewClient(&Config{ApiToken: expectedAPIToken})
 
 	if client.apiToken != expectedAPIToken {
 		t.Error("client.apiToken = " + client.apiToken + ", [Expected: " + expectedAPIToken + "]")

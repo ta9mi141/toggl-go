@@ -32,7 +32,7 @@ func TestGetWeekly_200_Ok(t *testing.T) {
 	defer mockServer.Close()
 
 	actualWeeklyReport := new(weeklyReport)
-	client := NewClient(apiToken, baseURL(mockServer.URL))
+	client := NewClient(&Config{ApiToken: apiToken}, baseURL(mockServer.URL))
 	err := client.GetWeekly(
 		context.Background(),
 		&WeeklyRequestParameters{
@@ -60,7 +60,7 @@ func TestGetWeekly_401_Unauthorized(t *testing.T) {
 	mockServer, unauthorizedTestData := setupMockServer_401_Unauthorized(t)
 	defer mockServer.Close()
 
-	client := NewClient(apiToken, baseURL(mockServer.URL))
+	client := NewClient(&Config{ApiToken: apiToken}, baseURL(mockServer.URL))
 	actualReportsError := client.GetWeekly(
 		context.Background(),
 		&WeeklyRequestParameters{
@@ -88,7 +88,7 @@ func TestGetWeekly_WithoutContext(t *testing.T) {
 	mockServer, _ := setupMockServer_200_Ok(t, "testdata/weekly.json")
 	defer mockServer.Close()
 
-	client := NewClient(apiToken, baseURL(mockServer.URL))
+	client := NewClient(&Config{ApiToken: apiToken}, baseURL(mockServer.URL))
 	err := client.GetWeekly(
 		nil,
 		&WeeklyRequestParameters{

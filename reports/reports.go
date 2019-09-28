@@ -26,9 +26,14 @@ const (
 
 type Client struct {
 	client   *http.Client
-	header   http.Header
 	apiToken string
+	header   http.Header
 	url      *url.URL
+}
+
+type Config struct {
+	HTTPClient *http.Client
+	ApiToken   string
 }
 
 // StandardRequestParameters represents request parameters used in all of the reports.
@@ -152,18 +157,25 @@ func baseURL(rawurl string) Option {
 	}
 }
 
-func NewClient(apiToken string, options ...Option) *Client {
+func NewClient(config *Config, options ...Option) *Client {
+	var httpClient *http.Client
+	if config.HTTPClient == nil {
+		httpClient = &http.Client{}
+	} else {
+		httpClient = config.HTTPClient
+	}
 	url, _ := url.Parse(defaultBaseURL)
+
 	newClient := &Client{
-		client:   &http.Client{},
+		client:   httpClient,
+		apiToken: config.ApiToken,
 		header:   make(http.Header),
-		apiToken: apiToken,
 		url:      url,
 	}
+	newClient.header.Set("Content-type", "application/json")
 	for _, option := range options {
 		option(newClient)
 	}
-	newClient.header.Set("Content-type", "application/json")
 	return newClient
 }
 

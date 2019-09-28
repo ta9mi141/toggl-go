@@ -22,7 +22,7 @@ func TestGetDetailed_200_Ok(t *testing.T) {
 	defer mockServer.Close()
 
 	actualDetailedReport := new(detailedReport)
-	client := NewClient(apiToken, baseURL(mockServer.URL))
+	client := NewClient(&Config{ApiToken: apiToken}, baseURL(mockServer.URL))
 	err := client.GetDetailed(
 		context.Background(),
 		&DetailedRequestParameters{
@@ -50,7 +50,7 @@ func TestGetDetailed_401_Unauthorized(t *testing.T) {
 	mockServer, unauthorizedTestData := setupMockServer_401_Unauthorized(t)
 	defer mockServer.Close()
 
-	client := NewClient(apiToken, baseURL(mockServer.URL))
+	client := NewClient(&Config{ApiToken: apiToken}, baseURL(mockServer.URL))
 	actualReportsError := client.GetDetailed(
 		context.Background(),
 		&DetailedRequestParameters{
@@ -78,7 +78,7 @@ func TestGetDetailed_WithoutContext(t *testing.T) {
 	mockServer, _ := setupMockServer_200_Ok(t, "testdata/detailed.json")
 	defer mockServer.Close()
 
-	client := NewClient(apiToken, baseURL(mockServer.URL))
+	client := NewClient(&Config{ApiToken: apiToken}, baseURL(mockServer.URL))
 	err := client.GetDetailed(
 		nil,
 		&DetailedRequestParameters{
