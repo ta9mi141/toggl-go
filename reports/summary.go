@@ -36,6 +36,7 @@ func (params *SummaryRequestParameters) urlEncode() string {
 	return values.Encode()
 }
 
+// GetSummary gets a summary report.
 func (c *Client) GetSummary(ctx context.Context, params *SummaryRequestParameters, summaryReport interface{}) error {
 	err := c.get(ctx, c.buildURL(summaryEndpoint, params), summaryReport)
 	if err != nil {

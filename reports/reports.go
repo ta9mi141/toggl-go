@@ -24,13 +24,16 @@ const (
 	defaultBaseURL    string = "https://toggl.com"
 )
 
+// Client implements a basic request handling used by all of the reports.
 type Client struct {
-	client   *http.Client
-	apiToken string
-	header   http.Header
-	url      *url.URL
+	httpClient *http.Client
+	apiToken   string
+	header     http.Header
+	url        *url.URL
 }
 
+// Config provides an HTTP client and user's API token for Client.
+// By default, http.DefaultClient is used as HTTPClient.
 type Config struct {
 	HTTPClient *http.Client
 	ApiToken   string
@@ -157,20 +160,21 @@ func baseURL(rawurl string) Option {
 	}
 }
 
+// NewClient returns a pointer to a new initialized client.
 func NewClient(config *Config, options ...Option) *Client {
 	var httpClient *http.Client
 	if config.HTTPClient == nil {
-		httpClient = &http.Client{}
+		httpClient = http.DefaultClient
 	} else {
 		httpClient = config.HTTPClient
 	}
 	url, _ := url.Parse(defaultBaseURL)
 
 	newClient := &Client{
-		client:   httpClient,
-		apiToken: config.ApiToken,
-		header:   make(http.Header),
-		url:      url,
+		httpClient: httpClient,
+		apiToken:   config.ApiToken,
+		header:     make(http.Header),
+		url:        url,
 	}
 	newClient.header.Set("Content-type", "application/json")
 	for _, option := range options {
@@ -196,7 +200,7 @@ func (c *Client) get(ctx context.Context, url string, report interface{}) error 
 	}
 	req = req.WithContext(ctx)
 
-	resp, err := checkResponse(c.client.Do(req))
+	resp, err := checkResponse(c.httpClient.Do(req))
 	if err != nil {
 		return err
 	}
