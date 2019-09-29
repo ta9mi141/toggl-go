@@ -6,14 +6,39 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 )
 
 func TestNewClient(t *testing.T) {
 	expectedAPIToken := "api_token"
-	client := NewClient(&Config{ApiToken: expectedAPIToken})
+	client := NewClient(expectedAPIToken)
 
 	if client.apiToken != expectedAPIToken {
 		t.Error("client.apiToken = " + client.apiToken + ", [Expected: " + expectedAPIToken + "]")
+	}
+
+	if client.url.String() != defaultBaseURL {
+		t.Error("client.url.String() = " + client.url.String() + ", [Expected: " + defaultBaseURL + "]")
+	}
+
+	expectedContentType := "application/json"
+	if client.header.Get("Content-type") != expectedContentType {
+		t.Error(`client.header.Get("Content-type") = ` + client.header.Get("Content-type") + ", [Expected: " + expectedContentType + "]")
+	}
+}
+
+func TestNewClient_WithHTTPClient(t *testing.T) {
+	expectedAPIToken := "api_token"
+	expectedTimeout := "5s"
+	timeout, _ := time.ParseDuration(expectedTimeout)
+	client := NewClient(expectedAPIToken, HTTPClient(&http.Client{Timeout: timeout}))
+
+	if client.apiToken != expectedAPIToken {
+		t.Error("client.apiToken = " + client.apiToken + ", [Expected: " + expectedAPIToken + "]")
+	}
+
+	if client.httpClient.Timeout.String() != expectedTimeout {
+		t.Error("client.httpClient.Timeout = " + client.httpClient.Timeout.String() + ", [Expected: " + expectedTimeout + "]")
 	}
 
 	if client.url.String() != defaultBaseURL {

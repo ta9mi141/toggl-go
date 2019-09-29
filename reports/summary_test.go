@@ -32,7 +32,7 @@ func TestGetSummary_200_Ok(t *testing.T) {
 	defer mockServer.Close()
 
 	actualSummaryReport := new(summaryReport)
-	client := NewClient(&Config{ApiToken: apiToken}, baseURL(mockServer.URL))
+	client := NewClient(apiToken, baseURL(mockServer.URL))
 	err := client.GetSummary(
 		context.Background(),
 		&SummaryRequestParameters{
@@ -60,7 +60,7 @@ func TestGetSummary_401_Unauthorized(t *testing.T) {
 	mockServer, unauthorizedTestData := setupMockServer_401_Unauthorized(t)
 	defer mockServer.Close()
 
-	client := NewClient(&Config{ApiToken: apiToken}, baseURL(mockServer.URL))
+	client := NewClient(apiToken, baseURL(mockServer.URL))
 	actualReportsError := client.GetSummary(
 		context.Background(),
 		&SummaryRequestParameters{
@@ -88,7 +88,7 @@ func TestGetSummary_WithoutContext(t *testing.T) {
 	mockServer, _ := setupMockServer_200_Ok(t, "testdata/summary.json")
 	defer mockServer.Close()
 
-	client := NewClient(&Config{ApiToken: apiToken}, baseURL(mockServer.URL))
+	client := NewClient(apiToken, baseURL(mockServer.URL))
 	err := client.GetSummary(
 		nil,
 		&SummaryRequestParameters{

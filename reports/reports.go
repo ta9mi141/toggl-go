@@ -32,13 +32,6 @@ type Client struct {
 	url        *url.URL
 }
 
-// Config provides an HTTP client and user's API token for Client.
-// By default, http.DefaultClient is used as HTTPClient.
-type Config struct {
-	HTTPClient *http.Client
-	ApiToken   string
-}
-
 // StandardRequestParameters represents request parameters used in all of the reports.
 type StandardRequestParameters struct {
 	UserAgent           string
@@ -150,9 +143,10 @@ func (e ReportsError) Error() string {
 	)
 }
 
+// Option represents optional parameters of NewClient.
 type Option func(c *Client)
 
-// Configurable baseURL makes client testable
+// baseURL makes client testable by configurable URL.
 func baseURL(rawurl string) Option {
 	return func(c *Client) {
 		url, _ := url.Parse(rawurl)
@@ -160,19 +154,20 @@ func baseURL(rawurl string) Option {
 	}
 }
 
-// NewClient returns a pointer to a new initialized client.
-func NewClient(config *Config, options ...Option) *Client {
-	var httpClient *http.Client
-	if config.HTTPClient == nil {
-		httpClient = http.DefaultClient
-	} else {
-		httpClient = config.HTTPClient
+// HTTPClient sets an HTTP client to use when sending requests.
+// By default, http.DefaultClient is used.
+func HTTPClient(httpClient *http.Client) Option {
+	return func(c *Client) {
+		c.httpClient = httpClient
 	}
-	url, _ := url.Parse(defaultBaseURL)
+}
 
+// NewClient returns a pointer to a new initialized client.
+func NewClient(apiToken string, options ...Option) *Client {
+	url, _ := url.Parse(defaultBaseURL)
 	newClient := &Client{
-		httpClient: httpClient,
-		apiToken:   config.ApiToken,
+		httpClient: http.DefaultClient,
+		apiToken:   apiToken,
 		header:     make(http.Header),
 		url:        url,
 	}
