@@ -1,10 +1,12 @@
-package reports
+package reports_test
 
 import (
 	"context"
 	"encoding/json"
 	"reflect"
 	"testing"
+
+	"github.com/it-akumi/toggl-go/reports"
 )
 
 type summaryReport struct {
@@ -32,11 +34,11 @@ func TestGetSummary_200_Ok(t *testing.T) {
 	defer mockServer.Close()
 
 	actualSummaryReport := new(summaryReport)
-	client := NewClient(apiToken, baseURL(mockServer.URL))
+	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
 	err := client.GetSummary(
 		context.Background(),
-		&SummaryRequestParameters{
-			StandardRequestParameters: &StandardRequestParameters{
+		&reports.SummaryRequestParameters{
+			StandardRequestParameters: &reports.StandardRequestParameters{
 				UserAgent:   userAgent,
 				WorkSpaceId: workSpaceId,
 			},
@@ -60,11 +62,11 @@ func TestGetSummary_401_Unauthorized(t *testing.T) {
 	mockServer, unauthorizedTestData := setupMockServer_401_Unauthorized(t)
 	defer mockServer.Close()
 
-	client := NewClient(apiToken, baseURL(mockServer.URL))
+	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
 	actualReportsError := client.GetSummary(
 		context.Background(),
-		&SummaryRequestParameters{
-			StandardRequestParameters: &StandardRequestParameters{
+		&reports.SummaryRequestParameters{
+			StandardRequestParameters: &reports.StandardRequestParameters{
 				UserAgent:   userAgent,
 				WorkSpaceId: workSpaceId,
 			},
@@ -75,7 +77,7 @@ func TestGetSummary_401_Unauthorized(t *testing.T) {
 		t.Error("GetSummary doesn't return error though it gets '401 Unauthorized'")
 	}
 
-	expectedReportsError := new(ReportsError)
+	expectedReportsError := new(reports.ReportsError)
 	if err := json.Unmarshal(unauthorizedTestData, expectedReportsError); err != nil {
 		t.Error(err.Error())
 	}
@@ -88,11 +90,11 @@ func TestGetSummary_WithoutContext(t *testing.T) {
 	mockServer, _ := setupMockServer_200_Ok(t, "testdata/summary.json")
 	defer mockServer.Close()
 
-	client := NewClient(apiToken, baseURL(mockServer.URL))
+	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
 	err := client.GetSummary(
 		nil,
-		&SummaryRequestParameters{
-			StandardRequestParameters: &StandardRequestParameters{
+		&reports.SummaryRequestParameters{
+			StandardRequestParameters: &reports.StandardRequestParameters{
 				UserAgent:   userAgent,
 				WorkSpaceId: workSpaceId,
 			},

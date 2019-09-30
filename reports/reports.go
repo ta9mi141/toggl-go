@@ -28,8 +28,8 @@ const (
 type Client struct {
 	HTTPClient *http.Client
 	APIToken   string
+	URL        *url.URL
 	header     http.Header
-	url        *url.URL
 }
 
 // StandardRequestParameters represents request parameters used in all of the reports.
@@ -146,14 +146,6 @@ func (e ReportsError) Error() string {
 // Option represents optional parameters of NewClient.
 type Option func(c *Client)
 
-// baseURL makes client testable by configurable URL.
-func baseURL(rawurl string) Option {
-	return func(c *Client) {
-		url, _ := url.Parse(rawurl)
-		c.url = url
-	}
-}
-
 // HTTPClient sets an HTTP client to use when sending requests.
 // By default, http.DefaultClient is used.
 func HTTPClient(httpClient *http.Client) Option {
@@ -168,8 +160,8 @@ func NewClient(apiToken string, options ...Option) *Client {
 	newClient := &Client{
 		HTTPClient: http.DefaultClient,
 		APIToken:   apiToken,
+		URL:        url,
 		header:     make(http.Header),
-		url:        url,
 	}
 	newClient.header.Set("Content-type", "application/json")
 	for _, option := range options {
@@ -179,8 +171,8 @@ func NewClient(apiToken string, options ...Option) *Client {
 }
 
 func (c *Client) buildURL(endpoint string, params urlEncoder) string {
-	c.url.Path = endpoint
-	return c.url.String() + "?" + params.urlEncode()
+	c.URL.Path = endpoint
+	return c.URL.String() + "?" + params.urlEncode()
 }
 
 func (c *Client) get(ctx context.Context, url string, report interface{}) error {
