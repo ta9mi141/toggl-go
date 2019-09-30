@@ -26,8 +26,8 @@ const (
 
 // Client implements a basic request handling used by all of the reports.
 type Client struct {
-	httpClient *http.Client
-	apiToken   string
+	HTTPClient *http.Client
+	APIToken   string
 	header     http.Header
 	url        *url.URL
 }
@@ -158,7 +158,7 @@ func baseURL(rawurl string) Option {
 // By default, http.DefaultClient is used.
 func HTTPClient(httpClient *http.Client) Option {
 	return func(c *Client) {
-		c.httpClient = httpClient
+		c.HTTPClient = httpClient
 	}
 }
 
@@ -166,8 +166,8 @@ func HTTPClient(httpClient *http.Client) Option {
 func NewClient(apiToken string, options ...Option) *Client {
 	url, _ := url.Parse(defaultBaseURL)
 	newClient := &Client{
-		httpClient: http.DefaultClient,
-		apiToken:   apiToken,
+		HTTPClient: http.DefaultClient,
+		APIToken:   apiToken,
 		header:     make(http.Header),
 		url:        url,
 	}
@@ -188,14 +188,14 @@ func (c *Client) get(ctx context.Context, url string, report interface{}) error 
 	if err != nil {
 		return err
 	}
-	req.SetBasicAuth(c.apiToken, basicAuthPassword)
+	req.SetBasicAuth(c.APIToken, basicAuthPassword)
 
 	if ctx == nil {
 		return fmt.Errorf("The provided ctx must be non-nil")
 	}
 	req = req.WithContext(ctx)
 
-	resp, err := checkResponse(c.httpClient.Do(req))
+	resp, err := checkResponse(c.HTTPClient.Do(req))
 	if err != nil {
 		return err
 	}

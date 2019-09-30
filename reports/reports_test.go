@@ -13,8 +13,8 @@ func TestNewClient(t *testing.T) {
 	expectedAPIToken := "api_token"
 	client := NewClient(expectedAPIToken)
 
-	if client.apiToken != expectedAPIToken {
-		t.Error("client.apiToken = " + client.apiToken + ", [Expected: " + expectedAPIToken + "]")
+	if client.APIToken != expectedAPIToken {
+		t.Error("client.APIToken = " + client.APIToken + ", [Expected: " + expectedAPIToken + "]")
 	}
 
 	if client.url.String() != defaultBaseURL {
@@ -33,12 +33,12 @@ func TestNewClient_WithHTTPClient(t *testing.T) {
 	timeout, _ := time.ParseDuration(expectedTimeout)
 	client := NewClient(expectedAPIToken, HTTPClient(&http.Client{Timeout: timeout}))
 
-	if client.apiToken != expectedAPIToken {
-		t.Error("client.apiToken = " + client.apiToken + ", [Expected: " + expectedAPIToken + "]")
+	if client.APIToken != expectedAPIToken {
+		t.Error("client.APIToken = " + client.APIToken + ", [Expected: " + expectedAPIToken + "]")
 	}
 
-	if client.httpClient.Timeout.String() != expectedTimeout {
-		t.Error("client.httpClient.Timeout = " + client.httpClient.Timeout.String() + ", [Expected: " + expectedTimeout + "]")
+	if client.HTTPClient.Timeout.String() != expectedTimeout {
+		t.Error("client.HTTPClient.Timeout = " + client.HTTPClient.Timeout.String() + ", [Expected: " + expectedTimeout + "]")
 	}
 
 	if client.url.String() != defaultBaseURL {
