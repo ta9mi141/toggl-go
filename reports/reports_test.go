@@ -86,3 +86,17 @@ func setupMockServer_401_Unauthorized(t *testing.T) (*httptest.Server, []byte) {
 
 	return mockServer, errorTestData
 }
+
+func setupMockServer_429_Too_Many_Requests(t *testing.T) (*httptest.Server, []byte) {
+	errorTestData, err := ioutil.ReadFile("testdata/429_too_many_requests.html")
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusTooManyRequests)
+		fmt.Fprintf(w, string(errorTestData))
+	}))
+
+	return mockServer, errorTestData
+}

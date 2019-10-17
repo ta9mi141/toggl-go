@@ -86,6 +86,34 @@ func TestGetSummary_401_Unauthorized(t *testing.T) {
 	}
 }
 
+func TestGetSummary_429_Too_Many_Requests(t *testing.T) {
+	mockServer, tooManyRequestsTestData := setupMockServer_429_Too_Many_Requests(t)
+	defer mockServer.Close()
+
+	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
+	actualReportsError := client.GetSummary(
+		context.Background(),
+		&reports.SummaryRequestParameters{
+			StandardRequestParameters: &reports.StandardRequestParameters{
+				UserAgent:   userAgent,
+				WorkSpaceId: workSpaceId,
+			},
+		},
+		new(summaryReport),
+	)
+	if actualReportsError == nil {
+		t.Error("GetSummary doesn't return error though it gets '429 Too Many Requests'")
+	}
+
+	expectedReportsError := new(reports.ReportsError)
+	if err := json.Unmarshal(tooManyRequestsTestData, expectedReportsError); err != nil {
+		t.Error(err.Error())
+	}
+	if !reflect.DeepEqual(actualReportsError, expectedReportsError) {
+		t.Error("GetSummary fails to decode ReportsError though it returns error as expected")
+	}
+}
+
 func TestGetSummary_WithoutContext(t *testing.T) {
 	mockServer, _ := setupMockServer_200_Ok(t, "testdata/summary.json")
 	defer mockServer.Close()

@@ -76,6 +76,34 @@ func TestGetDetailed_401_Unauthorized(t *testing.T) {
 	}
 }
 
+func TestGetDetailed_429_Too_Many_Requests(t *testing.T) {
+	mockServer, tooManyRequestsTestData := setupMockServer_429_Too_Many_Requests(t)
+	defer mockServer.Close()
+
+	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
+	actualReportsError := client.GetDetailed(
+		context.Background(),
+		&reports.DetailedRequestParameters{
+			StandardRequestParameters: &reports.StandardRequestParameters{
+				UserAgent:   userAgent,
+				WorkSpaceId: workSpaceId,
+			},
+		},
+		new(detailedReport),
+	)
+	if actualReportsError == nil {
+		t.Error("GetDetailed doesn't return error though it gets '429 Too Many Requests'")
+	}
+
+	expectedReportsError := new(reports.ReportsError)
+	if err := json.Unmarshal(tooManyRequestsTestData, expectedReportsError); err != nil {
+		t.Error(err.Error())
+	}
+	if !reflect.DeepEqual(actualReportsError, expectedReportsError) {
+		t.Error("GetDetailed fails to decode ReportsError though it returns error as expected")
+	}
+}
+
 func TestGetDetailed_WithoutContext(t *testing.T) {
 	mockServer, _ := setupMockServer_200_Ok(t, "testdata/detailed.json")
 	defer mockServer.Close()
