@@ -128,19 +128,24 @@ type urlEncoder interface {
 // ReportsError represents a response of unsuccessful request.
 type ReportsError struct {
 	Err struct {
-		Message    string `json:"message"`
-		Tip        string `json:"tip"`
-		StatusCode int    `json:"code"`
+		Message string `json:"message"`
+		Tip     string `json:"tip"`
+		Code    int    `json:"code"`
 	} `json:"error"`
 }
 
 func (e ReportsError) Error() string {
-	return fmt.Sprintf(
-		"HTTP Status: %d\n%s\n\n%s\n",
-		e.Err.StatusCode,
-		e.Err.Message,
-		e.Err.Tip,
-	)
+	return e.Err.Message
+}
+
+// StatusCode returns HTTP status code of ReportsError
+func (e ReportsError) StatusCode() int {
+	return e.Err.Code
+}
+
+// Tip shows what to do in case of the ReportsError
+func (e ReportsError) Tip() string {
+	return e.Err.Tip
 }
 
 // Option represents optional parameters of NewClient.
