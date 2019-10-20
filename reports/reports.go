@@ -206,14 +206,24 @@ func checkResponse(resp *http.Response, err error) (*http.Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	if resp.StatusCode <= 199 || 300 <= resp.StatusCode {
+	switch {
+	case resp.StatusCode == http.StatusTooManyRequests:
+		// Since the response of "429 Too Many Requests" is not in form of JSON,
+		// the error must be handled individually before calling the function "decodeJSON".
+		tooManyRequestsError := ReportsError{}
+		tooManyRequestsError.Err.Code = http.StatusTooManyRequests
+		tooManyRequestsError.Err.Message = "Too Many Requests"
+		tooManyRequestsError.Err.Tip = "Add delay between requests"
+		return nil, tooManyRequestsError
+	case resp.StatusCode <= 199 || 300 <= resp.StatusCode:
 		var reportsError = new(ReportsError)
 		if err := decodeJSON(resp, reportsError); err != nil {
 			return nil, err
 		}
 		return nil, reportsError
+	default:
+		return resp, nil
 	}
-	return resp, nil
 }
 
 func decodeJSON(resp *http.Response, out interface{}) error {
