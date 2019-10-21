@@ -3,6 +3,7 @@ package reports_test
 import (
 	"context"
 	"encoding/json"
+	"net/http"
 	"reflect"
 	"testing"
 
@@ -53,7 +54,7 @@ func TestGetDetailed_401_Unauthorized(t *testing.T) {
 	defer mockServer.Close()
 
 	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
-	actualReportsError := client.GetDetailed(
+	actualError := client.GetDetailed(
 		context.Background(),
 		&reports.DetailedRequestParameters{
 			StandardRequestParameters: &reports.StandardRequestParameters{
@@ -63,25 +64,29 @@ func TestGetDetailed_401_Unauthorized(t *testing.T) {
 		},
 		new(detailedReport),
 	)
-	if actualReportsError == nil {
+	if actualError == nil {
 		t.Error("GetDetailed doesn't return error though it gets '401 Unauthorized'")
 	}
 
-	expectedReportsError := new(reports.ReportsError)
-	if err := json.Unmarshal(unauthorizedTestData, expectedReportsError); err != nil {
-		t.Error(err.Error())
-	}
-	if !reflect.DeepEqual(actualReportsError, expectedReportsError) {
-		t.Error("GetDetailed fails to decode ReportsError though it returns error as expected")
+	if actualReportsError, ok := actualError.(reports.Error); ok {
+		expectedReportsError := new(reports.ReportsError)
+		if err := json.Unmarshal(unauthorizedTestData, expectedReportsError); err != nil {
+			t.Error(err.Error())
+		}
+		if !reflect.DeepEqual(actualReportsError, expectedReportsError) {
+			t.Error("GetDetailed fails to decode ReportsError though it returns reports.Error as expected")
+		}
+	} else {
+		t.Error(actualError.Error())
 	}
 }
 
 func TestGetDetailed_429_Too_Many_Requests(t *testing.T) {
-	mockServer, tooManyRequestsTestData := setupMockServer_429_Too_Many_Requests(t)
+	mockServer, _ := setupMockServer_429_Too_Many_Requests(t)
 	defer mockServer.Close()
 
 	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
-	actualReportsError := client.GetDetailed(
+	actualError := client.GetDetailed(
 		context.Background(),
 		&reports.DetailedRequestParameters{
 			StandardRequestParameters: &reports.StandardRequestParameters{
@@ -91,16 +96,16 @@ func TestGetDetailed_429_Too_Many_Requests(t *testing.T) {
 		},
 		new(detailedReport),
 	)
-	if actualReportsError == nil {
+	if actualError == nil {
 		t.Error("GetDetailed doesn't return error though it gets '429 Too Many Requests'")
 	}
 
-	expectedReportsError := new(reports.ReportsError)
-	if err := json.Unmarshal(tooManyRequestsTestData, expectedReportsError); err != nil {
-		t.Error(err.Error())
-	}
-	if !reflect.DeepEqual(actualReportsError, expectedReportsError) {
-		t.Error("GetDetailed fails to decode ReportsError though it returns error as expected")
+	if actualReportsError, ok := actualError.(reports.Error); ok {
+		if actualReportsError.StatusCode() != http.StatusTooManyRequests {
+			t.Error("GetDetailed fails to return '429 Too Many Requests' though it returns reports.Error as expected")
+		}
+	} else {
+		t.Error(actualError.Error())
 	}
 }
 

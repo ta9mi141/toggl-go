@@ -3,6 +3,7 @@ package reports_test
 import (
 	"context"
 	"encoding/json"
+	"net/http"
 	"reflect"
 	"testing"
 
@@ -63,7 +64,7 @@ func TestGetWeekly_401_Unauthorized(t *testing.T) {
 	defer mockServer.Close()
 
 	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
-	actualReportsError := client.GetWeekly(
+	actualError := client.GetWeekly(
 		context.Background(),
 		&reports.WeeklyRequestParameters{
 			StandardRequestParameters: &reports.StandardRequestParameters{
@@ -73,25 +74,29 @@ func TestGetWeekly_401_Unauthorized(t *testing.T) {
 		},
 		new(weeklyReport),
 	)
-	if actualReportsError == nil {
+	if actualError == nil {
 		t.Error("GetWeekly doesn't return error though it gets '401 Unauthorized'")
 	}
 
-	expectedReportsError := new(reports.ReportsError)
-	if err := json.Unmarshal(unauthorizedTestData, expectedReportsError); err != nil {
-		t.Error(err.Error())
-	}
-	if !reflect.DeepEqual(actualReportsError, expectedReportsError) {
-		t.Error("GetWeekly fails to decode ReportsError though it returns error as expected")
+	if actualReportsError, ok := actualError.(reports.Error); ok {
+		expectedReportsError := new(reports.ReportsError)
+		if err := json.Unmarshal(unauthorizedTestData, expectedReportsError); err != nil {
+			t.Error(err.Error())
+		}
+		if !reflect.DeepEqual(actualReportsError, expectedReportsError) {
+			t.Error("GetWeekly fails to decode ReportsError though it returns reports.Error as expected")
+		}
+	} else {
+		t.Error(actualError.Error())
 	}
 }
 
 func TestGetWeekly_429_Too_Many_Requests(t *testing.T) {
-	mockServer, tooManyRequestsTestData := setupMockServer_429_Too_Many_Requests(t)
+	mockServer, _ := setupMockServer_429_Too_Many_Requests(t)
 	defer mockServer.Close()
 
 	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
-	actualReportsError := client.GetWeekly(
+	actualError := client.GetWeekly(
 		context.Background(),
 		&reports.WeeklyRequestParameters{
 			StandardRequestParameters: &reports.StandardRequestParameters{
@@ -101,16 +106,16 @@ func TestGetWeekly_429_Too_Many_Requests(t *testing.T) {
 		},
 		new(weeklyReport),
 	)
-	if actualReportsError == nil {
+	if actualError == nil {
 		t.Error("GetWeekly doesn't return error though it gets '429 Too Many Requests'")
 	}
 
-	expectedReportsError := new(reports.ReportsError)
-	if err := json.Unmarshal(tooManyRequestsTestData, expectedReportsError); err != nil {
-		t.Error(err.Error())
-	}
-	if !reflect.DeepEqual(actualReportsError, expectedReportsError) {
-		t.Error("GetWeekly fails to decode ReportsError though it returns error as expected")
+	if actualReportsError, ok := actualError.(reports.Error); ok {
+		if actualReportsError.StatusCode() != http.StatusTooManyRequests {
+			t.Error("GetWeekly fails to return '429 Too Many Requests' though it returns reports.Error as expected")
+		}
+	} else {
+		t.Error(actualError.Error())
 	}
 }
 

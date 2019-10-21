@@ -125,6 +125,15 @@ type urlEncoder interface {
 	urlEncode() string
 }
 
+// Error wraps error interface with status code and tip.
+type Error interface {
+	error
+	// StatusCode returns HTTP status code of the error
+	StatusCode() int
+	// Tip shows what to do in case of the error
+	Tip() string
+}
+
 // ReportsError represents a response of unsuccessful request.
 type ReportsError struct {
 	Err struct {
@@ -138,15 +147,18 @@ func (e ReportsError) Error() string {
 	return e.Err.Message
 }
 
-// StatusCode returns HTTP status code of ReportsError
 func (e ReportsError) StatusCode() int {
 	return e.Err.Code
 }
 
-// Tip shows what to do in case of the ReportsError
 func (e ReportsError) Tip() string {
 	return e.Err.Tip
 }
+
+const (
+	tooManyRequestErrorMessage string = "Too Many Requests"
+	tooManyRequestErrorTip     string = "Add delay between requests"
+)
 
 // Option represents optional parameters of NewClient.
 type Option func(c *Client)
@@ -212,8 +224,8 @@ func checkResponse(resp *http.Response, err error) (*http.Response, error) {
 		// the error must be handled individually before calling the function "decodeJSON".
 		tooManyRequestsError := ReportsError{}
 		tooManyRequestsError.Err.Code = http.StatusTooManyRequests
-		tooManyRequestsError.Err.Message = "Too Many Requests"
-		tooManyRequestsError.Err.Tip = "Add delay between requests"
+		tooManyRequestsError.Err.Message = tooManyRequestErrorMessage
+		tooManyRequestsError.Err.Tip = tooManyRequestErrorTip
 		return nil, tooManyRequestsError
 	case resp.StatusCode <= 199 || 300 <= resp.StatusCode:
 		var reportsError = new(ReportsError)
