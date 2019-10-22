@@ -3,6 +3,7 @@ package reports_test
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"reflect"
 	"testing"
@@ -78,7 +79,8 @@ func TestGetSummary_401_Unauthorized(t *testing.T) {
 		t.Error("GetSummary doesn't return error though it gets '401 Unauthorized'")
 	}
 
-	if actualReportsError, ok := actualError.(reports.Error); ok {
+	var actualReportsError reports.Error
+	if errors.As(actualError, &actualReportsError) {
 		expectedReportsError := new(reports.ReportsError)
 		if err := json.Unmarshal(unauthorizedTestData, expectedReportsError); err != nil {
 			t.Error(err.Error())
@@ -110,8 +112,9 @@ func TestGetSummary_429_Too_Many_Requests(t *testing.T) {
 		t.Error("GetSummary doesn't return error though it gets '429 Too Many Requests'")
 	}
 
-	if actualReportsError, ok := actualError.(reports.Error); ok {
-		if actualReportsError.StatusCode() != http.StatusTooManyRequests {
+	var reportsError reports.Error
+	if errors.As(actualError, &reportsError) {
+		if reportsError.StatusCode() != http.StatusTooManyRequests {
 			t.Error("GetSummary fails to return '429 Too Many Requests' though it returns reports.Error as expected")
 		}
 	} else {
