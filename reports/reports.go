@@ -20,7 +20,7 @@ import (
 )
 
 const (
-	basicAuthPassword string = "api_token" // Defined in Toggl Reports API
+	basicAuthPassword string = "api_token" // Defined in Toggl Reports API v2
 	defaultBaseURL    string = "https://toggl.com"
 )
 
