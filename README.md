@@ -5,6 +5,7 @@ Go clients for [Toggl API](https://github.com/toggl/toggl_api_docs)
 
 ## GoDoc
 
+* [Toggl API v8](https://godoc.org/github.com/it-akumi/toggl-go/toggl)
 * [Reports API v2](https://godoc.org/github.com/it-akumi/toggl-go/reports)
 
 ## Author
