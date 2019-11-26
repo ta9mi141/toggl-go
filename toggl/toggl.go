@@ -7,6 +7,8 @@ https://github.com/toggl/toggl_api_docs/blob/master/toggl_api.md
 package toggl
 
 import (
+	"context"
+	"encoding/json"
 	"net/http"
 	"net/url"
 )
@@ -74,4 +76,35 @@ func NewClient(options ...Option) *Client {
 		option(newClient)
 	}
 	return newClient
+}
+
+func (c *Client) buildURL(endpoint string) string {
+	c.URL.Path = endpoint
+	return c.URL.String()
+}
+
+func (c *Client) httpGet(ctx context.Context, url string, resp interface{}) error {
+	return nil
+}
+
+func (c *Client) httpPost(ctx context.Context, url string, req, resp interface{}) error {
+	return nil
+}
+
+func (c *Client) httpPut(ctx context.Context, url string, req, resp interface{}) error {
+	return nil
+}
+
+func (c *Client) httpDelete(ctx context.Context, url string) error {
+	return nil
+}
+
+func checkResponse(resp *http.Response, err error) (*http.Response, error) {
+	return nil, nil
+}
+
+func decodeJSON(resp *http.Response, out interface{}) error {
+	defer resp.Body.Close()
+	decoder := json.NewDecoder(resp.Body)
+	return decoder.Decode(out)
 }
