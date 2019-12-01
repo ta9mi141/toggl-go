@@ -59,6 +59,9 @@ func baseURL(rawurl string) reports.Option {
 	}
 }
 
+// setupMockServer_200_Ok returns mockServer and testdata.
+// Since testdata is same as the response of mockServer,
+// users don't need to send a request to mockServer to get the response.
 func setupMockServer_200_Ok(t *testing.T, testdataFilePath string) (*httptest.Server, []byte) {
 	testdata, err := ioutil.ReadFile(testdataFilePath)
 	if err != nil {
@@ -73,6 +76,9 @@ func setupMockServer_200_Ok(t *testing.T, testdataFilePath string) (*httptest.Se
 	return mockServer, testdata
 }
 
+// setupMockServer_401_Unauthorized returns mockServer and errorTestdata.
+// Since errorTestdata is same as the response of mockServer,
+// users don't need to send a request to mockServer to get the response.
 func setupMockServer_401_Unauthorized(t *testing.T) (*httptest.Server, []byte) {
 	errorTestData, err := ioutil.ReadFile("testdata/401_unauthorized.json")
 	if err != nil {
@@ -87,6 +93,9 @@ func setupMockServer_401_Unauthorized(t *testing.T) (*httptest.Server, []byte) {
 	return mockServer, errorTestData
 }
 
+// setupMockServer_429_Too_Many_Requests returns mockServer and errorTestdata.
+// Since errorTestdata is same as the response of mockServer,
+// users don't need to send a request to mockServer to get the response.
 func setupMockServer_429_Too_Many_Requests(t *testing.T) (*httptest.Server, []byte) {
 	errorTestData, err := ioutil.ReadFile("testdata/429_too_many_requests.html")
 	if err != nil {
