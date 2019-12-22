@@ -31,7 +31,7 @@ type weeklyReport struct {
 	} `json:"data"`
 }
 
-func TestGetWeekly_200_Ok(t *testing.T) {
+func Test_GetWeekly_ShouldHandle_200_Ok(t *testing.T) {
 	mockServer, weeklyTestData := setupMockServer_200_Ok(t, "testdata/weekly.json")
 	defer mockServer.Close()
 
@@ -60,7 +60,7 @@ func TestGetWeekly_200_Ok(t *testing.T) {
 	}
 }
 
-func TestGetWeekly_401_Unauthorized(t *testing.T) {
+func Test_GetWeekly_ShouldHandle_401_Unauthorized(t *testing.T) {
 	mockServer, unauthorizedTestData := setupMockServer_401_Unauthorized(t)
 	defer mockServer.Close()
 
@@ -93,7 +93,7 @@ func TestGetWeekly_401_Unauthorized(t *testing.T) {
 	}
 }
 
-func TestGetWeekly_429_Too_Many_Requests(t *testing.T) {
+func Test_GetWeekly_ShouldHandle_429_Too_Many_Requests(t *testing.T) {
 	mockServer, _ := setupMockServer_429_Too_Many_Requests(t)
 	defer mockServer.Close()
 
@@ -122,7 +122,7 @@ func TestGetWeekly_429_Too_Many_Requests(t *testing.T) {
 	}
 }
 
-func TestGetWeekly_WithoutContext(t *testing.T) {
+func Test_GetWeeklyWithoutContext_ShouldReturnError(t *testing.T) {
 	mockServer, _ := setupMockServer_200_Ok(t, "testdata/weekly.json")
 	defer mockServer.Close()
 

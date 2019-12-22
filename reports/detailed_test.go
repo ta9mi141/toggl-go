@@ -21,7 +21,7 @@ type detailedReport struct {
 	} `json:"data"`
 }
 
-func TestGetDetailed_200_Ok(t *testing.T) {
+func Test_GetDetailed_ShouldHandle_200_Ok(t *testing.T) {
 	mockServer, detailedTestData := setupMockServer_200_Ok(t, "testdata/detailed.json")
 	defer mockServer.Close()
 
@@ -50,7 +50,7 @@ func TestGetDetailed_200_Ok(t *testing.T) {
 	}
 }
 
-func TestGetDetailed_401_Unauthorized(t *testing.T) {
+func Test_GetDetailed_ShouldHandle_401_Unauthorized(t *testing.T) {
 	mockServer, unauthorizedTestData := setupMockServer_401_Unauthorized(t)
 	defer mockServer.Close()
 
@@ -83,7 +83,7 @@ func TestGetDetailed_401_Unauthorized(t *testing.T) {
 	}
 }
 
-func TestGetDetailed_429_Too_Many_Requests(t *testing.T) {
+func Test_GetDetailed_ShouldHandle_429_Too_Many_Requests(t *testing.T) {
 	mockServer, _ := setupMockServer_429_Too_Many_Requests(t)
 	defer mockServer.Close()
 
@@ -112,7 +112,7 @@ func TestGetDetailed_429_Too_Many_Requests(t *testing.T) {
 	}
 }
 
-func TestGetDetailed_WithoutContext(t *testing.T) {
+func Test_GetDetailedWithoutContext_ShouldReturnError(t *testing.T) {
 	mockServer, _ := setupMockServer_200_Ok(t, "testdata/detailed.json")
 	defer mockServer.Close()
 
