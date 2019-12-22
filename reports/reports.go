@@ -57,11 +57,12 @@ type StandardRequestParameters struct {
 }
 
 func (params *StandardRequestParameters) values() url.Values {
-	values := url.Values{}
+	values := url.Values{
+		// user_agent and workspace_id are required.
+		"user_agent":   []string{params.UserAgent},
+		"workspace_id": []string{params.WorkSpaceId},
+	}
 
-	// user_agent and workspace_id are required.
-	values.Add("user_agent", params.UserAgent)
-	values.Add("workspace_id", params.WorkSpaceId)
 	// since and until must be ISO 8601 date (YYYY-MM-DD) format
 	if !params.Since.IsZero() {
 		values.Add("since", params.Since.Format("2006-01-02"))
