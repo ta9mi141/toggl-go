@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"net/url"
 	"reflect"
 	"testing"
 
@@ -29,6 +30,28 @@ type summaryReport struct {
 			Time int `json:"time"`
 		} `json:"items"`
 	} `json:"data"`
+}
+
+func Test_GetSummary_ShouldEncodeRequestParameters(t *testing.T) {
+	expectedQueryString := url.Values{
+		"user_agent":   []string{userAgent},
+		"workspace_id": []string{workSpaceId},
+		"grouping":     []string{"projects"},
+	}
+
+	mockServer := setupMockServer_TestingQueryString(t, expectedQueryString)
+	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
+	_ = client.GetSummary(
+		context.Background(),
+		&reports.SummaryRequestParameters{
+			StandardRequestParameters: &reports.StandardRequestParameters{
+				UserAgent:   userAgent,
+				WorkSpaceId: workSpaceId,
+			},
+			Grouping: "projects",
+		},
+		new(summaryReport),
+	)
 }
 
 func Test_GetSummary_ShouldHandle_200_Ok(t *testing.T) {

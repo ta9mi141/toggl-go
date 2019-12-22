@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"net/url"
 	"reflect"
 	"testing"
 
@@ -19,6 +20,28 @@ type detailedReport struct {
 		Project     string `json:"project"`
 		Description string `json:"description"`
 	} `json:"data"`
+}
+
+func Test_GetDetailed_ShouldEncodeRequestParameters(t *testing.T) {
+	expectedQueryString := url.Values{
+		"user_agent":   []string{userAgent},
+		"workspace_id": []string{workSpaceId},
+		"page":         []string{"10"},
+	}
+
+	mockServer := setupMockServer_TestingQueryString(t, expectedQueryString)
+	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
+	_ = client.GetDetailed(
+		context.Background(),
+		&reports.DetailedRequestParameters{
+			StandardRequestParameters: &reports.StandardRequestParameters{
+				UserAgent:   userAgent,
+				WorkSpaceId: workSpaceId,
+			},
+			Page: 10,
+		},
+		new(detailedReport),
+	)
 }
 
 func Test_GetDetailed_ShouldHandle_200_Ok(t *testing.T) {

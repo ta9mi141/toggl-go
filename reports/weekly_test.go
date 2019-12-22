@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"net/url"
 	"reflect"
 	"testing"
 
@@ -19,16 +20,38 @@ type weeklyReport struct {
 			Color   string `json:"color"`
 			User    string `json:"user"`
 		} `json:"title"`
-		Totals  []interface{} `json:"totals`
+		Totals  []interface{} `json:"totals"`
 		Details []struct {
 			Title struct {
 				Project string `json:"project"`
 				Color   string `json:"color"`
 				User    string `json:"user"`
 			} `json:"title"`
-			Totals []interface{} `json:"totals`
+			Totals []interface{} `json:"totals"`
 		} `json:"details"`
 	} `json:"data"`
+}
+
+func Test_GetWeekly_ShouldEncodeRequestParameters(t *testing.T) {
+	expectedQueryString := url.Values{
+		"user_agent":   []string{userAgent},
+		"workspace_id": []string{workSpaceId},
+		"grouping":     []string{"users"},
+	}
+
+	mockServer := setupMockServer_TestingQueryString(t, expectedQueryString)
+	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
+	_ = client.GetWeekly(
+		context.Background(),
+		&reports.WeeklyRequestParameters{
+			StandardRequestParameters: &reports.StandardRequestParameters{
+				UserAgent:   userAgent,
+				WorkSpaceId: workSpaceId,
+			},
+			Grouping: "users",
+		},
+		new(summaryReport),
+	)
 }
 
 func Test_GetWeekly_ShouldHandle_200_Ok(t *testing.T) {
