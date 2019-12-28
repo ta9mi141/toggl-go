@@ -1,7 +1,7 @@
 toggl-go
 ====
 
-Go clients for [Toggl API](https://github.com/toggl/toggl_api_docs)
+The unofficial Go client for [Toggl API](https://github.com/toggl/toggl_api_docs)
 
 ## GoDoc
 
