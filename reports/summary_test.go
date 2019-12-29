@@ -32,7 +32,7 @@ type summaryReport struct {
 	} `json:"data"`
 }
 
-func TestGetSummaryShouldEncodeRequestParameters(t *testing.T) {
+func TestGetSummaryEncodeRequestParameters(t *testing.T) {
 	expectedQueryString := url.Values{
 		"user_agent":   []string{userAgent},
 		"workspace_id": []string{workSpaceId},
@@ -54,7 +54,7 @@ func TestGetSummaryShouldEncodeRequestParameters(t *testing.T) {
 	)
 }
 
-func TestGetSummaryShouldHandle_200_Ok(t *testing.T) {
+func TestGetSummaryHandle_200_Ok(t *testing.T) {
 	mockServer, summaryTestData := setupMockServer_200_Ok(t, "testdata/summary.json")
 	defer mockServer.Close()
 
@@ -83,7 +83,7 @@ func TestGetSummaryShouldHandle_200_Ok(t *testing.T) {
 	}
 }
 
-func TestGetSummaryShouldHandle_401_Unauthorized(t *testing.T) {
+func TestGetSummaryHandle_401_Unauthorized(t *testing.T) {
 	mockServer, unauthorizedTestData := setupMockServer_401_Unauthorized(t)
 	defer mockServer.Close()
 
@@ -116,7 +116,7 @@ func TestGetSummaryShouldHandle_401_Unauthorized(t *testing.T) {
 	}
 }
 
-func TestGetSummaryShouldHandle_429_TooManyRequests(t *testing.T) {
+func TestGetSummaryHandle_429_TooManyRequests(t *testing.T) {
 	mockServer, _ := setupMockServer_429_TooManyRequests(t)
 	defer mockServer.Close()
 
@@ -145,7 +145,7 @@ func TestGetSummaryShouldHandle_429_TooManyRequests(t *testing.T) {
 	}
 }
 
-func TestGetSummaryWithoutContextShouldReturnError(t *testing.T) {
+func TestGetSummaryWithoutContextReturnError(t *testing.T) {
 	mockServer, _ := setupMockServer_200_Ok(t, "testdata/summary.json")
 	defer mockServer.Close()
 

@@ -32,7 +32,7 @@ type weeklyReport struct {
 	} `json:"data"`
 }
 
-func TestGetWeeklyShouldEncodeRequestParameters(t *testing.T) {
+func TestGetWeeklyEncodeRequestParameters(t *testing.T) {
 	expectedQueryString := url.Values{
 		"user_agent":   []string{userAgent},
 		"workspace_id": []string{workSpaceId},
@@ -54,7 +54,7 @@ func TestGetWeeklyShouldEncodeRequestParameters(t *testing.T) {
 	)
 }
 
-func TestGetWeeklyShouldHandle_200_Ok(t *testing.T) {
+func TestGetWeeklyHandle_200_Ok(t *testing.T) {
 	mockServer, weeklyTestData := setupMockServer_200_Ok(t, "testdata/weekly.json")
 	defer mockServer.Close()
 
@@ -83,7 +83,7 @@ func TestGetWeeklyShouldHandle_200_Ok(t *testing.T) {
 	}
 }
 
-func TestGetWeeklyShouldHandle_401_Unauthorized(t *testing.T) {
+func TestGetWeeklyHandle_401_Unauthorized(t *testing.T) {
 	mockServer, unauthorizedTestData := setupMockServer_401_Unauthorized(t)
 	defer mockServer.Close()
 
@@ -116,7 +116,7 @@ func TestGetWeeklyShouldHandle_401_Unauthorized(t *testing.T) {
 	}
 }
 
-func TestGetWeeklyShouldHandle_429_TooManyRequests(t *testing.T) {
+func TestGetWeeklyHandle_429_TooManyRequests(t *testing.T) {
 	mockServer, _ := setupMockServer_429_TooManyRequests(t)
 	defer mockServer.Close()
 
@@ -145,7 +145,7 @@ func TestGetWeeklyShouldHandle_429_TooManyRequests(t *testing.T) {
 	}
 }
 
-func TestGetWeeklyWithoutContextShouldReturnError(t *testing.T) {
+func TestGetWeeklyWithoutContextReturnError(t *testing.T) {
 	mockServer, _ := setupMockServer_200_Ok(t, "testdata/weekly.json")
 	defer mockServer.Close()
 
