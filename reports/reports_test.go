@@ -28,7 +28,7 @@ func TestNewClient(t *testing.T) {
 	}
 }
 
-func TestNewClient_WithHTTPClient(t *testing.T) {
+func TestNewClientWithHTTPClient(t *testing.T) {
 	expectedTimeout := "5s"
 	timeout, _ := time.ParseDuration(expectedTimeout)
 	client := reports.NewClient(apiToken, reports.HTTPClient(&http.Client{Timeout: timeout}))
@@ -108,7 +108,7 @@ func setupMockServer_401_Unauthorized(t *testing.T) (*httptest.Server, []byte) {
 // setupMockServer_429_Too_Many_Requests returns mockServer and errorTestdata.
 // Since errorTestdata is same as the response of mockServer,
 // users don't need to send a request to mockServer to get the response.
-func setupMockServer_429_Too_Many_Requests(t *testing.T) (*httptest.Server, []byte) {
+func setupMockServer_429_TooManyRequests(t *testing.T) (*httptest.Server, []byte) {
 	errorTestData, err := ioutil.ReadFile("testdata/429_too_many_requests.html")
 	if err != nil {
 		t.Error(err.Error())
