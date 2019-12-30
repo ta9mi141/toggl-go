@@ -45,7 +45,7 @@ func TestGetDetailedEncodeRequestParameters(t *testing.T) {
 }
 
 func TestGetDetailedHandle_200_Ok(t *testing.T) {
-	mockServer, detailedTestData := setupMockServer_200_Ok(t, "testdata/detailed.json")
+	mockServer, detailedTestData := setupMockServer(t, http.StatusOK, "testdata/detailed.json")
 	defer mockServer.Close()
 
 	actualDetailedReport := new(detailedReport)
@@ -74,7 +74,7 @@ func TestGetDetailedHandle_200_Ok(t *testing.T) {
 }
 
 func TestGetDetailedHandle_401_Unauthorized(t *testing.T) {
-	mockServer, unauthorizedTestData := setupMockServer_401_Unauthorized(t)
+	mockServer, unauthorizedTestData := setupMockServer(t, http.StatusUnauthorized, "testdata/401_unauthorized.json")
 	defer mockServer.Close()
 
 	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
@@ -107,7 +107,7 @@ func TestGetDetailedHandle_401_Unauthorized(t *testing.T) {
 }
 
 func TestGetDetailedHandle_429_TooManyRequests(t *testing.T) {
-	mockServer, _ := setupMockServer_429_TooManyRequests(t)
+	mockServer, _ := setupMockServer(t, http.StatusTooManyRequests, "testdata/429_too_many_requests.html")
 	defer mockServer.Close()
 
 	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
@@ -136,7 +136,7 @@ func TestGetDetailedHandle_429_TooManyRequests(t *testing.T) {
 }
 
 func TestGetDetailedWithoutContextReturnError(t *testing.T) {
-	mockServer, _ := setupMockServer_200_Ok(t, "testdata/detailed.json")
+	mockServer, _ := setupMockServer(t, http.StatusOK, "testdata/detailed.json")
 	defer mockServer.Close()
 
 	client := reports.NewClient(apiToken, baseURL(mockServer.URL))

@@ -71,53 +71,19 @@ func setupMockServer_TestingQueryString(t *testing.T, expectedQueryString url.Va
 	return mockServer
 }
 
-// setupMockServer_200_Ok returns mockServer and testdata.
+// setupMockServer returns mockServer and testdata.
 // Since testdata is same as the response of mockServer,
 // users don't need to send a request to mockServer to get the response.
-func setupMockServer_200_Ok(t *testing.T, testdataFilePath string) (*httptest.Server, []byte) {
+func setupMockServer(t *testing.T, httpStatus int, testdataFilePath string) (*httptest.Server, []byte) {
 	testdata, err := ioutil.ReadFile(testdataFilePath)
 	if err != nil {
 		t.Error(err.Error())
 	}
 
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(httpStatus)
 		fmt.Fprintf(w, string(testdata))
 	}))
 
 	return mockServer, testdata
-}
-
-// setupMockServer_401_Unauthorized returns mockServer and errorTestdata.
-// Since errorTestdata is same as the response of mockServer,
-// users don't need to send a request to mockServer to get the response.
-func setupMockServer_401_Unauthorized(t *testing.T) (*httptest.Server, []byte) {
-	errorTestData, err := ioutil.ReadFile("testdata/401_unauthorized.json")
-	if err != nil {
-		t.Error(err.Error())
-	}
-
-	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusUnauthorized)
-		fmt.Fprintf(w, string(errorTestData))
-	}))
-
-	return mockServer, errorTestData
-}
-
-// setupMockServer_429_Too_Many_Requests returns mockServer and errorTestdata.
-// Since errorTestdata is same as the response of mockServer,
-// users don't need to send a request to mockServer to get the response.
-func setupMockServer_429_TooManyRequests(t *testing.T) (*httptest.Server, []byte) {
-	errorTestData, err := ioutil.ReadFile("testdata/429_too_many_requests.html")
-	if err != nil {
-		t.Error(err.Error())
-	}
-
-	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusTooManyRequests)
-		fmt.Fprintf(w, string(errorTestData))
-	}))
-
-	return mockServer, errorTestData
 }

@@ -55,7 +55,7 @@ func TestGetWeeklyEncodeRequestParameters(t *testing.T) {
 }
 
 func TestGetWeeklyHandle_200_Ok(t *testing.T) {
-	mockServer, weeklyTestData := setupMockServer_200_Ok(t, "testdata/weekly.json")
+	mockServer, weeklyTestData := setupMockServer(t, http.StatusOK, "testdata/weekly.json")
 	defer mockServer.Close()
 
 	actualWeeklyReport := new(weeklyReport)
@@ -84,7 +84,7 @@ func TestGetWeeklyHandle_200_Ok(t *testing.T) {
 }
 
 func TestGetWeeklyHandle_401_Unauthorized(t *testing.T) {
-	mockServer, unauthorizedTestData := setupMockServer_401_Unauthorized(t)
+	mockServer, unauthorizedTestData := setupMockServer(t, http.StatusUnauthorized, "testdata/401_unauthorized.json")
 	defer mockServer.Close()
 
 	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
@@ -117,7 +117,7 @@ func TestGetWeeklyHandle_401_Unauthorized(t *testing.T) {
 }
 
 func TestGetWeeklyHandle_429_TooManyRequests(t *testing.T) {
-	mockServer, _ := setupMockServer_429_TooManyRequests(t)
+	mockServer, _ := setupMockServer(t, http.StatusTooManyRequests, "testdata/429_too_many_requests.html")
 	defer mockServer.Close()
 
 	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
@@ -146,7 +146,7 @@ func TestGetWeeklyHandle_429_TooManyRequests(t *testing.T) {
 }
 
 func TestGetWeeklyWithoutContextReturnError(t *testing.T) {
-	mockServer, _ := setupMockServer_200_Ok(t, "testdata/weekly.json")
+	mockServer, _ := setupMockServer(t, http.StatusOK, "testdata/weekly.json")
 	defer mockServer.Close()
 
 	client := reports.NewClient(apiToken, baseURL(mockServer.URL))

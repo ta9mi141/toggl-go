@@ -55,7 +55,7 @@ func TestGetSummaryEncodeRequestParameters(t *testing.T) {
 }
 
 func TestGetSummaryHandle_200_Ok(t *testing.T) {
-	mockServer, summaryTestData := setupMockServer_200_Ok(t, "testdata/summary.json")
+	mockServer, summaryTestData := setupMockServer(t, http.StatusOK, "testdata/summary.json")
 	defer mockServer.Close()
 
 	actualSummaryReport := new(summaryReport)
@@ -84,7 +84,7 @@ func TestGetSummaryHandle_200_Ok(t *testing.T) {
 }
 
 func TestGetSummaryHandle_401_Unauthorized(t *testing.T) {
-	mockServer, unauthorizedTestData := setupMockServer_401_Unauthorized(t)
+	mockServer, unauthorizedTestData := setupMockServer(t, http.StatusUnauthorized, "testdata/401_unauthorized.json")
 	defer mockServer.Close()
 
 	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
@@ -117,7 +117,7 @@ func TestGetSummaryHandle_401_Unauthorized(t *testing.T) {
 }
 
 func TestGetSummaryHandle_429_TooManyRequests(t *testing.T) {
-	mockServer, _ := setupMockServer_429_TooManyRequests(t)
+	mockServer, _ := setupMockServer(t, http.StatusTooManyRequests, "testdata/429_too_many_requests.html")
 	defer mockServer.Close()
 
 	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
@@ -146,7 +146,7 @@ func TestGetSummaryHandle_429_TooManyRequests(t *testing.T) {
 }
 
 func TestGetSummaryWithoutContextReturnError(t *testing.T) {
-	mockServer, _ := setupMockServer_200_Ok(t, "testdata/summary.json")
+	mockServer, _ := setupMockServer(t, http.StatusOK, "testdata/summary.json")
 	defer mockServer.Close()
 
 	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
