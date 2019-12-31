@@ -61,7 +61,7 @@ func TestGetDetailedHandle_200_Ok(t *testing.T) {
 		actualDetailedReport,
 	)
 	if err != nil {
-		t.Error("GetDetailed returns error though it gets '200 OK'")
+		t.Error("GetDetailed returns an error though it gets '200 OK'")
 	}
 
 	expectedDetailedReport := new(detailedReport)
@@ -89,7 +89,7 @@ func TestGetDetailedHandle_401_Unauthorized(t *testing.T) {
 		new(detailedReport),
 	)
 	if actualError == nil {
-		t.Error("GetDetailed doesn't return error though it gets '401 Unauthorized'")
+		t.Error("GetDetailed doesn't return an error though it gets '401 Unauthorized'")
 	}
 
 	var actualReportsError reports.Error
@@ -122,7 +122,7 @@ func TestGetDetailedHandle_429_TooManyRequests(t *testing.T) {
 		new(detailedReport),
 	)
 	if actualError == nil {
-		t.Error("GetDetailed doesn't return error though it gets '429 Too Many Requests'")
+		t.Error("GetDetailed doesn't return an error though it gets '429 Too Many Requests'")
 	}
 
 	var reportsError reports.Error
@@ -151,6 +151,6 @@ func TestGetDetailedWithoutContextReturnError(t *testing.T) {
 		new(detailedReport),
 	)
 	if err == nil {
-		t.Error("GetDetailed doesn't return error though it gets nil context")
+		t.Error("GetDetailed doesn't return an error though it gets nil context")
 	}
 }

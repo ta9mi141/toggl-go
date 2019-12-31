@@ -71,7 +71,7 @@ func TestGetSummaryHandle_200_Ok(t *testing.T) {
 		actualSummaryReport,
 	)
 	if err != nil {
-		t.Error("GetSummary returns error though it gets '200 OK'")
+		t.Error("GetSummary returns an error though it gets '200 OK'")
 	}
 
 	expectedSummaryReport := new(summaryReport)
@@ -99,7 +99,7 @@ func TestGetSummaryHandle_401_Unauthorized(t *testing.T) {
 		new(summaryReport),
 	)
 	if actualError == nil {
-		t.Error("GetSummary doesn't return error though it gets '401 Unauthorized'")
+		t.Error("GetSummary doesn't return an error though it gets '401 Unauthorized'")
 	}
 
 	var actualReportsError reports.Error
@@ -132,7 +132,7 @@ func TestGetSummaryHandle_429_TooManyRequests(t *testing.T) {
 		new(summaryReport),
 	)
 	if actualError == nil {
-		t.Error("GetSummary doesn't return error though it gets '429 Too Many Requests'")
+		t.Error("GetSummary doesn't return an error though it gets '429 Too Many Requests'")
 	}
 
 	var reportsError reports.Error
@@ -161,6 +161,6 @@ func TestGetSummaryWithoutContextReturnError(t *testing.T) {
 		new(summaryReport),
 	)
 	if err == nil {
-		t.Error("GetSummary doesn't return error though it gets nil context")
+		t.Error("GetSummary doesn't return an error though it gets nil context")
 	}
 }

@@ -71,7 +71,7 @@ func TestGetWeeklyHandle_200_Ok(t *testing.T) {
 		actualWeeklyReport,
 	)
 	if err != nil {
-		t.Error("GetWeekly returns error though it gets '200 OK'")
+		t.Error("GetWeekly returns an error though it gets '200 OK'")
 	}
 
 	expectedWeeklyReport := new(weeklyReport)
@@ -99,7 +99,7 @@ func TestGetWeeklyHandle_401_Unauthorized(t *testing.T) {
 		new(weeklyReport),
 	)
 	if actualError == nil {
-		t.Error("GetWeekly doesn't return error though it gets '401 Unauthorized'")
+		t.Error("GetWeekly doesn't return an error though it gets '401 Unauthorized'")
 	}
 
 	var actualReportsError reports.Error
@@ -132,7 +132,7 @@ func TestGetWeeklyHandle_429_TooManyRequests(t *testing.T) {
 		new(weeklyReport),
 	)
 	if actualError == nil {
-		t.Error("GetWeekly doesn't return error though it gets '429 Too Many Requests'")
+		t.Error("GetWeekly doesn't return an error though it gets '429 Too Many Requests'")
 	}
 
 	var reportsError reports.Error
@@ -161,6 +161,6 @@ func TestGetWeeklyWithoutContextReturnError(t *testing.T) {
 		new(weeklyReport),
 	)
 	if err == nil {
-		t.Error("GetWeekly doesn't return error though it gets nil context")
+		t.Error("GetWeekly doesn't return an error though it gets nil context")
 	}
 }
