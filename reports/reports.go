@@ -127,6 +127,8 @@ type urlEncoder interface {
 }
 
 // Error wraps error interface with status code and tip.
+// Use errors.As method or type assertions with Error's StatusCode
+// and Tip methods to get detailed information about the error.
 type Error interface {
 	error
 	// StatusCode returns HTTP status code of the error
@@ -223,13 +225,13 @@ func checkResponse(resp *http.Response, err error) (*http.Response, error) {
 	case resp.StatusCode == http.StatusTooManyRequests:
 		// Since the response of "429 Too Many Requests" is not in form of JSON,
 		// the error must be handled individually before calling the function "decodeJSON".
-		tooManyRequestsError := ReportsError{}
+		tooManyRequestsError := new(ReportsError)
 		tooManyRequestsError.Err.Code = http.StatusTooManyRequests
 		tooManyRequestsError.Err.Message = tooManyRequestErrorMessage
 		tooManyRequestsError.Err.Tip = tooManyRequestErrorTip
 		return nil, tooManyRequestsError
 	case resp.StatusCode <= 199 || 300 <= resp.StatusCode:
-		var reportsError = new(ReportsError)
+		reportsError := new(ReportsError)
 		if err := decodeJSON(resp, reportsError); err != nil {
 			return nil, err
 		}
