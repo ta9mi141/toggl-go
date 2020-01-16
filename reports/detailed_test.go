@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"net/http/httptest"
 	"net/url"
 	"reflect"
 	"testing"
@@ -29,7 +30,13 @@ func TestGetDetailedEncodeRequestParameters(t *testing.T) {
 		"page":         []string{"10"},
 	}
 
-	mockServer := setupMockServer_TestingQueryString(t, expectedQueryString)
+	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		actualQueryString := r.URL.Query()
+		if !reflect.DeepEqual(actualQueryString, expectedQueryString) {
+			t.Error("Actual query string (" + actualQueryString.Encode() + ") is not as expected.")
+		}
+	}))
+
 	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
 	_ = client.GetDetailed(
 		context.Background(),

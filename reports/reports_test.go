@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
-	"reflect"
 	"testing"
 	"time"
 
@@ -58,17 +57,6 @@ func baseURL(rawurl string) reports.Option {
 		url, _ := url.Parse(rawurl)
 		c.URL = url
 	}
-}
-
-func setupMockServer_TestingQueryString(t *testing.T, expectedQueryString url.Values) *httptest.Server {
-	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		actualQueryString := r.URL.Query()
-		if !reflect.DeepEqual(actualQueryString, expectedQueryString) {
-			t.Error("Actual query string (" + actualQueryString.Encode() + ") is not as expected.")
-		}
-	}))
-
-	return mockServer
 }
 
 // setupMockServer returns mockServer and testdata.
