@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -21,6 +22,109 @@ type detailedReport struct {
 		Project     string `json:"project"`
 		Description string `json:"description"`
 	} `json:"data"`
+}
+
+func TestGetDetailed(t *testing.T) {
+	cases := []struct {
+		name             string
+		httpStatus       int
+		testdataFilePath string
+		in               context.Context
+		out              error
+	}{
+		{
+			name:             "200 OK",
+			httpStatus:       http.StatusOK,
+			testdataFilePath: "testdata/detailed.json",
+			in:               context.Background(),
+			out:              nil,
+		},
+		{
+			name:             "401 Unauthorized",
+			httpStatus:       http.StatusUnauthorized,
+			testdataFilePath: "testdata/401_unauthorized.json",
+			in:               context.Background(),
+			out: &reports.ReportsError{
+				Err: struct {
+					Message string `json:"message"`
+					Tip     string `json:"tip"`
+					Code    int    `json:"code"`
+				}{
+					Message: "api token missing",
+					Tip:     "You can find your API Token in your profile at https://www.toggl.com",
+					Code:    http.StatusUnauthorized,
+				},
+			},
+		},
+		{
+			name:             "429 Too Many Requests",
+			httpStatus:       http.StatusTooManyRequests,
+			testdataFilePath: "testdata/429_too_many_requests.html",
+			in:               context.Background(),
+			out: &reports.ReportsError{
+				Err: struct {
+					Message string `json:"message"`
+					Tip     string `json:"tip"`
+					Code    int    `json:"code"`
+				}{
+					Message: "Too Many Requests",
+					Tip:     "Add delay between requests",
+					Code:    http.StatusTooManyRequests,
+				},
+			},
+		},
+		{
+			name:             "Without context",
+			httpStatus:       http.StatusOK,
+			testdataFilePath: "testdata/detailed.json",
+			in:               nil,
+			out:              fmt.Errorf("The provided ctx must be non-nil"),
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			mockServer, testdata := setupMockServer(t, c.httpStatus, c.testdataFilePath)
+			defer mockServer.Close()
+
+			actualDetailedReport := new(detailedReport)
+			client := reports.NewClient(apiToken, baseURL(mockServer.URL))
+			err := client.GetDetailed(
+				c.in,
+				&reports.DetailedRequestParameters{
+					StandardRequestParameters: &reports.StandardRequestParameters{
+						UserAgent:   userAgent,
+						WorkSpaceId: workSpaceId,
+					},
+				},
+				actualDetailedReport,
+			)
+
+			if err == nil {
+				expectedDetailedReport := new(detailedReport)
+				if err := json.Unmarshal(testdata, expectedDetailedReport); err != nil {
+					t.Error(err.Error())
+				}
+				if !reflect.DeepEqual(actualDetailedReport, expectedDetailedReport) {
+					t.Errorf("\ngot: %+v\nwant: %+v\n", actualDetailedReport, expectedDetailedReport)
+				}
+			} else {
+				if !reflect.DeepEqual(actualDetailedReport, &detailedReport{}) {
+					t.Errorf("\ngot: %+v\nwant: %+v\n", actualDetailedReport, &detailedReport{})
+				}
+			}
+
+			var reportsError reports.Error
+			if errors.As(err, &reportsError) {
+				if !reflect.DeepEqual(reportsError, c.out) {
+					t.Errorf("\ngot: %#+v\nwant: %#+v\n", reportsError, c.out)
+				}
+			} else {
+				if !reflect.DeepEqual(err, c.out) {
+					t.Errorf("\ngot: %#+v\nwant: %#+v\n", err, c.out)
+				}
+			}
+		})
+	}
 }
 
 func TestGetDetailedEncodeRequestParameters(t *testing.T) {
@@ -49,115 +153,4 @@ func TestGetDetailedEncodeRequestParameters(t *testing.T) {
 		},
 		new(detailedReport),
 	)
-}
-
-func TestGetDetailedHandle_200_Ok(t *testing.T) {
-	mockServer, detailedTestData := setupMockServer(t, http.StatusOK, "testdata/detailed.json")
-	defer mockServer.Close()
-
-	actualDetailedReport := new(detailedReport)
-	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
-	err := client.GetDetailed(
-		context.Background(),
-		&reports.DetailedRequestParameters{
-			StandardRequestParameters: &reports.StandardRequestParameters{
-				UserAgent:   userAgent,
-				WorkSpaceId: workSpaceId,
-			},
-		},
-		actualDetailedReport,
-	)
-	if err != nil {
-		t.Error("GetDetailed returns an error though it gets '200 OK'")
-	}
-
-	expectedDetailedReport := new(detailedReport)
-	if err := json.Unmarshal(detailedTestData, expectedDetailedReport); err != nil {
-		t.Error(err.Error())
-	}
-	if !reflect.DeepEqual(actualDetailedReport, expectedDetailedReport) {
-		t.Error("GetDetailed fails to decode detailedReport")
-	}
-}
-
-func TestGetDetailedHandle_401_Unauthorized(t *testing.T) {
-	mockServer, unauthorizedTestData := setupMockServer(t, http.StatusUnauthorized, "testdata/401_unauthorized.json")
-	defer mockServer.Close()
-
-	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
-	actualError := client.GetDetailed(
-		context.Background(),
-		&reports.DetailedRequestParameters{
-			StandardRequestParameters: &reports.StandardRequestParameters{
-				UserAgent:   userAgent,
-				WorkSpaceId: workSpaceId,
-			},
-		},
-		new(detailedReport),
-	)
-	if actualError == nil {
-		t.Error("GetDetailed doesn't return an error though it gets '401 Unauthorized'")
-	}
-
-	var actualReportsError reports.Error
-	if errors.As(actualError, &actualReportsError) {
-		expectedReportsError := new(reports.ReportsError)
-		if err := json.Unmarshal(unauthorizedTestData, expectedReportsError); err != nil {
-			t.Error(err.Error())
-		}
-		if !reflect.DeepEqual(actualReportsError, expectedReportsError) {
-			t.Error("GetDetailed fails to decode ReportsError though it returns reports.Error as expected")
-		}
-	} else {
-		t.Error(actualError.Error())
-	}
-}
-
-func TestGetDetailedHandle_429_TooManyRequests(t *testing.T) {
-	mockServer, _ := setupMockServer(t, http.StatusTooManyRequests, "testdata/429_too_many_requests.html")
-	defer mockServer.Close()
-
-	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
-	actualError := client.GetDetailed(
-		context.Background(),
-		&reports.DetailedRequestParameters{
-			StandardRequestParameters: &reports.StandardRequestParameters{
-				UserAgent:   userAgent,
-				WorkSpaceId: workSpaceId,
-			},
-		},
-		new(detailedReport),
-	)
-	if actualError == nil {
-		t.Error("GetDetailed doesn't return an error though it gets '429 Too Many Requests'")
-	}
-
-	var reportsError reports.Error
-	if errors.As(actualError, &reportsError) {
-		if reportsError.StatusCode() != http.StatusTooManyRequests {
-			t.Error("GetDetailed fails to return '429 Too Many Requests' though it returns reports.Error as expected")
-		}
-	} else {
-		t.Error(actualError.Error())
-	}
-}
-
-func TestGetDetailedWithoutContextReturnError(t *testing.T) {
-	mockServer, _ := setupMockServer(t, http.StatusOK, "testdata/detailed.json")
-	defer mockServer.Close()
-
-	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
-	err := client.GetDetailed(
-		nil,
-		&reports.DetailedRequestParameters{
-			StandardRequestParameters: &reports.StandardRequestParameters{
-				UserAgent:   userAgent,
-				WorkSpaceId: workSpaceId,
-			},
-		},
-		new(detailedReport),
-	)
-	if err == nil {
-		t.Error("GetDetailed doesn't return an error though it gets nil context")
-	}
 }

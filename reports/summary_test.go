@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -33,6 +34,109 @@ type summaryReport struct {
 	} `json:"data"`
 }
 
+func TestGetSummary(t *testing.T) {
+	cases := []struct {
+		name             string
+		httpStatus       int
+		testdataFilePath string
+		in               context.Context
+		out              error
+	}{
+		{
+			name:             "200 OK",
+			httpStatus:       http.StatusOK,
+			testdataFilePath: "testdata/summary.json",
+			in:               context.Background(),
+			out:              nil,
+		},
+		{
+			name:             "401 Unauthorized",
+			httpStatus:       http.StatusUnauthorized,
+			testdataFilePath: "testdata/401_unauthorized.json",
+			in:               context.Background(),
+			out: &reports.ReportsError{
+				Err: struct {
+					Message string `json:"message"`
+					Tip     string `json:"tip"`
+					Code    int    `json:"code"`
+				}{
+					Message: "api token missing",
+					Tip:     "You can find your API Token in your profile at https://www.toggl.com",
+					Code:    http.StatusUnauthorized,
+				},
+			},
+		},
+		{
+			name:             "429 Too Many Requests",
+			httpStatus:       http.StatusTooManyRequests,
+			testdataFilePath: "testdata/429_too_many_requests.html",
+			in:               context.Background(),
+			out: &reports.ReportsError{
+				Err: struct {
+					Message string `json:"message"`
+					Tip     string `json:"tip"`
+					Code    int    `json:"code"`
+				}{
+					Message: "Too Many Requests",
+					Tip:     "Add delay between requests",
+					Code:    http.StatusTooManyRequests,
+				},
+			},
+		},
+		{
+			name:             "Without context",
+			httpStatus:       http.StatusOK,
+			testdataFilePath: "testdata/summary.json",
+			in:               nil,
+			out:              fmt.Errorf("The provided ctx must be non-nil"),
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			mockServer, testdata := setupMockServer(t, c.httpStatus, c.testdataFilePath)
+			defer mockServer.Close()
+
+			actualSummaryReport := new(summaryReport)
+			client := reports.NewClient(apiToken, baseURL(mockServer.URL))
+			err := client.GetSummary(
+				c.in,
+				&reports.SummaryRequestParameters{
+					StandardRequestParameters: &reports.StandardRequestParameters{
+						UserAgent:   userAgent,
+						WorkSpaceId: workSpaceId,
+					},
+				},
+				actualSummaryReport,
+			)
+
+			if err == nil {
+				expectedSummaryReport := new(summaryReport)
+				if err := json.Unmarshal(testdata, expectedSummaryReport); err != nil {
+					t.Error(err.Error())
+				}
+				if !reflect.DeepEqual(actualSummaryReport, expectedSummaryReport) {
+					t.Errorf("\ngot: %+v\nwant: %+v\n", actualSummaryReport, expectedSummaryReport)
+				}
+			} else {
+				if !reflect.DeepEqual(actualSummaryReport, &summaryReport{}) {
+					t.Errorf("\ngot: %+v\nwant: %+v\n", actualSummaryReport, &summaryReport{})
+				}
+			}
+
+			var reportsError reports.Error
+			if errors.As(err, &reportsError) {
+				if !reflect.DeepEqual(reportsError, c.out) {
+					t.Errorf("\ngot: %#+v\nwant: %#+v\n", reportsError, c.out)
+				}
+			} else {
+				if !reflect.DeepEqual(err, c.out) {
+					t.Errorf("\ngot: %#+v\nwant: %#+v\n", err, c.out)
+				}
+			}
+		})
+	}
+}
+
 func TestGetSummaryEncodeRequestParameters(t *testing.T) {
 	expectedQueryString := url.Values{
 		"user_agent":   []string{userAgent},
@@ -59,115 +163,4 @@ func TestGetSummaryEncodeRequestParameters(t *testing.T) {
 		},
 		new(summaryReport),
 	)
-}
-
-func TestGetSummaryHandle_200_Ok(t *testing.T) {
-	mockServer, summaryTestData := setupMockServer(t, http.StatusOK, "testdata/summary.json")
-	defer mockServer.Close()
-
-	actualSummaryReport := new(summaryReport)
-	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
-	err := client.GetSummary(
-		context.Background(),
-		&reports.SummaryRequestParameters{
-			StandardRequestParameters: &reports.StandardRequestParameters{
-				UserAgent:   userAgent,
-				WorkSpaceId: workSpaceId,
-			},
-		},
-		actualSummaryReport,
-	)
-	if err != nil {
-		t.Error("GetSummary returns an error though it gets '200 OK'")
-	}
-
-	expectedSummaryReport := new(summaryReport)
-	if err := json.Unmarshal(summaryTestData, expectedSummaryReport); err != nil {
-		t.Error(err.Error())
-	}
-	if !reflect.DeepEqual(actualSummaryReport, expectedSummaryReport) {
-		t.Error("GetSummary fails to decode summaryReport")
-	}
-}
-
-func TestGetSummaryHandle_401_Unauthorized(t *testing.T) {
-	mockServer, unauthorizedTestData := setupMockServer(t, http.StatusUnauthorized, "testdata/401_unauthorized.json")
-	defer mockServer.Close()
-
-	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
-	actualError := client.GetSummary(
-		context.Background(),
-		&reports.SummaryRequestParameters{
-			StandardRequestParameters: &reports.StandardRequestParameters{
-				UserAgent:   userAgent,
-				WorkSpaceId: workSpaceId,
-			},
-		},
-		new(summaryReport),
-	)
-	if actualError == nil {
-		t.Error("GetSummary doesn't return an error though it gets '401 Unauthorized'")
-	}
-
-	var actualReportsError reports.Error
-	if errors.As(actualError, &actualReportsError) {
-		expectedReportsError := new(reports.ReportsError)
-		if err := json.Unmarshal(unauthorizedTestData, expectedReportsError); err != nil {
-			t.Error(err.Error())
-		}
-		if !reflect.DeepEqual(actualReportsError, expectedReportsError) {
-			t.Error("GetSummary fails to decode ReportsError though it returns reports.Error as expected")
-		}
-	} else {
-		t.Error(actualError.Error())
-	}
-}
-
-func TestGetSummaryHandle_429_TooManyRequests(t *testing.T) {
-	mockServer, _ := setupMockServer(t, http.StatusTooManyRequests, "testdata/429_too_many_requests.html")
-	defer mockServer.Close()
-
-	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
-	actualError := client.GetSummary(
-		context.Background(),
-		&reports.SummaryRequestParameters{
-			StandardRequestParameters: &reports.StandardRequestParameters{
-				UserAgent:   userAgent,
-				WorkSpaceId: workSpaceId,
-			},
-		},
-		new(summaryReport),
-	)
-	if actualError == nil {
-		t.Error("GetSummary doesn't return an error though it gets '429 Too Many Requests'")
-	}
-
-	var reportsError reports.Error
-	if errors.As(actualError, &reportsError) {
-		if reportsError.StatusCode() != http.StatusTooManyRequests {
-			t.Error("GetSummary fails to return '429 Too Many Requests' though it returns reports.Error as expected")
-		}
-	} else {
-		t.Error(actualError.Error())
-	}
-}
-
-func TestGetSummaryWithoutContextReturnError(t *testing.T) {
-	mockServer, _ := setupMockServer(t, http.StatusOK, "testdata/summary.json")
-	defer mockServer.Close()
-
-	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
-	err := client.GetSummary(
-		nil,
-		&reports.SummaryRequestParameters{
-			StandardRequestParameters: &reports.StandardRequestParameters{
-				UserAgent:   userAgent,
-				WorkSpaceId: workSpaceId,
-			},
-		},
-		new(summaryReport),
-	)
-	if err == nil {
-		t.Error("GetSummary doesn't return an error though it gets nil context")
-	}
 }

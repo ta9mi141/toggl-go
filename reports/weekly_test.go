@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -33,6 +34,109 @@ type weeklyReport struct {
 	} `json:"data"`
 }
 
+func TestGetWeekly(t *testing.T) {
+	cases := []struct {
+		name             string
+		httpStatus       int
+		testdataFilePath string
+		in               context.Context
+		out              error
+	}{
+		{
+			name:             "200 OK",
+			httpStatus:       http.StatusOK,
+			testdataFilePath: "testdata/weekly.json",
+			in:               context.Background(),
+			out:              nil,
+		},
+		{
+			name:             "401 Unauthorized",
+			httpStatus:       http.StatusUnauthorized,
+			testdataFilePath: "testdata/401_unauthorized.json",
+			in:               context.Background(),
+			out: &reports.ReportsError{
+				Err: struct {
+					Message string `json:"message"`
+					Tip     string `json:"tip"`
+					Code    int    `json:"code"`
+				}{
+					Message: "api token missing",
+					Tip:     "You can find your API Token in your profile at https://www.toggl.com",
+					Code:    http.StatusUnauthorized,
+				},
+			},
+		},
+		{
+			name:             "429 Too Many Requests",
+			httpStatus:       http.StatusTooManyRequests,
+			testdataFilePath: "testdata/429_too_many_requests.html",
+			in:               context.Background(),
+			out: &reports.ReportsError{
+				Err: struct {
+					Message string `json:"message"`
+					Tip     string `json:"tip"`
+					Code    int    `json:"code"`
+				}{
+					Message: "Too Many Requests",
+					Tip:     "Add delay between requests",
+					Code:    http.StatusTooManyRequests,
+				},
+			},
+		},
+		{
+			name:             "Without context",
+			httpStatus:       http.StatusOK,
+			testdataFilePath: "testdata/weekly.json",
+			in:               nil,
+			out:              fmt.Errorf("The provided ctx must be non-nil"),
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			mockServer, testdata := setupMockServer(t, c.httpStatus, c.testdataFilePath)
+			defer mockServer.Close()
+
+			actualWeeklyReport := new(weeklyReport)
+			client := reports.NewClient(apiToken, baseURL(mockServer.URL))
+			err := client.GetWeekly(
+				c.in,
+				&reports.WeeklyRequestParameters{
+					StandardRequestParameters: &reports.StandardRequestParameters{
+						UserAgent:   userAgent,
+						WorkSpaceId: workSpaceId,
+					},
+				},
+				actualWeeklyReport,
+			)
+
+			if err == nil {
+				expectedWeeklyReport := new(weeklyReport)
+				if err := json.Unmarshal(testdata, expectedWeeklyReport); err != nil {
+					t.Error(err.Error())
+				}
+				if !reflect.DeepEqual(actualWeeklyReport, expectedWeeklyReport) {
+					t.Errorf("\ngot: %+v\nwant: %+v\n", actualWeeklyReport, expectedWeeklyReport)
+				}
+			} else {
+				if !reflect.DeepEqual(actualWeeklyReport, &weeklyReport{}) {
+					t.Errorf("\ngot: %+v\nwant: %+v\n", actualWeeklyReport, &weeklyReport{})
+				}
+			}
+
+			var reportsError reports.Error
+			if errors.As(err, &reportsError) {
+				if !reflect.DeepEqual(reportsError, c.out) {
+					t.Errorf("\ngot: %#+v\nwant: %#+v\n", reportsError, c.out)
+				}
+			} else {
+				if !reflect.DeepEqual(err, c.out) {
+					t.Errorf("\ngot: %#+v\nwant: %#+v\n", err, c.out)
+				}
+			}
+		})
+	}
+}
+
 func TestGetWeeklyEncodeRequestParameters(t *testing.T) {
 	expectedQueryString := url.Values{
 		"user_agent":   []string{userAgent},
@@ -59,115 +163,4 @@ func TestGetWeeklyEncodeRequestParameters(t *testing.T) {
 		},
 		new(summaryReport),
 	)
-}
-
-func TestGetWeeklyHandle_200_Ok(t *testing.T) {
-	mockServer, weeklyTestData := setupMockServer(t, http.StatusOK, "testdata/weekly.json")
-	defer mockServer.Close()
-
-	actualWeeklyReport := new(weeklyReport)
-	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
-	err := client.GetWeekly(
-		context.Background(),
-		&reports.WeeklyRequestParameters{
-			StandardRequestParameters: &reports.StandardRequestParameters{
-				UserAgent:   userAgent,
-				WorkSpaceId: workSpaceId,
-			},
-		},
-		actualWeeklyReport,
-	)
-	if err != nil {
-		t.Error("GetWeekly returns an error though it gets '200 OK'")
-	}
-
-	expectedWeeklyReport := new(weeklyReport)
-	if err := json.Unmarshal(weeklyTestData, expectedWeeklyReport); err != nil {
-		t.Error(err.Error())
-	}
-	if !reflect.DeepEqual(actualWeeklyReport, expectedWeeklyReport) {
-		t.Error("GetWeekly fails to decode weeklyReport")
-	}
-}
-
-func TestGetWeeklyHandle_401_Unauthorized(t *testing.T) {
-	mockServer, unauthorizedTestData := setupMockServer(t, http.StatusUnauthorized, "testdata/401_unauthorized.json")
-	defer mockServer.Close()
-
-	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
-	actualError := client.GetWeekly(
-		context.Background(),
-		&reports.WeeklyRequestParameters{
-			StandardRequestParameters: &reports.StandardRequestParameters{
-				UserAgent:   userAgent,
-				WorkSpaceId: workSpaceId,
-			},
-		},
-		new(weeklyReport),
-	)
-	if actualError == nil {
-		t.Error("GetWeekly doesn't return an error though it gets '401 Unauthorized'")
-	}
-
-	var actualReportsError reports.Error
-	if errors.As(actualError, &actualReportsError) {
-		expectedReportsError := new(reports.ReportsError)
-		if err := json.Unmarshal(unauthorizedTestData, expectedReportsError); err != nil {
-			t.Error(err.Error())
-		}
-		if !reflect.DeepEqual(actualReportsError, expectedReportsError) {
-			t.Error("GetWeekly fails to decode ReportsError though it returns reports.Error as expected")
-		}
-	} else {
-		t.Error(actualError.Error())
-	}
-}
-
-func TestGetWeeklyHandle_429_TooManyRequests(t *testing.T) {
-	mockServer, _ := setupMockServer(t, http.StatusTooManyRequests, "testdata/429_too_many_requests.html")
-	defer mockServer.Close()
-
-	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
-	actualError := client.GetWeekly(
-		context.Background(),
-		&reports.WeeklyRequestParameters{
-			StandardRequestParameters: &reports.StandardRequestParameters{
-				UserAgent:   userAgent,
-				WorkSpaceId: workSpaceId,
-			},
-		},
-		new(weeklyReport),
-	)
-	if actualError == nil {
-		t.Error("GetWeekly doesn't return an error though it gets '429 Too Many Requests'")
-	}
-
-	var reportsError reports.Error
-	if errors.As(actualError, &reportsError) {
-		if reportsError.StatusCode() != http.StatusTooManyRequests {
-			t.Error("GetWeekly fails to return '429 Too Many Requests' though it returns reports.Error as expected")
-		}
-	} else {
-		t.Error(actualError.Error())
-	}
-}
-
-func TestGetWeeklyWithoutContextReturnError(t *testing.T) {
-	mockServer, _ := setupMockServer(t, http.StatusOK, "testdata/weekly.json")
-	defer mockServer.Close()
-
-	client := reports.NewClient(apiToken, baseURL(mockServer.URL))
-	err := client.GetWeekly(
-		nil,
-		&reports.WeeklyRequestParameters{
-			StandardRequestParameters: &reports.StandardRequestParameters{
-				UserAgent:   userAgent,
-				WorkSpaceId: workSpaceId,
-			},
-		},
-		new(weeklyReport),
-	)
-	if err == nil {
-		t.Error("GetWeekly doesn't return an error though it gets nil context")
-	}
 }
