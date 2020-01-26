@@ -2,7 +2,10 @@ package toggl_test
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
+	"net/http/httptest"
+	"net/url"
 	"testing"
 	"time"
 
@@ -63,4 +66,27 @@ func ExampleNewClient_Email_and_Password() {
 	)
 	fmt.Println(client.Email, client.Password)
 	// Output: YOUR_EMAIL YOUR_PASSWORD
+}
+
+// setupMockServer returns mockServer.
+func setupMockServer(t *testing.T, httpStatus int, testdataFilePath string) *httptest.Server {
+	testdata, err := ioutil.ReadFile(testdataFilePath)
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(httpStatus)
+		fmt.Fprintf(w, string(testdata))
+	}))
+
+	return mockServer
+}
+
+// baseURL makes client testable by configurable URL.
+func baseURL(rawurl string) toggl.Option {
+	return func(c *toggl.Client) {
+		url, _ := url.Parse(rawurl)
+		c.URL = url
+	}
 }
