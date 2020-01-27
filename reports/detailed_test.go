@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -78,7 +77,7 @@ func TestGetDetailed(t *testing.T) {
 			httpStatus:       http.StatusOK,
 			testdataFilePath: "testdata/detailed.json",
 			in:               nil,
-			out:              fmt.Errorf("The provided ctx must be non-nil"),
+			out:              reports.ErrContextNotFound,
 		},
 	}
 	for _, c := range cases {
@@ -105,22 +104,22 @@ func TestGetDetailed(t *testing.T) {
 					t.Error(err.Error())
 				}
 				if !reflect.DeepEqual(actualDetailedReport, expectedDetailedReport) {
-					t.Errorf("\ngot: %+v\nwant: %+v\n", actualDetailedReport, expectedDetailedReport)
+					t.Errorf("\ngot : %+v\nwant: %+v\n", actualDetailedReport, expectedDetailedReport)
 				}
 			} else {
 				if !reflect.DeepEqual(actualDetailedReport, &detailedReport{}) {
-					t.Errorf("\ngot: %+v\nwant: %+v\n", actualDetailedReport, &detailedReport{})
+					t.Errorf("\ngot : %+v\nwant: %+v\n", actualDetailedReport, &detailedReport{})
 				}
 			}
 
 			var reportsError reports.Error
 			if errors.As(err, &reportsError) {
 				if !reflect.DeepEqual(reportsError, c.out) {
-					t.Errorf("\ngot: %#+v\nwant: %#+v\n", reportsError, c.out)
+					t.Errorf("\ngot : %#+v\nwant: %#+v\n", reportsError, c.out)
 				}
 			} else {
-				if !reflect.DeepEqual(err, c.out) {
-					t.Errorf("\ngot: %#+v\nwant: %#+v\n", err, c.out)
+				if !errors.Is(err, c.out) {
+					t.Errorf("\ngot : %#+v\nwant: %#+v\n", err, c.out)
 				}
 			}
 		})

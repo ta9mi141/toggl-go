@@ -13,7 +13,7 @@ package reports
 import (
 	"context"
 	"encoding/json"
-	"fmt"
+	"errors"
 	"net/http"
 	"net/url"
 	"time"
@@ -163,6 +163,11 @@ const (
 	tooManyRequestErrorTip     string = "Add delay between requests"
 )
 
+var (
+	// ErrContextNotFound is returned when the provided context is nil.
+	ErrContextNotFound = errors.New("The provided ctx must be non-nil")
+)
+
 // Option represents optional parameters of NewClient.
 type Option func(c *Client)
 
@@ -203,7 +208,7 @@ func (c *Client) get(ctx context.Context, url string, report interface{}) error 
 	req.SetBasicAuth(c.APIToken, basicAuthPassword)
 
 	if ctx == nil {
-		return fmt.Errorf("The provided ctx must be non-nil")
+		return ErrContextNotFound
 	}
 	req = req.WithContext(ctx)
 
