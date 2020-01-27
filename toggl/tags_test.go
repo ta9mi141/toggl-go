@@ -3,7 +3,7 @@ package toggl_test
 import (
 	"context"
 	"encoding/json"
-	"fmt"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -126,7 +126,7 @@ func TestCreateTag(t *testing.T) {
 				err error
 			}{
 				tag: nil,
-				err: fmt.Errorf("The provided ctx must be non-nil"),
+				err: toggl.ErrContextNotFound,
 			},
 		},
 		{
@@ -145,7 +145,7 @@ func TestCreateTag(t *testing.T) {
 				err error
 			}{
 				tag: nil,
-				err: fmt.Errorf("The provided tag must be non-nil"),
+				err: toggl.ErrTagNotFound,
 			},
 		},
 	}
@@ -159,8 +159,8 @@ func TestCreateTag(t *testing.T) {
 			if actualTag != c.out.tag {
 				t.Errorf("\ngot: %+v\nwant: %+v\n", actualTag, c.out.tag)
 			}
-			if err != c.out.err {
-				t.Errorf("\ngot: %+v\nwant: %+v\n", err, c.out.err)
+			if !errors.Is(err, c.out.err) {
+				t.Errorf("\ngot : %+v\nwant: %+v\n", err, c.out.err)
 			}
 		})
 	}
@@ -302,7 +302,7 @@ func TestUpdateTag(t *testing.T) {
 				err error
 			}{
 				tag: nil,
-				err: fmt.Errorf("The provided ctx must be non-nil"),
+				err: toggl.ErrContextNotFound,
 			},
 		},
 		{
@@ -321,7 +321,7 @@ func TestUpdateTag(t *testing.T) {
 				err error
 			}{
 				tag: nil,
-				err: fmt.Errorf("The provided tag must be non-nil"),
+				err: toggl.ErrTagNotFound,
 			},
 		},
 	}
@@ -335,8 +335,8 @@ func TestUpdateTag(t *testing.T) {
 			if actualTag != c.out.tag {
 				t.Errorf("\ngot: %+v\nwant: %+v\n", actualTag, c.out.tag)
 			}
-			if err != c.out.err {
-				t.Errorf("\ngot: %+v\nwant: %+v\n", err, c.out.err)
+			if !errors.Is(err, c.out.err) {
+				t.Errorf("\ngot : %+v\nwant: %+v\n", err, c.out.err)
 			}
 		})
 	}
@@ -435,7 +435,7 @@ func TestDeleteTag(t *testing.T) {
 					Id: 1234567,
 				},
 			},
-			out: fmt.Errorf("The provided ctx must be non-nil"),
+			out: toggl.ErrContextNotFound,
 		},
 		{
 			name:             "Without tag",
@@ -448,7 +448,7 @@ func TestDeleteTag(t *testing.T) {
 				ctx: context.Background(),
 				tag: nil,
 			},
-			out: fmt.Errorf("The provided tag must be non-nil"),
+			out: toggl.ErrTagNotFound,
 		},
 	}
 	for _, c := range cases {
@@ -458,8 +458,8 @@ func TestDeleteTag(t *testing.T) {
 
 			client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 			err := client.DeleteTag(c.in.ctx, c.in.tag)
-			if err != c.out {
-				t.Errorf("\ngot: %+v\nwant: %+v", err, c.out)
+			if !errors.Is(err, c.out) {
+				t.Errorf("\ngot : %+v\nwant: %+v", err, c.out)
 			}
 		})
 	}

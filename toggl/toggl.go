@@ -9,6 +9,7 @@ package toggl
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/url"
 )
@@ -16,6 +17,34 @@ import (
 const (
 	basicAuthPassword string = "api_token" // Defined in Toggl API v8
 	defaultBaseURL    string = "https://toggl.com"
+)
+
+// Error wraps error interface with status code.
+// Use errors.As method or type assertions with Error's StatusCode method
+// to get detailed information about the error.
+type Error interface {
+	error
+	// StatusCode returns HTTP status code of the error
+	StatusCode() int
+}
+
+// TogglError represents a response of unsuccessful request.
+type TogglError struct {
+	Message string
+	Code    int
+}
+
+func (e TogglError) Error() string {
+	return e.Message
+}
+
+func (e TogglError) StatusCode() int {
+	return e.Code
+}
+
+var (
+	// ErrContextNotFound is returned when the provided context is nil.
+	ErrContextNotFound = errors.New("The provided ctx must be non-nil")
 )
 
 // Client implements the basic request and response handling used by all types of APIs.
@@ -107,27 +136,4 @@ func decodeJSON(resp *http.Response, out interface{}) error {
 	defer resp.Body.Close()
 	decoder := json.NewDecoder(resp.Body)
 	return decoder.Decode(out)
-}
-
-// Error wraps error interface with status code.
-// Use errors.As method or type assertions with Error's StatusCode method
-// to get detailed information about the error.
-type Error interface {
-	error
-	// StatusCode returns HTTP status code of the error
-	StatusCode() int
-}
-
-// TogglError represents a response of unsuccessful request.
-type TogglError struct {
-	Message string
-	Code    int
-}
-
-func (e TogglError) Error() string {
-	return e.Message
-}
-
-func (e TogglError) StatusCode() int {
-	return e.Code
 }
