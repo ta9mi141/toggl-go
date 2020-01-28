@@ -201,16 +201,15 @@ func (c *Client) buildURL(endpoint string, params urlEncoder) string {
 }
 
 func (c *Client) get(ctx context.Context, url string, report interface{}) error {
-	req, err := http.NewRequest("GET", url, nil)
+	if ctx == nil {
+		return ErrContextNotFound
+	}
+
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return err
 	}
 	req.SetBasicAuth(c.APIToken, basicAuthPassword)
-
-	if ctx == nil {
-		return ErrContextNotFound
-	}
-	req = req.WithContext(ctx)
 
 	resp, err := checkResponse(c.HTTPClient.Do(req))
 	if err != nil {
