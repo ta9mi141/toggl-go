@@ -10,6 +10,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 )
@@ -125,11 +126,46 @@ func (c *Client) httpPut(ctx context.Context, url string, req, resp interface{})
 }
 
 func (c *Client) httpDelete(ctx context.Context, url string) error {
+	if ctx == nil {
+		return ErrContextNotFound
+	}
+
+	req, err := http.NewRequestWithContext(ctx, "DELETE", url, nil)
+	if err != nil {
+		return err
+	}
+	c.setBasicAuth(req)
+
+	_, err = checkResponse(c.HTTPClient.Do(req))
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
+func (c *Client) setBasicAuth(req *http.Request) {
+	if c.APIToken == "" {
+		req.SetBasicAuth(c.Email, c.Password)
+	} else {
+		req.SetBasicAuth(c.APIToken, basicAuthPassword)
+	}
+}
+
 func checkResponse(resp *http.Response, err error) (*http.Response, error) {
-	return nil, nil
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode <= 199 || 300 <= resp.StatusCode {
+		message, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return nil, err
+		}
+		return nil, &TogglError{
+			Message: string(message),
+			Code:    resp.StatusCode,
+		}
+	}
+	return resp, nil
 }
 
 func decodeJSON(resp *http.Response, out interface{}) error {

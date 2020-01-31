@@ -157,10 +157,18 @@ func TestCreateTag(t *testing.T) {
 			client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 			actualTag, err := client.CreateTag(c.in.ctx, c.in.tag)
 			if actualTag != c.out.tag {
-				t.Errorf("\ngot: %+v\nwant: %+v\n", actualTag, c.out.tag)
+				t.Errorf("\ngot: %+#v\nwant: %+#v\n", actualTag, c.out.tag)
 			}
-			if !errors.Is(err, c.out.err) {
-				t.Errorf("\ngot : %+v\nwant: %+v\n", err, c.out.err)
+
+			var togglError toggl.Error
+			if errors.As(err, &togglError) {
+				if !reflect.DeepEqual(togglError, c.out.err) {
+					t.Errorf("\ngot : %#+v\nwant: %#+v\n", togglError, c.out.err)
+				}
+			} else {
+				if !errors.Is(err, c.out.err) {
+					t.Errorf("\ngot : %#+v\nwant: %#+v\n", err, c.out.err)
+				}
 			}
 		})
 	}
@@ -181,7 +189,7 @@ func TestCreateTagConvertParamsToRequestBody(t *testing.T) {
 			t.Error(err.Error())
 		}
 		if !reflect.DeepEqual(actualTagRequest, expectedTagRequest) {
-			t.Errorf("\ngot: %+v\nwant: %+v\n", actualTagRequest, expectedTagRequest)
+			t.Errorf("\ngot: %+#v\nwant: %+#v\n", actualTagRequest, expectedTagRequest)
 		}
 	}))
 
@@ -277,7 +285,7 @@ func TestUpdateTag(t *testing.T) {
 			}{
 				tag: nil,
 				err: &toggl.TogglError{
-					Message: "",
+					Message: "null",
 					Code:    404,
 				},
 			},
@@ -333,10 +341,18 @@ func TestUpdateTag(t *testing.T) {
 			client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 			actualTag, err := client.UpdateTag(c.in.ctx, c.in.tag)
 			if actualTag != c.out.tag {
-				t.Errorf("\ngot: %+v\nwant: %+v\n", actualTag, c.out.tag)
+				t.Errorf("\ngot: %+#v\nwant: %+#v\n", actualTag, c.out.tag)
 			}
-			if !errors.Is(err, c.out.err) {
-				t.Errorf("\ngot : %+v\nwant: %+v\n", err, c.out.err)
+
+			var togglError toggl.Error
+			if errors.As(err, &togglError) {
+				if !reflect.DeepEqual(togglError, c.out.err) {
+					t.Errorf("\ngot : %#+v\nwant: %#+v\n", togglError, c.out.err)
+				}
+			} else {
+				if !errors.Is(err, c.out.err) {
+					t.Errorf("\ngot : %#+v\nwant: %#+v\n", err, c.out.err)
+				}
 			}
 		})
 	}
@@ -348,7 +364,7 @@ func TestUpdateTagUseURLIncludingTagId(t *testing.T) {
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
-			t.Errorf("\ngot: %+v\nwant: %+v\n", actualRequestURI, expectedRequestURI)
+			t.Errorf("\ngot: %+#v\nwant: %+#v\n", actualRequestURI, expectedRequestURI)
 		}
 	}))
 
@@ -418,7 +434,7 @@ func TestDeleteTag(t *testing.T) {
 				},
 			},
 			out: &toggl.TogglError{
-				Message: "",
+				Message: "null",
 				Code:    404,
 			},
 		},
@@ -458,8 +474,16 @@ func TestDeleteTag(t *testing.T) {
 
 			client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 			err := client.DeleteTag(c.in.ctx, c.in.tag)
-			if !errors.Is(err, c.out) {
-				t.Errorf("\ngot : %+v\nwant: %+v", err, c.out)
+
+			var togglError toggl.Error
+			if errors.As(err, &togglError) {
+				if !reflect.DeepEqual(togglError, c.out) {
+					t.Errorf("\ngot : %#+v\nwant: %#+v\n", togglError, c.out)
+				}
+			} else {
+				if !errors.Is(err, c.out) {
+					t.Errorf("\ngot : %#+v\nwant: %#+v\n", err, c.out)
+				}
 			}
 		})
 	}
@@ -471,7 +495,7 @@ func TestDeleteTagUseURLIncludingTagId(t *testing.T) {
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
-			t.Errorf("\ngot: %+v\nwant: %+v\n", actualRequestURI, expectedRequestURI)
+			t.Errorf("\ngot: %+#v\nwant: %+#v\n", actualRequestURI, expectedRequestURI)
 		}
 	}))
 
