@@ -11,6 +11,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -119,15 +120,31 @@ func (c *Client) httpGet(ctx context.Context, url string, respBody interface{}) 
 }
 
 func (c *Client) httpPost(ctx context.Context, url string, reqBody, respBody interface{}) error {
+	return c.do(ctx, url, http.MethodPost, reqBody, respBody)
+}
+
+func (c *Client) httpPut(ctx context.Context, url string, reqBody, respBody interface{}) error {
+	return c.do(ctx, url, http.MethodPut, reqBody, respBody)
+}
+
+func (c *Client) httpDelete(ctx context.Context, url string) error {
+	return c.do(ctx, url, http.MethodDelete, nil, nil)
+}
+
+func (c *Client) do(ctx context.Context, url, httpMethod string, reqBody, respBody interface{}) error {
 	if ctx == nil {
 		return ErrContextNotFound
 	}
 
-	b, err := json.Marshal(reqBody)
-	if err != nil {
-		return err
+	requestBody := io.Reader(nil)
+	if httpMethod == http.MethodPost || httpMethod == http.MethodPut {
+		b, err := json.Marshal(reqBody)
+		if err != nil {
+			return err
+		}
+		requestBody = bytes.NewBuffer(b)
 	}
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewBuffer(b))
+	req, err := http.NewRequestWithContext(ctx, httpMethod, url, requestBody)
 	if err != nil {
 		return err
 	}
@@ -137,30 +154,11 @@ func (c *Client) httpPost(ctx context.Context, url string, reqBody, respBody int
 	if err != nil {
 		return err
 	}
-	if err = decodeJSON(resp, respBody); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (c *Client) httpPut(ctx context.Context, url string, reqBody, respBody interface{}) error {
-	return nil
-}
-
-func (c *Client) httpDelete(ctx context.Context, url string) error {
-	if ctx == nil {
-		return ErrContextNotFound
-	}
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, url, nil)
-	if err != nil {
-		return err
-	}
-	c.setBasicAuth(req)
-
-	_, err = checkResponse(c.HTTPClient.Do(req))
-	if err != nil {
-		return err
+	if httpMethod == http.MethodGet || httpMethod == http.MethodPost || httpMethod == http.MethodPut {
+		err = decodeJSON(resp, respBody)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

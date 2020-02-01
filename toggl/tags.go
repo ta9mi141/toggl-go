@@ -43,12 +43,12 @@ func (c *Client) UpdateTag(ctx context.Context, tag *Tag) (*Tag, error) {
 	if tag == nil {
 		return nil, ErrTagNotFound
 	}
-	updatedTag := new(Tag)
+	rawResponse := new(rawResponse)
 	endpoint := tagsEndpoint + "/" + strconv.Itoa(tag.Id)
-	if err := c.httpPut(ctx, c.buildURL(endpoint), tag, updatedTag); err != nil {
+	if err := c.httpPut(ctx, c.buildURL(endpoint), tag, rawResponse); err != nil {
 		return nil, err
 	}
-	return updatedTag, nil
+	return &rawResponse.Tag, nil
 }
 
 // DeleteTag deletes a tag.
