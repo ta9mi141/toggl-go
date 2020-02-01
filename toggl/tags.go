@@ -22,16 +22,20 @@ type Tag struct {
 	Wid  int    `json:"wid"`
 }
 
+type rawResponse struct {
+	Tag Tag `json:"data"`
+}
+
 // CreateTag creates a tag.
 func (c *Client) CreateTag(ctx context.Context, tag *Tag) (*Tag, error) {
 	if tag == nil {
 		return nil, ErrTagNotFound
 	}
-	createdTag := new(Tag)
-	if err := c.httpPost(ctx, c.buildURL(tagsEndpoint), tag, createdTag); err != nil {
+	rawResponse := new(rawResponse)
+	if err := c.httpPost(ctx, c.buildURL(tagsEndpoint), tag, rawResponse); err != nil {
 		return nil, err
 	}
-	return createdTag, nil
+	return &rawResponse.Tag, nil
 }
 
 // UpdateTag updates a tag.

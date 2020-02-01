@@ -74,7 +74,7 @@ func TestCreateTag(t *testing.T) {
 			}{
 				tag: nil,
 				err: &toggl.TogglError{
-					Message: "Tag already exists: toggl-go",
+					Message: "Tag already exists: toggl-go\n",
 					Code:    400,
 				},
 			},
@@ -153,7 +153,7 @@ func TestCreateTag(t *testing.T) {
 
 			client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 			actualTag, err := client.CreateTag(c.in.ctx, c.in.tag)
-			if actualTag != c.out.tag {
+			if !reflect.DeepEqual(actualTag, c.out.tag) {
 				t.Errorf("\ngot : %+#v\nwant: %+#v\n", actualTag, c.out.tag)
 			}
 
@@ -337,7 +337,7 @@ func TestUpdateTag(t *testing.T) {
 
 			client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 			actualTag, err := client.UpdateTag(c.in.ctx, c.in.tag)
-			if actualTag != c.out.tag {
+			if !reflect.DeepEqual(actualTag, c.out.tag) {
 				t.Errorf("\ngot : %+#v\nwant: %+#v\n", actualTag, c.out.tag)
 			}
 

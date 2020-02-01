@@ -7,6 +7,7 @@ https://github.com/toggl/toggl_api_docs/blob/master/toggl_api.md
 package toggl
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -113,15 +114,36 @@ func (c *Client) buildURL(endpoint string) string {
 	return c.URL.String()
 }
 
-func (c *Client) httpGet(ctx context.Context, url string, resp interface{}) error {
+func (c *Client) httpGet(ctx context.Context, url string, respBody interface{}) error {
 	return nil
 }
 
-func (c *Client) httpPost(ctx context.Context, url string, req, resp interface{}) error {
+func (c *Client) httpPost(ctx context.Context, url string, reqBody, respBody interface{}) error {
+	if ctx == nil {
+		return ErrContextNotFound
+	}
+
+	b, err := json.Marshal(reqBody)
+	if err != nil {
+		return err
+	}
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewBuffer(b))
+	if err != nil {
+		return err
+	}
+	c.setBasicAuth(req)
+
+	resp, err := checkResponse(c.HTTPClient.Do(req))
+	if err != nil {
+		return err
+	}
+	if err = decodeJSON(resp, respBody); err != nil {
+		return err
+	}
 	return nil
 }
 
-func (c *Client) httpPut(ctx context.Context, url string, req, resp interface{}) error {
+func (c *Client) httpPut(ctx context.Context, url string, reqBody, respBody interface{}) error {
 	return nil
 }
 
@@ -130,7 +152,7 @@ func (c *Client) httpDelete(ctx context.Context, url string) error {
 		return ErrContextNotFound
 	}
 
-	req, err := http.NewRequestWithContext(ctx, "DELETE", url, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, url, nil)
 	if err != nil {
 		return err
 	}
