@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -12,10 +13,6 @@ import (
 
 	"github.com/it-akumi/toggl-go/toggl"
 )
-
-type rawResponse struct {
-	Data *toggl.Tag `json:"data"`
-}
 
 func TestCreateTag(t *testing.T) {
 	cases := []struct {
@@ -157,7 +154,7 @@ func TestCreateTag(t *testing.T) {
 			client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 			actualTag, err := client.CreateTag(c.in.ctx, c.in.tag)
 			if actualTag != c.out.tag {
-				t.Errorf("\ngot: %+#v\nwant: %+#v\n", actualTag, c.out.tag)
+				t.Errorf("\ngot : %+#v\nwant: %+#v\n", actualTag, c.out.tag)
 			}
 
 			var togglError toggl.Error
@@ -180,8 +177,8 @@ func TestCreateTagConvertParamsToRequestBody(t *testing.T) {
 		Name: "toggl-go",
 	}
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		requestBody := make([]byte, r.ContentLength)
-		if _, err := r.Body.Read(requestBody); err != nil {
+		requestBody, err := ioutil.ReadAll(r.Body)
+		if err != nil {
 			t.Error(err.Error())
 		}
 		actualTagRequest := new(toggl.Tag)
@@ -341,7 +338,7 @@ func TestUpdateTag(t *testing.T) {
 			client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 			actualTag, err := client.UpdateTag(c.in.ctx, c.in.tag)
 			if actualTag != c.out.tag {
-				t.Errorf("\ngot: %+#v\nwant: %+#v\n", actualTag, c.out.tag)
+				t.Errorf("\ngot : %+#v\nwant: %+#v\n", actualTag, c.out.tag)
 			}
 
 			var togglError toggl.Error
