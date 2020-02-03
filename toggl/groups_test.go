@@ -10,43 +10,44 @@ import (
 	"reflect"
 	"strconv"
 	"testing"
+	"time"
 
 	"github.com/it-akumi/toggl-go/toggl"
 )
 
-func TestCreateTag(t *testing.T) {
+func TestCreateGroup(t *testing.T) {
 	cases := []struct {
 		name             string
 		httpStatus       int
 		testdataFilePath string
 		in               struct {
-			ctx context.Context
-			tag *toggl.Tag
+			ctx   context.Context
+			group *toggl.Group
 		}
 		out struct {
-			tag *toggl.Tag
-			err error
+			group *toggl.Group
+			err   error
 		}
 	}{
 		{
 			name:             "200 OK",
 			httpStatus:       http.StatusOK,
-			testdataFilePath: "testdata/tags/create_200_ok.json",
+			testdataFilePath: "testdata/groups/create_200_ok.json",
 			in: struct {
-				ctx context.Context
-				tag *toggl.Tag
+				ctx   context.Context
+				group *toggl.Group
 			}{
 				ctx: context.Background(),
-				tag: &toggl.Tag{
+				group: &toggl.Group{
 					Wid:  1234567,
 					Name: "toggl-go",
 				},
 			},
 			out: struct {
-				tag *toggl.Tag
-				err error
+				group *toggl.Group
+				err   error
 			}{
-				tag: &toggl.Tag{
+				group: &toggl.Group{
 					Id:   1234567,
 					Wid:  1234567,
 					Name: "toggl-go",
@@ -57,24 +58,24 @@ func TestCreateTag(t *testing.T) {
 		{
 			name:             "400 Bad Request",
 			httpStatus:       http.StatusBadRequest,
-			testdataFilePath: "testdata/tags/create_400_bad_request.json",
+			testdataFilePath: "testdata/groups/create_400_bad_request.json",
 			in: struct {
-				ctx context.Context
-				tag *toggl.Tag
+				ctx   context.Context
+				group *toggl.Group
 			}{
 				ctx: context.Background(),
-				tag: &toggl.Tag{
+				group: &toggl.Group{
 					Wid:  1234567,
 					Name: "toggl-go",
 				},
 			},
 			out: struct {
-				tag *toggl.Tag
-				err error
+				group *toggl.Group
+				err   error
 			}{
-				tag: nil,
+				group: nil,
 				err: &toggl.TogglError{
-					Message: "Tag already exists: toggl-go\n",
+					Message: "Name has already been taken",
 					Code:    400,
 				},
 			},
@@ -82,22 +83,22 @@ func TestCreateTag(t *testing.T) {
 		{
 			name:             "403 Forbidden",
 			httpStatus:       http.StatusForbidden,
-			testdataFilePath: "testdata/tags/create_403_forbidden.json",
+			testdataFilePath: "testdata/groups/create_403_forbidden.json",
 			in: struct {
-				ctx context.Context
-				tag *toggl.Tag
+				ctx   context.Context
+				group *toggl.Group
 			}{
 				ctx: context.Background(),
-				tag: &toggl.Tag{
+				group: &toggl.Group{
 					Wid:  1234567,
 					Name: "toggl-go",
 				},
 			},
 			out: struct {
-				tag *toggl.Tag
-				err error
+				group *toggl.Group
+				err   error
 			}{
-				tag: nil,
+				group: nil,
 				err: &toggl.TogglError{
 					Message: "",
 					Code:    403,
@@ -107,42 +108,42 @@ func TestCreateTag(t *testing.T) {
 		{
 			name:             "Without context",
 			httpStatus:       http.StatusOK,
-			testdataFilePath: "testdata/tags/create_200_ok.json",
+			testdataFilePath: "testdata/groups/create_200_ok.json",
 			in: struct {
-				ctx context.Context
-				tag *toggl.Tag
+				ctx   context.Context
+				group *toggl.Group
 			}{
 				ctx: nil,
-				tag: &toggl.Tag{
+				group: &toggl.Group{
 					Wid:  1234567,
 					Name: "toggl-go",
 				},
 			},
 			out: struct {
-				tag *toggl.Tag
-				err error
+				group *toggl.Group
+				err   error
 			}{
-				tag: nil,
-				err: toggl.ErrContextNotFound,
+				group: nil,
+				err:   toggl.ErrContextNotFound,
 			},
 		},
 		{
-			name:             "Without tag",
+			name:             "Without group",
 			httpStatus:       http.StatusOK,
-			testdataFilePath: "testdata/tags/create_200_ok.json",
+			testdataFilePath: "testdata/groups/create_200_ok.json",
 			in: struct {
-				ctx context.Context
-				tag *toggl.Tag
+				ctx   context.Context
+				group *toggl.Group
 			}{
-				ctx: context.Background(),
-				tag: nil,
+				ctx:   context.Background(),
+				group: nil,
 			},
 			out: struct {
-				tag *toggl.Tag
-				err error
+				group *toggl.Group
+				err   error
 			}{
-				tag: nil,
-				err: toggl.ErrTagNotFound,
+				group: nil,
+				err:   toggl.ErrGroupNotFound,
 			},
 		},
 	}
@@ -152,9 +153,9 @@ func TestCreateTag(t *testing.T) {
 			defer mockServer.Close()
 
 			client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
-			actualTag, err := client.CreateTag(c.in.ctx, c.in.tag)
-			if !reflect.DeepEqual(actualTag, c.out.tag) {
-				t.Errorf("\ngot : %+#v\nwant: %+#v\n", actualTag, c.out.tag)
+			actualGroup, err := client.CreateGroup(c.in.ctx, c.in.group)
+			if !reflect.DeepEqual(actualGroup, c.out.group) {
+				t.Errorf("\ngot : %+#v\nwant: %+#v\n", actualGroup, c.out.group)
 			}
 
 			var togglError toggl.Error
@@ -171,8 +172,8 @@ func TestCreateTag(t *testing.T) {
 	}
 }
 
-func TestCreateTagConvertParamsToRequestBody(t *testing.T) {
-	expectedTagRequest := &toggl.Tag{
+func TestCreateGroupConvertParamsToRequestBody(t *testing.T) {
+	expectedGroupRequest := &toggl.Group{
 		Wid:  1234567,
 		Name: "toggl-go",
 	}
@@ -181,80 +182,104 @@ func TestCreateTagConvertParamsToRequestBody(t *testing.T) {
 		if err != nil {
 			t.Error(err.Error())
 		}
-		actualTagRequest := new(toggl.Tag)
-		if err := json.Unmarshal(requestBody, actualTagRequest); err != nil {
+		actualGroupRequest := new(toggl.Group)
+		if err := json.Unmarshal(requestBody, actualGroupRequest); err != nil {
 			t.Error(err.Error())
 		}
-		if !reflect.DeepEqual(actualTagRequest, expectedTagRequest) {
-			t.Errorf("\ngot : %+#v\nwant: %+#v\n", actualTagRequest, expectedTagRequest)
+		if !reflect.DeepEqual(actualGroupRequest, expectedGroupRequest) {
+			t.Errorf("\ngot : %+#v\nwant: %+#v\n", actualGroupRequest, expectedGroupRequest)
 		}
 	}))
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
-	_, _ = client.CreateTag(context.Background(), expectedTagRequest)
+	_, _ = client.CreateGroup(context.Background(), expectedGroupRequest)
 }
 
-func TestUpdateTag(t *testing.T) {
+func TestUpdateGroup(t *testing.T) {
 	cases := []struct {
 		name             string
 		httpStatus       int
 		testdataFilePath string
 		in               struct {
-			ctx context.Context
-			tag *toggl.Tag
+			ctx   context.Context
+			group *toggl.Group
 		}
 		out struct {
-			tag *toggl.Tag
-			err error
+			group *toggl.Group
+			err   error
 		}
 	}{
 		{
 			name:             "200 OK",
 			httpStatus:       http.StatusOK,
-			testdataFilePath: "testdata/tags/update_200_ok.json",
+			testdataFilePath: "testdata/groups/update_200_ok.json",
 			in: struct {
-				ctx context.Context
-				tag *toggl.Tag
+				ctx   context.Context
+				group *toggl.Group
 			}{
 				ctx: context.Background(),
-				tag: &toggl.Tag{
+				group: &toggl.Group{
 					Id:   1234567,
-					Wid:  1234567,
 					Name: "toggl-go",
 				},
 			},
 			out: struct {
-				tag *toggl.Tag
-				err error
+				group *toggl.Group
+				err   error
 			}{
-				tag: &toggl.Tag{
+				group: &toggl.Group{
 					Id:   1234567,
 					Wid:  1234567,
 					Name: "toggl-go",
+					At:   time.Date(2020, time.February, 2, 6, 40, 53, 0, time.UTC),
 				},
 				err: nil,
 			},
 		},
 		{
-			name:             "403 Forbidden",
-			httpStatus:       http.StatusForbidden,
-			testdataFilePath: "testdata/tags/update_403_forbidden.json",
+			name:             "400 Bad Request",
+			httpStatus:       http.StatusBadRequest,
+			testdataFilePath: "testdata/groups/update_400_bad_request.json",
 			in: struct {
-				ctx context.Context
-				tag *toggl.Tag
+				ctx   context.Context
+				group *toggl.Group
 			}{
 				ctx: context.Background(),
-				tag: &toggl.Tag{
+				group: &toggl.Group{
 					Id:   1234567,
-					Wid:  1234567,
 					Name: "toggl-go",
 				},
 			},
 			out: struct {
-				tag *toggl.Tag
-				err error
+				group *toggl.Group
+				err   error
 			}{
-				tag: nil,
+				group: nil,
+				err: &toggl.TogglError{
+					Message: "Invalid group ID",
+					Code:    400,
+				},
+			},
+		},
+		{
+			name:             "403 Forbidden",
+			httpStatus:       http.StatusForbidden,
+			testdataFilePath: "testdata/groups/update_403_forbidden.json",
+			in: struct {
+				ctx   context.Context
+				group *toggl.Group
+			}{
+				ctx: context.Background(),
+				group: &toggl.Group{
+					Id:   1234567,
+					Name: "toggl-go",
+				},
+			},
+			out: struct {
+				group *toggl.Group
+				err   error
+			}{
+				group: nil,
 				err: &toggl.TogglError{
 					Message: "",
 					Code:    403,
@@ -262,71 +287,45 @@ func TestUpdateTag(t *testing.T) {
 			},
 		},
 		{
-			name:             "404 Not Found",
-			httpStatus:       http.StatusNotFound,
-			testdataFilePath: "testdata/tags/update_404_not_found.json",
-			in: struct {
-				ctx context.Context
-				tag *toggl.Tag
-			}{
-				ctx: context.Background(),
-				tag: &toggl.Tag{
-					Id:   1234567,
-					Wid:  1234567,
-					Name: "toggl-go",
-				},
-			},
-			out: struct {
-				tag *toggl.Tag
-				err error
-			}{
-				tag: nil,
-				err: &toggl.TogglError{
-					Message: "null",
-					Code:    404,
-				},
-			},
-		},
-		{
 			name:             "Without context",
 			httpStatus:       http.StatusOK,
-			testdataFilePath: "testdata/tags/update_200_ok.json",
+			testdataFilePath: "testdata/groups/update_200_ok.json",
 			in: struct {
-				ctx context.Context
-				tag *toggl.Tag
+				ctx   context.Context
+				group *toggl.Group
 			}{
 				ctx: nil,
-				tag: &toggl.Tag{
+				group: &toggl.Group{
 					Id:   1234567,
 					Wid:  1234567,
 					Name: "toggl-go",
 				},
 			},
 			out: struct {
-				tag *toggl.Tag
-				err error
+				group *toggl.Group
+				err   error
 			}{
-				tag: nil,
-				err: toggl.ErrContextNotFound,
+				group: nil,
+				err:   toggl.ErrContextNotFound,
 			},
 		},
 		{
-			name:             "Without tag",
+			name:             "Without group",
 			httpStatus:       http.StatusOK,
-			testdataFilePath: "testdata/tags/update_200_ok.json",
+			testdataFilePath: "testdata/groups/update_200_ok.json",
 			in: struct {
-				ctx context.Context
-				tag *toggl.Tag
+				ctx   context.Context
+				group *toggl.Group
 			}{
-				ctx: context.Background(),
-				tag: nil,
+				ctx:   context.Background(),
+				group: nil,
 			},
 			out: struct {
-				tag *toggl.Tag
-				err error
+				group *toggl.Group
+				err   error
 			}{
-				tag: nil,
-				err: toggl.ErrTagNotFound,
+				group: nil,
+				err:   toggl.ErrGroupNotFound,
 			},
 		},
 	}
@@ -336,9 +335,9 @@ func TestUpdateTag(t *testing.T) {
 			defer mockServer.Close()
 
 			client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
-			actualTag, err := client.UpdateTag(c.in.ctx, c.in.tag)
-			if !reflect.DeepEqual(actualTag, c.out.tag) {
-				t.Errorf("\ngot : %+#v\nwant: %+#v\n", actualTag, c.out.tag)
+			actualGroup, err := client.UpdateGroup(c.in.ctx, c.in.group)
+			if !reflect.DeepEqual(actualGroup, c.out.group) {
+				t.Errorf("\ngot : %+#v\nwant: %+#v\n", actualGroup, c.out.group)
 			}
 
 			var togglError toggl.Error
@@ -355,9 +354,9 @@ func TestUpdateTag(t *testing.T) {
 	}
 }
 
-func TestUpdateTagUseURLIncludingTagId(t *testing.T) {
-	tagId := 1234567
-	expectedRequestURI := "/api/v8/tags/" + strconv.Itoa(tagId)
+func TestUpdateGroupUseURLIncludingGroupId(t *testing.T) {
+	groupId := 1234567
+	expectedRequestURI := "/api/v8/groups/" + strconv.Itoa(groupId)
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -366,49 +365,67 @@ func TestUpdateTagUseURLIncludingTagId(t *testing.T) {
 	}))
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
-	_, _ = client.UpdateTag(context.Background(), &toggl.Tag{
-		Id:   tagId,
+	_, _ = client.UpdateGroup(context.Background(), &toggl.Group{
+		Id:   groupId,
 		Wid:  1234567,
 		Name: "toggl-go",
 	})
 }
 
-func TestDeleteTag(t *testing.T) {
+func TestDeleteGroup(t *testing.T) {
 	cases := []struct {
 		name             string
 		httpStatus       int
 		testdataFilePath string
 		in               struct {
-			ctx context.Context
-			tag *toggl.Tag
+			ctx   context.Context
+			group *toggl.Group
 		}
 		out error
 	}{
 		{
 			name:             "200 OK",
 			httpStatus:       http.StatusOK,
-			testdataFilePath: "testdata/tags/delete_200_ok.json",
+			testdataFilePath: "testdata/groups/delete_200_ok.json",
 			in: struct {
-				ctx context.Context
-				tag *toggl.Tag
+				ctx   context.Context
+				group *toggl.Group
 			}{
 				ctx: context.Background(),
-				tag: &toggl.Tag{
+				group: &toggl.Group{
 					Id: 1234567,
 				},
 			},
 			out: nil,
 		},
 		{
-			name:             "403 Forbidden",
-			httpStatus:       http.StatusForbidden,
-			testdataFilePath: "testdata/tags/delete_403_forbidden.json",
+			name:             "400 Bad Request",
+			httpStatus:       http.StatusBadRequest,
+			testdataFilePath: "testdata/groups/delete_400_bad_request.html",
 			in: struct {
-				ctx context.Context
-				tag *toggl.Tag
+				ctx   context.Context
+				group *toggl.Group
 			}{
 				ctx: context.Background(),
-				tag: &toggl.Tag{
+				group: &toggl.Group{
+					Id: 1234567,
+				},
+			},
+			out: &toggl.TogglError{
+				Message: "",
+				Code:    400,
+			},
+		},
+		{
+			name:             "403 Forbidden",
+			httpStatus:       http.StatusForbidden,
+			testdataFilePath: "testdata/groups/delete_403_forbidden.json",
+			in: struct {
+				ctx   context.Context
+				group *toggl.Group
+			}{
+				ctx: context.Background(),
+				group: &toggl.Group{
 					Id: 1234567,
 				},
 			},
@@ -418,50 +435,32 @@ func TestDeleteTag(t *testing.T) {
 			},
 		},
 		{
-			name:             "404 Not Found",
-			httpStatus:       http.StatusNotFound,
-			testdataFilePath: "testdata/tags/delete_404_not_found.json",
-			in: struct {
-				ctx context.Context
-				tag *toggl.Tag
-			}{
-				ctx: context.Background(),
-				tag: &toggl.Tag{
-					Id: 1234567,
-				},
-			},
-			out: &toggl.TogglError{
-				Message: "null",
-				Code:    404,
-			},
-		},
-		{
 			name:             "Without context",
 			httpStatus:       http.StatusOK,
-			testdataFilePath: "testdata/tags/delete_200_ok.json",
+			testdataFilePath: "testdata/groups/delete_200_ok.json",
 			in: struct {
-				ctx context.Context
-				tag *toggl.Tag
+				ctx   context.Context
+				group *toggl.Group
 			}{
 				ctx: nil,
-				tag: &toggl.Tag{
+				group: &toggl.Group{
 					Id: 1234567,
 				},
 			},
 			out: toggl.ErrContextNotFound,
 		},
 		{
-			name:             "Without tag",
+			name:             "Without group",
 			httpStatus:       http.StatusOK,
-			testdataFilePath: "testdata/tags/delete_200_ok.json",
+			testdataFilePath: "testdata/groups/delete_200_ok.json",
 			in: struct {
-				ctx context.Context
-				tag *toggl.Tag
+				ctx   context.Context
+				group *toggl.Group
 			}{
-				ctx: context.Background(),
-				tag: nil,
+				ctx:   context.Background(),
+				group: nil,
 			},
-			out: toggl.ErrTagNotFound,
+			out: toggl.ErrGroupNotFound,
 		},
 	}
 	for _, c := range cases {
@@ -470,7 +469,7 @@ func TestDeleteTag(t *testing.T) {
 			defer mockServer.Close()
 
 			client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
-			err := client.DeleteTag(c.in.ctx, c.in.tag)
+			err := client.DeleteGroup(c.in.ctx, c.in.group)
 
 			var togglError toggl.Error
 			if errors.As(err, &togglError) {
@@ -486,9 +485,9 @@ func TestDeleteTag(t *testing.T) {
 	}
 }
 
-func TestDeleteTagUseURLIncludingTagId(t *testing.T) {
-	tagId := 1234567
-	expectedRequestURI := "/api/v8/tags/" + strconv.Itoa(tagId)
+func TestDeleteGroupUseURLIncludingGroupId(t *testing.T) {
+	groupId := 1234567
+	expectedRequestURI := "/api/v8/groups/" + strconv.Itoa(groupId)
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -497,7 +496,7 @@ func TestDeleteTagUseURLIncludingTagId(t *testing.T) {
 	}))
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
-	_ = client.DeleteTag(context.Background(), &toggl.Tag{
-		Id: tagId,
+	_ = client.DeleteGroup(context.Background(), &toggl.Group{
+		Id: groupId,
 	})
 }
