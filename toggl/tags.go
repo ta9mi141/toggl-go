@@ -22,7 +22,7 @@ type Tag struct {
 	Wid  int    `json:"wid"`
 }
 
-type rawResponse struct {
+type rawTagData struct {
 	Tag Tag `json:"data"`
 }
 
@@ -31,11 +31,11 @@ func (c *Client) CreateTag(ctx context.Context, tag *Tag) (*Tag, error) {
 	if tag == nil {
 		return nil, ErrTagNotFound
 	}
-	rawResponse := new(rawResponse)
-	if err := c.httpPost(ctx, c.buildURL(tagsEndpoint), tag, rawResponse); err != nil {
+	rawTagData := new(rawTagData)
+	if err := c.httpPost(ctx, c.buildURL(tagsEndpoint), tag, rawTagData); err != nil {
 		return nil, err
 	}
-	return &rawResponse.Tag, nil
+	return &rawTagData.Tag, nil
 }
 
 // UpdateTag updates a tag.
@@ -43,12 +43,12 @@ func (c *Client) UpdateTag(ctx context.Context, tag *Tag) (*Tag, error) {
 	if tag == nil {
 		return nil, ErrTagNotFound
 	}
-	rawResponse := new(rawResponse)
+	rawTagData := new(rawTagData)
 	endpoint := tagsEndpoint + "/" + strconv.Itoa(tag.Id)
-	if err := c.httpPut(ctx, c.buildURL(endpoint), tag, rawResponse); err != nil {
+	if err := c.httpPut(ctx, c.buildURL(endpoint), tag, rawTagData); err != nil {
 		return nil, err
 	}
-	return &rawResponse.Tag, nil
+	return &rawTagData.Tag, nil
 }
 
 // DeleteTag deletes a tag.

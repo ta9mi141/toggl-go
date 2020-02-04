@@ -48,7 +48,7 @@ func TestCreateGroup(t *testing.T) {
 				err   error
 			}{
 				group: &toggl.Group{
-					Id:   1234567,
+					Id:   123456,
 					Wid:  1234567,
 					Name: "toggl-go",
 				},
@@ -75,7 +75,7 @@ func TestCreateGroup(t *testing.T) {
 			}{
 				group: nil,
 				err: &toggl.TogglError{
-					Message: "Name has already been taken",
+					Message: "Name has already been taken\n",
 					Code:    400,
 				},
 			},
@@ -219,7 +219,7 @@ func TestUpdateGroup(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				group: &toggl.Group{
-					Id:   1234567,
+					Id:   123456,
 					Name: "toggl-go",
 				},
 			},
@@ -228,10 +228,10 @@ func TestUpdateGroup(t *testing.T) {
 				err   error
 			}{
 				group: &toggl.Group{
-					Id:   1234567,
+					Id:   123456,
 					Wid:  1234567,
 					Name: "toggl-go",
-					At:   time.Date(2020, time.February, 2, 6, 40, 53, 0, time.UTC),
+					At:   time.Date(2020, time.February, 2, 6, 40, 53, 0, time.FixedZone("", 0)),
 				},
 				err: nil,
 			},
@@ -256,7 +256,7 @@ func TestUpdateGroup(t *testing.T) {
 			}{
 				group: nil,
 				err: &toggl.TogglError{
-					Message: "Invalid group ID",
+					Message: "Invalid group ID\n",
 					Code:    400,
 				},
 			},
@@ -271,7 +271,7 @@ func TestUpdateGroup(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				group: &toggl.Group{
-					Id:   1234567,
+					Id:   123456,
 					Name: "toggl-go",
 				},
 			},
@@ -296,7 +296,7 @@ func TestUpdateGroup(t *testing.T) {
 			}{
 				ctx: nil,
 				group: &toggl.Group{
-					Id:   1234567,
+					Id:   123456,
 					Wid:  1234567,
 					Name: "toggl-go",
 				},
@@ -355,7 +355,7 @@ func TestUpdateGroup(t *testing.T) {
 }
 
 func TestUpdateGroupUseURLIncludingGroupId(t *testing.T) {
-	groupId := 1234567
+	groupId := 123456
 	expectedRequestURI := "/api/v8/groups/" + strconv.Itoa(groupId)
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
@@ -393,7 +393,7 @@ func TestDeleteGroup(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				group: &toggl.Group{
-					Id: 1234567,
+					Id: 123456,
 				},
 			},
 			out: nil,
@@ -408,11 +408,11 @@ func TestDeleteGroup(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				group: &toggl.Group{
-					Id: 1234567,
+					Id: 123456,
 				},
 			},
 			out: &toggl.TogglError{
-				Message: "",
+				Message: "<html>\n<head><title>400 Bad Request</title></head>\n<body>\n<center><h1>400 Bad Request</h1></center>\n<hr><center>nginx</center>\n</body>\n</html>\n",
 				Code:    400,
 			},
 		},
@@ -426,7 +426,7 @@ func TestDeleteGroup(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				group: &toggl.Group{
-					Id: 1234567,
+					Id: 123456,
 				},
 			},
 			out: &toggl.TogglError{
@@ -444,7 +444,7 @@ func TestDeleteGroup(t *testing.T) {
 			}{
 				ctx: nil,
 				group: &toggl.Group{
-					Id: 1234567,
+					Id: 123456,
 				},
 			},
 			out: toggl.ErrContextNotFound,
@@ -486,7 +486,7 @@ func TestDeleteGroup(t *testing.T) {
 }
 
 func TestDeleteGroupUseURLIncludingGroupId(t *testing.T) {
-	groupId := 1234567
+	groupId := 123456
 	expectedRequestURI := "/api/v8/groups/" + strconv.Itoa(groupId)
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
