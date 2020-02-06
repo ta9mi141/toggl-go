@@ -102,7 +102,7 @@ func TestGetSummary(t *testing.T) {
 				&reports.SummaryRequestParameters{
 					StandardRequestParameters: &reports.StandardRequestParameters{
 						UserAgent:   userAgent,
-						WorkSpaceId: workSpaceId,
+						WorkspaceId: workspaceId,
 					},
 				},
 				actualSummaryReport,
@@ -139,7 +139,7 @@ func TestGetSummary(t *testing.T) {
 func TestGetSummaryEncodeRequestParameters(t *testing.T) {
 	expectedQueryString := url.Values{
 		"user_agent":   []string{userAgent},
-		"workspace_id": []string{workSpaceId},
+		"workspace_id": []string{workspaceId},
 		"grouping":     []string{"projects"},
 	}
 
@@ -156,7 +156,7 @@ func TestGetSummaryEncodeRequestParameters(t *testing.T) {
 		&reports.SummaryRequestParameters{
 			StandardRequestParameters: &reports.StandardRequestParameters{
 				UserAgent:   userAgent,
-				WorkSpaceId: workSpaceId,
+				WorkspaceId: workspaceId,
 			},
 			Grouping: "projects",
 		},

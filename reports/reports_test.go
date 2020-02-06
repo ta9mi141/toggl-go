@@ -15,7 +15,7 @@ import (
 const (
 	apiToken    string = "api_token"
 	userAgent   string = "user_agent"
-	workSpaceId string = "workspace_id"
+	workspaceId string = "workspace_id"
 )
 
 func TestNewClient(t *testing.T) {

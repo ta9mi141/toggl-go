@@ -92,7 +92,7 @@ func TestGetDetailed(t *testing.T) {
 				&reports.DetailedRequestParameters{
 					StandardRequestParameters: &reports.StandardRequestParameters{
 						UserAgent:   userAgent,
-						WorkSpaceId: workSpaceId,
+						WorkspaceId: workspaceId,
 					},
 				},
 				actualDetailedReport,
@@ -129,7 +129,7 @@ func TestGetDetailed(t *testing.T) {
 func TestGetDetailedEncodeRequestParameters(t *testing.T) {
 	expectedQueryString := url.Values{
 		"user_agent":   []string{userAgent},
-		"workspace_id": []string{workSpaceId},
+		"workspace_id": []string{workspaceId},
 		"page":         []string{"10"},
 	}
 
@@ -146,7 +146,7 @@ func TestGetDetailedEncodeRequestParameters(t *testing.T) {
 		&reports.DetailedRequestParameters{
 			StandardRequestParameters: &reports.StandardRequestParameters{
 				UserAgent:   userAgent,
-				WorkSpaceId: workSpaceId,
+				WorkspaceId: workspaceId,
 			},
 			Page: 10,
 		},

@@ -35,7 +35,7 @@ type Client struct {
 // StandardRequestParameters represents request parameters used in all of the reports.
 type StandardRequestParameters struct {
 	UserAgent           string
-	WorkSpaceId         string
+	WorkspaceId         string
 	Since               time.Time
 	Until               time.Time
 	Billable            string
@@ -60,7 +60,7 @@ func (params *StandardRequestParameters) values() url.Values {
 	values := url.Values{
 		// user_agent and workspace_id are required.
 		"user_agent":   []string{params.UserAgent},
-		"workspace_id": []string{params.WorkSpaceId},
+		"workspace_id": []string{params.WorkspaceId},
 	}
 
 	// since and until must be ISO 8601 date (YYYY-MM-DD) format
