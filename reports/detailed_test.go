@@ -104,22 +104,22 @@ func TestGetDetailed(t *testing.T) {
 					t.Error(err.Error())
 				}
 				if !reflect.DeepEqual(actualDetailedReport, expectedDetailedReport) {
-					t.Errorf("\ngot : %+v\nwant: %+v\n", actualDetailedReport, expectedDetailedReport)
+					t.Errorf("\nwant: %+v\ngot : %+v\n", expectedDetailedReport, actualDetailedReport)
 				}
 			} else {
 				if !reflect.DeepEqual(actualDetailedReport, &detailedReport{}) {
-					t.Errorf("\ngot : %+v\nwant: %+v\n", actualDetailedReport, &detailedReport{})
+					t.Errorf("\nwant: %+v\ngot : %+v\n", &detailedReport{}, actualDetailedReport)
 				}
 			}
 
 			var reportsError reports.Error
 			if errors.As(err, &reportsError) {
 				if !reflect.DeepEqual(reportsError, c.out) {
-					t.Errorf("\ngot : %#+v\nwant: %#+v\n", reportsError, c.out)
+					t.Errorf("\nwant: %#+v\ngot : %#+v\n", c.out, reportsError)
 				}
 			} else {
 				if !errors.Is(err, c.out) {
-					t.Errorf("\ngot : %#+v\nwant: %#+v\n", err, c.out)
+					t.Errorf("\nwant: %#+v\ngot : %#+v\n", c.out, err)
 				}
 			}
 		})

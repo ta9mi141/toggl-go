@@ -114,22 +114,22 @@ func TestGetWeekly(t *testing.T) {
 					t.Error(err.Error())
 				}
 				if !reflect.DeepEqual(actualWeeklyReport, expectedWeeklyReport) {
-					t.Errorf("\ngot : %+v\nwant: %+v\n", actualWeeklyReport, expectedWeeklyReport)
+					t.Errorf("\nwant: %+v\ngot : %+v\n", expectedWeeklyReport, actualWeeklyReport)
 				}
 			} else {
 				if !reflect.DeepEqual(actualWeeklyReport, &weeklyReport{}) {
-					t.Errorf("\ngot : %+v\nwant: %+v\n", actualWeeklyReport, &weeklyReport{})
+					t.Errorf("\nwant: %+v\ngot : %+v\n", &weeklyReport{}, actualWeeklyReport)
 				}
 			}
 
 			var reportsError reports.Error
 			if errors.As(err, &reportsError) {
 				if !reflect.DeepEqual(reportsError, c.out) {
-					t.Errorf("\ngot : %#+v\nwant: %#+v\n", reportsError, c.out)
+					t.Errorf("\nwant: %#+v\ngot : %#+v\n", c.out, reportsError)
 				}
 			} else {
 				if !errors.Is(err, c.out) {
-					t.Errorf("\ngot : %#+v\nwant: %#+v\n", err, c.out)
+					t.Errorf("\nwant: %#+v\ngot : %#+v\n", c.out, err)
 				}
 			}
 		})

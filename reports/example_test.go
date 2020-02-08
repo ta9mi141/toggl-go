@@ -17,7 +17,7 @@ type summary struct {
 		}
 		Items []struct {
 			Title struct {
-				TimeEntry string `json:time_entry`
+				TimeEntry string `json:"time_entry"`
 			}
 			Time int
 		}

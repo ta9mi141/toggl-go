@@ -193,17 +193,17 @@ func TestGetDashboard(t *testing.T) {
 			client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 			actualDashboard, err := client.GetDashboard(c.in.ctx, c.in.workspaceId)
 			if !reflect.DeepEqual(actualDashboard, c.out.dashboard) {
-				t.Errorf("\ngot : %+#v\nwant: %+#v\n", actualDashboard, c.out.dashboard)
+				t.Errorf("\nwant: %+#v\ngot : %+#v\n", c.out.dashboard, actualDashboard)
 			}
 
 			var togglError toggl.Error
 			if errors.As(err, &togglError) {
 				if !reflect.DeepEqual(togglError, c.out.err) {
-					t.Errorf("\ngot : %#+v\nwant: %#+v\n", togglError, c.out.err)
+					t.Errorf("\nwant: %#+v\ngot : %#+v\n", c.out.err, togglError)
 				}
 			} else {
 				if !errors.Is(err, c.out.err) {
-					t.Errorf("\ngot : %#+v\nwant: %#+v\n", err, c.out.err)
+					t.Errorf("\nwant: %#+v\ngot : %#+v\n", c.out.err, err)
 				}
 			}
 		})
@@ -216,7 +216,7 @@ func TestGetDashboardUseURLIncludingWorkspaceId(t *testing.T) {
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
-			t.Errorf("\ngot : %+#v\nwant: %+#v\n", actualRequestURI, expectedRequestURI)
+			t.Errorf("\nwant: %+#v\ngot : %+#v\n", expectedRequestURI, actualRequestURI)
 		}
 	}))
 

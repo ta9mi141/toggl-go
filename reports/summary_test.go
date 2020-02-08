@@ -114,22 +114,22 @@ func TestGetSummary(t *testing.T) {
 					t.Error(err.Error())
 				}
 				if !reflect.DeepEqual(actualSummaryReport, expectedSummaryReport) {
-					t.Errorf("\ngot : %+v\nwant: %+v\n", actualSummaryReport, expectedSummaryReport)
+					t.Errorf("\nwant: %+v\ngot : %+v\n", expectedSummaryReport, actualSummaryReport)
 				}
 			} else {
 				if !reflect.DeepEqual(actualSummaryReport, &summaryReport{}) {
-					t.Errorf("\ngot : %+v\nwant: %+v\n", actualSummaryReport, &summaryReport{})
+					t.Errorf("\nwant: %+v\ngot : %+v\n", &summaryReport{}, actualSummaryReport)
 				}
 			}
 
 			var reportsError reports.Error
 			if errors.As(err, &reportsError) {
 				if !reflect.DeepEqual(reportsError, c.out) {
-					t.Errorf("\ngot : %#+v\nwant: %#+v\n", reportsError, c.out)
+					t.Errorf("\nwant: %#+v\ngot : %#+v\n", c.out, reportsError)
 				}
 			} else {
 				if !errors.Is(err, c.out) {
-					t.Errorf("\ngot : %#+v\nwant: %#+v\n", err, c.out)
+					t.Errorf("\nwant: %#+v\ngot : %#+v\n", c.out, err)
 				}
 			}
 		})
