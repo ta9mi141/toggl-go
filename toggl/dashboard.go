@@ -2,6 +2,7 @@ package toggl
 
 import (
 	"context"
+	"strconv"
 	"time"
 )
 
@@ -26,5 +27,10 @@ type Dashboard struct {
 }
 
 func (c *Client) GetDashboard(ctx context.Context, workspaceId int) (*Dashboard, error) {
-	return nil, nil
+	dashboard := new(Dashboard)
+	endpoint := dashboardEndpoint + "/" + strconv.Itoa(workspaceId)
+	if err := c.httpGet(ctx, c.buildURL(endpoint), dashboard); err != nil {
+		return nil, err
+	}
+	return dashboard, nil
 }

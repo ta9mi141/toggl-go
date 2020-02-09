@@ -116,7 +116,7 @@ func (c *Client) buildURL(endpoint string) string {
 }
 
 func (c *Client) httpGet(ctx context.Context, url string, respBody interface{}) error {
-	return nil
+	return c.do(ctx, url, http.MethodGet, nil, respBody)
 }
 
 func (c *Client) httpPost(ctx context.Context, url string, reqBody, respBody interface{}) error {

@@ -160,7 +160,7 @@ func TestGetDashboard(t *testing.T) {
 			}{
 				dashboard: nil,
 				err: &toggl.TogglError{
-					Message: "404 page not found",
+					Message: "404 page not found\n",
 					Code:    404,
 				},
 			},
