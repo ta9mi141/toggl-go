@@ -26,9 +26,12 @@ type Dashboard struct {
 	} `json:"most_active_user"`
 }
 
-func (c *Client) GetDashboard(ctx context.Context, workspaceId int) (*Dashboard, error) {
+func (c *Client) GetDashboard(ctx context.Context, workspace *Workspace) (*Dashboard, error) {
+	if workspace == nil {
+		return nil, ErrWorkspaceNotFound
+	}
 	dashboard := new(Dashboard)
-	endpoint := dashboardEndpoint + "/" + strconv.Itoa(workspaceId)
+	endpoint := dashboardEndpoint + "/" + strconv.Itoa(workspace.Id)
 	if err := c.httpGet(ctx, c.buildURL(endpoint), dashboard); err != nil {
 		return nil, err
 	}

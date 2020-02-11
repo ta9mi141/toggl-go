@@ -19,8 +19,8 @@ func TestGetDashboard(t *testing.T) {
 		httpStatus       int
 		testdataFilePath string
 		in               struct {
-			ctx         context.Context
-			workspaceId int
+			ctx       context.Context
+			workspace *toggl.Workspace
 		}
 		out struct {
 			dashboard *toggl.Dashboard
@@ -32,11 +32,11 @@ func TestGetDashboard(t *testing.T) {
 			httpStatus:       http.StatusOK,
 			testdataFilePath: "testdata/dashboard/get_200_ok.json",
 			in: struct {
-				ctx         context.Context
-				workspaceId int
+				ctx       context.Context
+				workspace *toggl.Workspace
 			}{
-				ctx:         context.Background(),
-				workspaceId: 1234567,
+				ctx:       context.Background(),
+				workspace: &toggl.Workspace{Id: 1234567},
 			},
 			out: struct {
 				dashboard *toggl.Dashboard
@@ -104,11 +104,11 @@ func TestGetDashboard(t *testing.T) {
 			httpStatus:       http.StatusBadRequest,
 			testdataFilePath: "testdata/dashboard/get_400_bad_request.json",
 			in: struct {
-				ctx         context.Context
-				workspaceId int
+				ctx       context.Context
+				workspace *toggl.Workspace
 			}{
-				ctx:         context.Background(),
-				workspaceId: 1234567,
+				ctx:       context.Background(),
+				workspace: &toggl.Workspace{Id: 1234567},
 			},
 			out: struct {
 				dashboard *toggl.Dashboard
@@ -126,11 +126,11 @@ func TestGetDashboard(t *testing.T) {
 			httpStatus:       http.StatusForbidden,
 			testdataFilePath: "testdata/dashboard/get_403_forbidden.json",
 			in: struct {
-				ctx         context.Context
-				workspaceId int
+				ctx       context.Context
+				workspace *toggl.Workspace
 			}{
-				ctx:         context.Background(),
-				workspaceId: 1234567,
+				ctx:       context.Background(),
+				workspace: &toggl.Workspace{Id: 1234567},
 			},
 			out: struct {
 				dashboard *toggl.Dashboard
@@ -148,11 +148,11 @@ func TestGetDashboard(t *testing.T) {
 			httpStatus:       http.StatusNotFound,
 			testdataFilePath: "testdata/dashboard/get_404_not_found.json",
 			in: struct {
-				ctx         context.Context
-				workspaceId int
+				ctx       context.Context
+				workspace *toggl.Workspace
 			}{
-				ctx:         context.Background(),
-				workspaceId: 1234567,
+				ctx:       context.Background(),
+				workspace: &toggl.Workspace{Id: 1234567},
 			},
 			out: struct {
 				dashboard *toggl.Dashboard
@@ -170,11 +170,11 @@ func TestGetDashboard(t *testing.T) {
 			httpStatus:       http.StatusOK,
 			testdataFilePath: "testdata/dashboard/get_200_ok.json",
 			in: struct {
-				ctx         context.Context
-				workspaceId int
+				ctx       context.Context
+				workspace *toggl.Workspace
 			}{
-				ctx:         nil,
-				workspaceId: 1234567,
+				ctx:       nil,
+				workspace: &toggl.Workspace{Id: 1234567},
 			},
 			out: struct {
 				dashboard *toggl.Dashboard
@@ -184,6 +184,25 @@ func TestGetDashboard(t *testing.T) {
 				err:       toggl.ErrContextNotFound,
 			},
 		},
+		{
+			name:             "Without workspace",
+			httpStatus:       http.StatusOK,
+			testdataFilePath: "testdata/dashboard/get_200_ok.json",
+			in: struct {
+				ctx       context.Context
+				workspace *toggl.Workspace
+			}{
+				ctx:       context.Background(),
+				workspace: nil,
+			},
+			out: struct {
+				dashboard *toggl.Dashboard
+				err       error
+			}{
+				dashboard: nil,
+				err:       toggl.ErrWorkspaceNotFound,
+			},
+		},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
@@ -191,7 +210,7 @@ func TestGetDashboard(t *testing.T) {
 			defer mockServer.Close()
 
 			client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
-			actualDashboard, err := client.GetDashboard(c.in.ctx, c.in.workspaceId)
+			actualDashboard, err := client.GetDashboard(c.in.ctx, c.in.workspace)
 			if !reflect.DeepEqual(actualDashboard, c.out.dashboard) {
 				t.Errorf("\nwant: %+#v\ngot : %+#v\n", c.out.dashboard, actualDashboard)
 			}
@@ -221,5 +240,7 @@ func TestGetDashboardUseURLIncludingWorkspaceId(t *testing.T) {
 	}))
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
-	_, _ = client.GetDashboard(context.Background(), workspaceId)
+	_, _ = client.GetDashboard(context.Background(), &toggl.Workspace{
+		Id: workspaceId,
+	})
 }
