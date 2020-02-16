@@ -61,7 +61,7 @@ type Client struct {
 }
 
 // Option represents optional parameters of NewClient.
-type Option func(c *Client)
+type Option func(*Client)
 
 // HTTPClient sets an HTTP client to use when sending requests.
 // By default, http.DefaultClient is used.
