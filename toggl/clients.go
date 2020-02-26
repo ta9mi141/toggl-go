@@ -49,13 +49,13 @@ func (c *Client) GetTogglClients(ctx context.Context) ([]*TogglClient, error) {
 	return togglClients, nil
 }
 
-func (c *Client) GetTogglClientProjects(ctx context.Context, togglClient *TogglClient) ([]*Project, error) {
+func (c *Client) GetTogglClientProjects(ctx context.Context, togglClient *TogglClient, params ...QueryString) ([]*Project, error) {
 	if togglClient == nil {
 		return nil, ErrTogglClientNotFound
 	}
 	var projects []*Project
 	endpoint := clientsEndpoint + "/" + strconv.Itoa(togglClient.Id) + "/projects"
-	if err := c.httpGet(ctx, c.buildURL(endpoint), &projects); err != nil {
+	if err := c.httpGet(ctx, c.buildURL(endpoint, params...), &projects); err != nil {
 		return nil, err
 	}
 	return projects, nil

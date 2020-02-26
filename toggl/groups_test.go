@@ -356,7 +356,7 @@ func TestUpdateGroup(t *testing.T) {
 
 func TestUpdateGroupUseURLIncludingGroupId(t *testing.T) {
 	groupId := 123456
-	expectedRequestURI := "/api/v8/groups/" + strconv.Itoa(groupId)
+	expectedRequestURI := "/api/v8/groups/" + strconv.Itoa(groupId) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -487,7 +487,7 @@ func TestDeleteGroup(t *testing.T) {
 
 func TestDeleteGroupUseURLIncludingGroupId(t *testing.T) {
 	groupId := 123456
-	expectedRequestURI := "/api/v8/groups/" + strconv.Itoa(groupId)
+	expectedRequestURI := "/api/v8/groups/" + strconv.Itoa(groupId) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {

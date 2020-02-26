@@ -110,9 +110,22 @@ func NewClient(options ...Option) *Client {
 	return newClient
 }
 
-func (c *Client) buildURL(endpoint string) string {
+// QueryString represents the additional parameter of Get requests.
+type QueryString func(*url.Values)
+
+func Active(active string) QueryString {
+	return func(v *url.Values) {
+		v.Add("active", active)
+	}
+}
+
+func (c *Client) buildURL(endpoint string, params ...QueryString) string {
 	c.URL.Path = endpoint
-	return c.URL.String()
+	values := url.Values{}
+	for _, param := range params {
+		param(&values)
+	}
+	return c.URL.String() + "?" + values.Encode()
 }
 
 func (c *Client) httpGet(ctx context.Context, url string, respBody interface{}) error {

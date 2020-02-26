@@ -163,7 +163,7 @@ func TestGetTogglClient(t *testing.T) {
 
 func TestGetTogglClientUseURLIncludingClientId(t *testing.T) {
 	togglClientId := 12345678
-	expectedRequestURI := "/api/v8/clients/" + strconv.Itoa(togglClientId)
+	expectedRequestURI := "/api/v8/clients/" + strconv.Itoa(togglClientId) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -433,7 +433,7 @@ func TestGetTogglClientProjects(t *testing.T) {
 
 func TestGetTogglClientProjectsUseURLIncludingClientId(t *testing.T) {
 	togglClientId := 12345678
-	expectedRequestURI := "/api/v8/clients/" + strconv.Itoa(togglClientId) + "/projects"
+	expectedRequestURI := "/api/v8/clients/" + strconv.Itoa(togglClientId) + "/projects" + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -447,20 +447,20 @@ func TestGetTogglClientProjectsUseURLIncludingClientId(t *testing.T) {
 	})
 }
 
-// func TestGetTogglClientProjectsUseURLIncludingAdditionalParameter(t *testing.T) {
-// 	togglClientId := 12345678
-// 	active := "both"
-// 	expectedRequestURI := "/api/v8/clients/" + strconv.Itoa(togglClientId) + "/projects?active=" + active
-// 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-// 		actualRequestURI := r.URL.RequestURI()
-// 		if actualRequestURI != expectedRequestURI {
-// 			t.Errorf("\nwant: %+#v\ngot : %+#v\n", expectedRequestURI, actualRequestURI)
-// 		}
-// 	}))
-//
-// 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
-// 	_, _ = client.GetTogglClientProjects(context.Background(), &toggl.TogglClient{Id: togglClientId}, active)
-// }
+func TestGetTogglClientProjectsUseURLIncludingQueryStrings(t *testing.T) {
+	togglClientId := 12345678
+	active := "both"
+	expectedRequestURI := "/api/v8/clients/" + strconv.Itoa(togglClientId) + "/projects?active=" + active
+	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		actualRequestURI := r.URL.RequestURI()
+		if actualRequestURI != expectedRequestURI {
+			t.Errorf("\nwant: %+#v\ngot : %+#v\n", expectedRequestURI, actualRequestURI)
+		}
+	}))
+
+	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
+	_, _ = client.GetTogglClientProjects(context.Background(), &toggl.TogglClient{Id: togglClientId}, toggl.Active(active))
+}
 
 func TestCreateTogglClient(t *testing.T) {
 	cases := []struct {
@@ -934,7 +934,7 @@ func TestDeleteTogglClient(t *testing.T) {
 
 func TestDeleteTogglClientUseURLIncludingClientId(t *testing.T) {
 	togglClientId := 12345678
-	expectedRequestURI := "/api/v8/clients/" + strconv.Itoa(togglClientId)
+	expectedRequestURI := "/api/v8/clients/" + strconv.Itoa(togglClientId) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {

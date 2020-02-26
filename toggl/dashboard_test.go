@@ -231,7 +231,7 @@ func TestGetDashboard(t *testing.T) {
 
 func TestGetDashboardUseURLIncludingWorkspaceId(t *testing.T) {
 	workspaceId := 1234567
-	expectedRequestURI := "/api/v8/dashboard/" + strconv.Itoa(workspaceId)
+	expectedRequestURI := "/api/v8/dashboard/" + strconv.Itoa(workspaceId) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {

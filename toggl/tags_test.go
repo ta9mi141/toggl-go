@@ -357,7 +357,7 @@ func TestUpdateTag(t *testing.T) {
 
 func TestUpdateTagUseURLIncludingTagId(t *testing.T) {
 	tagId := 1234567
-	expectedRequestURI := "/api/v8/tags/" + strconv.Itoa(tagId)
+	expectedRequestURI := "/api/v8/tags/" + strconv.Itoa(tagId) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -488,7 +488,7 @@ func TestDeleteTag(t *testing.T) {
 
 func TestDeleteTagUseURLIncludingTagId(t *testing.T) {
 	tagId := 1234567
-	expectedRequestURI := "/api/v8/tags/" + strconv.Itoa(tagId)
+	expectedRequestURI := "/api/v8/tags/" + strconv.Itoa(tagId) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
