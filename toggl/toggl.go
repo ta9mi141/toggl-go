@@ -113,6 +113,7 @@ func NewClient(options ...Option) *Client {
 // QueryString represents the additional parameter of Get requests.
 type QueryString func(*url.Values)
 
+// Active filters projects by their state.
 func Active(active string) QueryString {
 	return func(v *url.Values) {
 		v.Add("active", active)

@@ -29,6 +29,7 @@ type rawTogglClientData struct {
 	TogglClient TogglClient `json:"data"`
 }
 
+// GetTogglClient gets client details.
 func (c *Client) GetTogglClient(ctx context.Context, togglClient *TogglClient) (*TogglClient, error) {
 	if togglClient == nil {
 		return nil, ErrTogglClientNotFound
@@ -41,6 +42,7 @@ func (c *Client) GetTogglClient(ctx context.Context, togglClient *TogglClient) (
 	return &rawTogglClientData.TogglClient, nil
 }
 
+// GetTogglClients gets clients visible to user.
 func (c *Client) GetTogglClients(ctx context.Context) ([]*TogglClient, error) {
 	var togglClients []*TogglClient
 	if err := c.httpGet(ctx, c.buildURL(clientsEndpoint), &togglClients); err != nil {
@@ -49,6 +51,7 @@ func (c *Client) GetTogglClients(ctx context.Context) ([]*TogglClient, error) {
 	return togglClients, nil
 }
 
+// GetTogglClientProjects gets client projects.
 func (c *Client) GetTogglClientProjects(ctx context.Context, togglClient *TogglClient, params ...QueryString) ([]*Project, error) {
 	if togglClient == nil {
 		return nil, ErrTogglClientNotFound
@@ -61,6 +64,7 @@ func (c *Client) GetTogglClientProjects(ctx context.Context, togglClient *TogglC
 	return projects, nil
 }
 
+// CreateTogglClient creates a client.
 func (c *Client) CreateTogglClient(ctx context.Context, togglClient *TogglClient) (*TogglClient, error) {
 	if togglClient == nil {
 		return nil, ErrTogglClientNotFound
@@ -72,6 +76,7 @@ func (c *Client) CreateTogglClient(ctx context.Context, togglClient *TogglClient
 	return &rawTogglClientData.TogglClient, nil
 }
 
+// UpdateTogglClient updates a client.
 func (c *Client) UpdateTogglClient(ctx context.Context, togglClient *TogglClient) (*TogglClient, error) {
 	if togglClient == nil {
 		return nil, ErrTogglClientNotFound
@@ -84,6 +89,7 @@ func (c *Client) UpdateTogglClient(ctx context.Context, togglClient *TogglClient
 	return &rawTogglClientData.TogglClient, nil
 }
 
+// DeleteTogglClient deletes a client.
 func (c *Client) DeleteTogglClient(ctx context.Context, togglClient *TogglClient) error {
 	if togglClient == nil {
 		return ErrTogglClientNotFound
