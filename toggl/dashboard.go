@@ -26,6 +26,7 @@ type Dashboard struct {
 	} `json:"most_active_user"`
 }
 
+// GetDashboard gets a dashboard.
 func (c *Client) GetDashboard(ctx context.Context, workspace *Workspace) (*Dashboard, error) {
 	if workspace == nil {
 		return nil, ErrWorkspaceNotFound
