@@ -364,6 +364,29 @@ func TestUpdateProject(t *testing.T) {
 	}
 }
 
+func TestUpdateProjectConvertParamsToRequestBody(t *testing.T) {
+	expectedProjectRequest := &toggl.Project{
+		Name: "updated",
+		Wid:  1234567,
+	}
+	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requestBody, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			t.Error(err.Error())
+		}
+		actualProjectRequest := new(toggl.Project)
+		if err := json.Unmarshal(requestBody, actualProjectRequest); err != nil {
+			t.Error(err.Error())
+		}
+		if !reflect.DeepEqual(actualProjectRequest, expectedProjectRequest) {
+			t.Errorf("\nwant: %+#v\ngot : %+#v\n", expectedProjectRequest, actualProjectRequest)
+		}
+	}))
+
+	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
+	_, _ = client.UpdateProject(context.Background(), expectedProjectRequest)
+}
+
 func TestUpdateProjectUseURLIncludingProjectId(t *testing.T) {
 	projectId := 123456789
 	expectedRequestURI := "/api/v8/projects/" + strconv.Itoa(projectId) + "?"

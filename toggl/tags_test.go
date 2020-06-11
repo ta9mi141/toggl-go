@@ -355,6 +355,29 @@ func TestUpdateTag(t *testing.T) {
 	}
 }
 
+func TestUpdateTagConvertParamsToRequestBody(t *testing.T) {
+	expectedTagRequest := &toggl.Tag{
+		Wid:  1234567,
+		Name: "updated",
+	}
+	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requestBody, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			t.Error(err.Error())
+		}
+		actualTagRequest := new(toggl.Tag)
+		if err := json.Unmarshal(requestBody, actualTagRequest); err != nil {
+			t.Error(err.Error())
+		}
+		if !reflect.DeepEqual(actualTagRequest, expectedTagRequest) {
+			t.Errorf("\nwant: %+#v\ngot : %+#v\n", expectedTagRequest, actualTagRequest)
+		}
+	}))
+
+	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
+	_, _ = client.UpdateTag(context.Background(), expectedTagRequest)
+}
+
 func TestUpdateTagUseURLIncludingTagId(t *testing.T) {
 	tagId := 1234567
 	expectedRequestURI := "/api/v8/tags/" + strconv.Itoa(tagId) + "?"

@@ -827,6 +827,22 @@ func TestUpdateTogglClientConvertParamsToRequestBody(t *testing.T) {
 	_, _ = client.UpdateTogglClient(context.Background(), expectedTogglClientRequest)
 }
 
+func TestUpdateTogglClientUseURLIncludingClientId(t *testing.T) {
+	togglClientId := 12345678
+	expectedRequestURI := "/api/v8/clients/" + strconv.Itoa(togglClientId) + "?"
+	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		actualRequestURI := r.URL.RequestURI()
+		if actualRequestURI != expectedRequestURI {
+			t.Errorf("\nwant: %+#v\ngot : %+#v\n", expectedRequestURI, actualRequestURI)
+		}
+	}))
+
+	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
+	_, _ = client.UpdateTogglClient(context.Background(), &toggl.TogglClient{
+		Id: togglClientId,
+	})
+}
+
 func TestDeleteTogglClient(t *testing.T) {
 	cases := []struct {
 		name             string

@@ -354,6 +354,29 @@ func TestUpdateGroup(t *testing.T) {
 	}
 }
 
+func TestUpdateGroupConvertParamsToRequestBody(t *testing.T) {
+	expectedGroupRequest := &toggl.Group{
+		Wid:  1234567,
+		Name: "updated",
+	}
+	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requestBody, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			t.Error(err.Error())
+		}
+		actualGroupRequest := new(toggl.Group)
+		if err := json.Unmarshal(requestBody, actualGroupRequest); err != nil {
+			t.Error(err.Error())
+		}
+		if !reflect.DeepEqual(actualGroupRequest, expectedGroupRequest) {
+			t.Errorf("\nwant: %+#v\ngot : %+#v\n", expectedGroupRequest, actualGroupRequest)
+		}
+	}))
+
+	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
+	_, _ = client.UpdateGroup(context.Background(), expectedGroupRequest)
+}
+
 func TestUpdateGroupUseURLIncludingGroupId(t *testing.T) {
 	groupId := 123456
 	expectedRequestURI := "/api/v8/groups/" + strconv.Itoa(groupId) + "?"
