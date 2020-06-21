@@ -219,7 +219,7 @@ func TestGetWorkspace(t *testing.T) {
 				err       error
 			}{
 				workspace: nil,
-				err: toggl.TogglError{
+				err: &toggl.TogglError{
 					Message: "",
 					Code:    403,
 				},
@@ -241,7 +241,7 @@ func TestGetWorkspace(t *testing.T) {
 				err       error
 			}{
 				workspace: nil,
-				err: toggl.TogglError{
+				err: &toggl.TogglError{
 					Message: "null\n",
 					Code:    404,
 				},
@@ -395,7 +395,7 @@ func TestUpdateWorkspace(t *testing.T) {
 				err       error
 			}{
 				workspace: nil,
-				err: toggl.TogglError{
+				err: &toggl.TogglError{
 					Message: "workspace ID must be a positive integer\n",
 					Code:    400,
 				},
@@ -420,7 +420,7 @@ func TestUpdateWorkspace(t *testing.T) {
 				err       error
 			}{
 				workspace: nil,
-				err: toggl.TogglError{
+				err: &toggl.TogglError{
 					Message: "",
 					Code:    403,
 				},
@@ -503,7 +503,7 @@ func TestUpdateWorkspaceConvertParamsToRequestBody(t *testing.T) {
 		if err != nil {
 			t.Error(err.Error())
 		}
-		actualWorkspaceRequest := new(toggl.Project)
+		actualWorkspaceRequest := new(toggl.Workspace)
 		if err := json.Unmarshal(requestBody, actualWorkspaceRequest); err != nil {
 			t.Error(err.Error())
 		}
@@ -603,7 +603,7 @@ func TestGetWorkspaceUsers(t *testing.T) {
 				err   error
 			}{
 				users: nil,
-				err: toggl.TogglError{
+				err: &toggl.TogglError{
 					Message: "Missing or invalid workspace_id\n",
 					Code:    400,
 				},
@@ -625,7 +625,7 @@ func TestGetWorkspaceUsers(t *testing.T) {
 				err   error
 			}{
 				users: nil,
-				err: toggl.TogglError{
+				err: &toggl.TogglError{
 					Message: "",
 					Code:    403,
 				},
@@ -773,7 +773,7 @@ func TestGetWorkspaceClients(t *testing.T) {
 				err     error
 			}{
 				clients: nil,
-				err: toggl.TogglError{
+				err: &toggl.TogglError{
 					Message: "Missing or invalid workspace_id\n",
 					Code:    400,
 				},
@@ -795,7 +795,7 @@ func TestGetWorkspaceClients(t *testing.T) {
 				err     error
 			}{
 				clients: nil,
-				err: toggl.TogglError{
+				err: &toggl.TogglError{
 					Message: "",
 					Code:    403,
 				},
@@ -943,7 +943,7 @@ func TestGetWorkspaceGroups(t *testing.T) {
 				err    error
 			}{
 				groups: nil,
-				err: toggl.TogglError{
+				err: &toggl.TogglError{
 					Message: "Missing or invalid workspace_id\n",
 					Code:    400,
 				},
@@ -965,7 +965,7 @@ func TestGetWorkspaceGroups(t *testing.T) {
 				err    error
 			}{
 				groups: nil,
-				err: toggl.TogglError{
+				err: &toggl.TogglError{
 					Message: "",
 					Code:    403,
 				},
@@ -1123,7 +1123,7 @@ func TestGetWorkspaceProjects(t *testing.T) {
 				err      error
 			}{
 				projects: nil,
-				err: toggl.TogglError{
+				err: &toggl.TogglError{
 					Message: "Missing or invalid workspace_id\n",
 					Code:    400,
 				},
@@ -1145,7 +1145,7 @@ func TestGetWorkspaceProjects(t *testing.T) {
 				err      error
 			}{
 				projects: nil,
-				err: toggl.TogglError{
+				err: &toggl.TogglError{
 					Message: "",
 					Code:    403,
 				},
@@ -1306,7 +1306,7 @@ func TestGetWorkspaceTags(t *testing.T) {
 				err  error
 			}{
 				tags: nil,
-				err: toggl.TogglError{
+				err: &toggl.TogglError{
 					Message: "Missing or invalid workspace_id\n",
 					Code:    400,
 				},
@@ -1328,7 +1328,7 @@ func TestGetWorkspaceTags(t *testing.T) {
 				err  error
 			}{
 				tags: nil,
-				err: toggl.TogglError{
+				err: &toggl.TogglError{
 					Message: "",
 					Code:    403,
 				},

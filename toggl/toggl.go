@@ -122,6 +122,20 @@ func Active(active string) QueryString {
 	}
 }
 
+// ActualHours determines whether the request gets completed hours per project.
+func ActualHours(actualHours string) QueryString {
+	return func(v *url.Values) {
+		v.Add("actual_hours", actualHours)
+	}
+}
+
+// OnlyTemplates determines whether the request gets only project templates.
+func OnlyTemplates(onlyTemplates string) QueryString {
+	return func(v *url.Values) {
+		v.Add("only_templates", onlyTemplates)
+	}
+}
+
 func arrayToString(array []int, delimiter string) string {
 	return strings.Trim(strings.Join(strings.Fields(fmt.Sprint(array)), delimiter), "[]")
 }
