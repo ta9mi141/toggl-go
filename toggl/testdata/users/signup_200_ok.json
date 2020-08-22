@@ -1,0 +1,29 @@
+{
+    "data":{
+        "id":1234567,
+        "default_wid":9876543,
+        "email":"test.user@toggl.com",
+        "fullname":"Test User",
+        "jquery_timeofday_format":"",
+        "jquery_date_format":"",
+        "timeofday_format":"",
+        "date_format":"",
+        "store_start_and_stop_time":false,
+        "beginning_of_week":0,
+        "sidebar_piechart":false,
+        "record_timeline":false,
+        "render_timeline":false,
+        "timeline_enabled":false,
+        "timeline_experiment":false,
+        "new_blog_post":{},
+        "should_upgrade":false,
+        "achievements_enabled":false,
+        "timezone":"Etc/UTC",
+        "openid_enabled":false,
+        "send_product_emails":false,
+        "send_weekly_report":false,
+        "send_timer_notifications":false,
+        "last_blog_entry":"",
+        "invitation":{}
+    }
+}
