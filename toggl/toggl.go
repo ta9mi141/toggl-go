@@ -136,6 +136,20 @@ func OnlyTemplates(onlyTemplates string) QueryString {
 	}
 }
 
+// WithRelatedData determines whether the request gets all the workspaces, clients, projects, time entries, and tags which the user can see.
+func WithRelatedData(withRelatedData string) QueryString {
+	return func(v *url.Values) {
+		v.Add("with_related_data", withRelatedData)
+	}
+}
+
+// Since determines whether the request retrieves objects which have changed after certain time.
+func Since(since string) QueryString {
+	return func(v *url.Values) {
+		v.Add("since", since)
+	}
+}
+
 func arrayToString(array []int, delimiter string) string {
 	return strings.Trim(strings.Join(strings.Fields(fmt.Sprint(array)), delimiter), "[]")
 }
