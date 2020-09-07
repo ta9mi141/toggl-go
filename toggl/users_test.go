@@ -216,8 +216,8 @@ func TestUpdateUser(t *testing.T) {
 		httpStatus       int
 		testdataFilePath string
 		in               struct {
-			user *toggl.User
 			ctx  context.Context
+			user *toggl.User
 		}
 		out struct {
 			user *toggl.User
@@ -229,15 +229,15 @@ func TestUpdateUser(t *testing.T) {
 			httpStatus:       http.StatusOK,
 			testdataFilePath: "testdata/users/update_200_ok.json",
 			in: struct {
-				user *toggl.User
 				ctx  context.Context
+				user *toggl.User
 			}{
+				ctx: context.Background(),
 				user: &toggl.User{
 					Fullname:          "Test User",
 					BeginningOfWeek:   0,
 					SendProductEmails: true,
 				},
-				ctx: context.Background(),
 			},
 			out: struct {
 				user *toggl.User
@@ -277,15 +277,15 @@ func TestUpdateUser(t *testing.T) {
 			httpStatus:       http.StatusUnauthorized,
 			testdataFilePath: "testdata/users/update_401_unauthorized.json",
 			in: struct {
-				user *toggl.User
 				ctx  context.Context
+				user *toggl.User
 			}{
+				ctx: context.Background(),
 				user: &toggl.User{
 					Fullname:          "Test User",
 					BeginningOfWeek:   0,
 					SendProductEmails: true,
 				},
-				ctx: context.Background(),
 			},
 			out: struct {
 				user *toggl.User
@@ -303,15 +303,15 @@ func TestUpdateUser(t *testing.T) {
 			httpStatus:       http.StatusForbidden,
 			testdataFilePath: "testdata/users/update_403_forbidden.json",
 			in: struct {
-				user *toggl.User
 				ctx  context.Context
+				user *toggl.User
 			}{
+				ctx: context.Background(),
 				user: &toggl.User{
 					Fullname:          "Test User",
 					BeginningOfWeek:   0,
 					SendProductEmails: true,
 				},
-				ctx: context.Background(),
 			},
 			out: struct {
 				user *toggl.User
@@ -329,15 +329,15 @@ func TestUpdateUser(t *testing.T) {
 			httpStatus:       http.StatusOK,
 			testdataFilePath: "testdata/users/update_200_ok.json",
 			in: struct {
-				user *toggl.User
 				ctx  context.Context
+				user *toggl.User
 			}{
+				ctx: nil,
 				user: &toggl.User{
 					Fullname:          "Test User",
 					BeginningOfWeek:   0,
 					SendProductEmails: true,
 				},
-				ctx: nil,
 			},
 			out: struct {
 				user *toggl.User
@@ -352,11 +352,11 @@ func TestUpdateUser(t *testing.T) {
 			httpStatus:       http.StatusOK,
 			testdataFilePath: "testdata/users/update_200_ok.json",
 			in: struct {
-				user *toggl.User
 				ctx  context.Context
+				user *toggl.User
 			}{
-				user: nil,
 				ctx:  context.Background(),
+				user: nil,
 			},
 			out: struct {
 				user *toggl.User
