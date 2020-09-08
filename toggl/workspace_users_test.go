@@ -20,8 +20,9 @@ func TestInviteUsersToWorkspace(t *testing.T) {
 		httpStatus       int
 		testdataFilePath string
 		in               struct {
-			ctx   context.Context
-			users []*toggl.User
+			ctx       context.Context
+			workspace *toggl.Workspace
+			users     []*toggl.User
 		}
 		out struct {
 			workspaceUsers []*toggl.WorkspaceUser
@@ -33,10 +34,14 @@ func TestInviteUsersToWorkspace(t *testing.T) {
 			httpStatus:       http.StatusOK,
 			testdataFilePath: "testdata/workspace_users/invite_200_ok.json",
 			in: struct {
-				ctx   context.Context
-				users []*toggl.User
+				ctx       context.Context
+				workspace *toggl.Workspace
+				users     []*toggl.User
 			}{
 				ctx: context.Background(),
+				workspace: &toggl.Workspace{
+					Id: 3456789,
+				},
 				users: []*toggl.User{
 					{
 						Email: "test.user@toggl.com",
@@ -67,10 +72,14 @@ func TestInviteUsersToWorkspace(t *testing.T) {
 			httpStatus:       http.StatusBadRequest,
 			testdataFilePath: "testdata/workspace_users/invite_400_bad_request.txt",
 			in: struct {
-				ctx   context.Context
-				users []*toggl.User
+				ctx       context.Context
+				workspace *toggl.Workspace
+				users     []*toggl.User
 			}{
 				ctx: context.Background(),
+				workspace: &toggl.Workspace{
+					Id: 3456789,
+				},
 				users: []*toggl.User{
 					{
 						Email: "",
@@ -93,10 +102,14 @@ func TestInviteUsersToWorkspace(t *testing.T) {
 			httpStatus:       http.StatusForbidden,
 			testdataFilePath: "testdata/workspace_users/invite_403_forbidden.json",
 			in: struct {
-				ctx   context.Context
-				users []*toggl.User
+				ctx       context.Context
+				workspace *toggl.Workspace
+				users     []*toggl.User
 			}{
 				ctx: context.Background(),
+				workspace: &toggl.Workspace{
+					Id: 3456789,
+				},
 				users: []*toggl.User{
 					{
 						Email: "test.user@toggl.com",
@@ -122,10 +135,14 @@ func TestInviteUsersToWorkspace(t *testing.T) {
 			httpStatus:       http.StatusOK,
 			testdataFilePath: "testdata/workspace_users/invite_200_ok.json",
 			in: struct {
-				ctx   context.Context
-				users []*toggl.User
+				ctx       context.Context
+				workspace *toggl.Workspace
+				users     []*toggl.User
 			}{
 				ctx: nil,
+				workspace: &toggl.Workspace{
+					Id: 3456789,
+				},
 				users: []*toggl.User{
 					{
 						Email: "test.user@toggl.com",
@@ -144,14 +161,46 @@ func TestInviteUsersToWorkspace(t *testing.T) {
 			},
 		},
 		{
+			name:             "Without workspace",
+			httpStatus:       http.StatusOK,
+			testdataFilePath: "testdata/workspace_users/invite_200_ok.json",
+			in: struct {
+				ctx       context.Context
+				workspace *toggl.Workspace
+				users     []*toggl.User
+			}{
+				ctx:       context.Background(),
+				workspace: nil,
+				users: []*toggl.User{
+					{
+						Email: "test.user@toggl.com",
+					},
+					{
+						Email: "jane.swift@toggl.com",
+					},
+				},
+			},
+			out: struct {
+				workspaceUsers []*toggl.WorkspaceUser
+				err            error
+			}{
+				workspaceUsers: nil,
+				err:            toggl.ErrWorkspaceNotFound,
+			},
+		},
+		{
 			name:             "Without users",
 			httpStatus:       http.StatusOK,
 			testdataFilePath: "testdata/workspace_users/invite_200_ok.json",
 			in: struct {
-				ctx   context.Context
-				users []*toggl.User
+				ctx       context.Context
+				workspace *toggl.Workspace
+				users     []*toggl.User
 			}{
-				ctx:   context.Background(),
+				ctx: context.Background(),
+				workspace: &toggl.Workspace{
+					Id: 3456789,
+				},
 				users: nil,
 			},
 			out: struct {
@@ -169,7 +218,7 @@ func TestInviteUsersToWorkspace(t *testing.T) {
 			defer mockServer.Close()
 
 			client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
-			actualWorkspaceUsers, err := client.InviteUsersToWorkspace(c.in.ctx, c.in.users)
+			actualWorkspaceUsers, err := client.InviteUsersToWorkspace(c.in.ctx, c.in.workspace, c.in.users)
 			if !reflect.DeepEqual(actualWorkspaceUsers, c.out.workspaceUsers) {
 				t.Errorf("\nwant: %+#v\ngot : %+#v\n", c.out.workspaceUsers, actualWorkspaceUsers)
 			}
@@ -189,6 +238,9 @@ func TestInviteUsersToWorkspace(t *testing.T) {
 }
 
 func TestInviteUsersToWorkspaceConvertParamsToRequestBody(t *testing.T) {
+	workspace := &toggl.Workspace{
+		Id: 3456789,
+	}
 	expectedUsersRequest := []*toggl.User{
 		{
 			Email: "test.user@toggl.com",
@@ -209,7 +261,26 @@ func TestInviteUsersToWorkspaceConvertParamsToRequestBody(t *testing.T) {
 	}))
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
-	_, _ = client.InviteUsersToWorkspace(context.Background(), expectedUsersRequest)
+	_, _ = client.InviteUsersToWorkspace(context.Background(), workspace, expectedUsersRequest)
+}
+
+func TestInviteUsersToWorkspaceUseURLIncludingWorkspaceId(t *testing.T) {
+	workspaceId := 1234567
+	users := []*toggl.User{
+		{
+			Email: "test.user@toggl.com",
+		},
+	}
+	expectedRequestURI := "/api/v8/workspaces/" + strconv.Itoa(workspaceId) + "/invite" + "?"
+	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		actualRequestURI := r.URL.RequestURI()
+		if actualRequestURI != expectedRequestURI {
+			t.Errorf("\nwant: %+#v\ngot : %+#v\n", expectedRequestURI, actualRequestURI)
+		}
+	}))
+
+	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
+	_, _ = client.InviteUsersToWorkspace(context.Background(), &toggl.Workspace{Id: workspaceId}, users)
 }
 
 func TestUpdateWorkspaceUser(t *testing.T) {
