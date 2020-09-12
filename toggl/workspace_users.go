@@ -3,6 +3,8 @@ package toggl
 import (
 	"context"
 	"errors"
+	"strconv"
+	"strings"
 )
 
 const (
@@ -23,23 +25,81 @@ var (
 	ErrWorkspaceUserNotFound = errors.New("The provided workspace user must be non-nil")
 )
 
-type rawWorkspaceUserData struct {
-	WorkspaceUser WorkspaceUser `json:"data"`
-	Notifications []string      `json:"notifications"`
+type rawInvitedUsersData struct {
+	WorkspaceUsers []*WorkspaceUser `json:"data"`
+	Notifications  []string         `json:"notifications"`
 }
 
-func (c *Client) InviteUsersToWorkspace(ctx context.Context, users []*User) ([]*WorkspaceUser, error) {
-	return nil, nil // TODO
+type rawWorkspaceUserData struct {
+	WorkspaceUser WorkspaceUser `json:"data"`
+}
+
+func (c *Client) InviteUsersToWorkspace(ctx context.Context, workspace *Workspace, users []*User) ([]*WorkspaceUser, error) {
+	if workspace == nil {
+		return nil, ErrWorkspaceNotFound
+	}
+	if len(users) == 0 {
+		return nil, ErrUserNotFound
+	}
+
+	emails := []string{}
+	for _, user := range users {
+		if user == nil {
+			return nil, ErrUserNotFound
+		}
+		emails = append(emails, user.Email)
+	}
+
+	invitedUsers := struct {
+		Emails []string `json:"emails"`
+	}{
+		Emails: emails,
+	}
+	endpoint := workspacesEndpoint + "/" + strconv.Itoa(workspace.Id) + "/invite"
+	rawInvitedUsersData := new(rawInvitedUsersData)
+
+	if err := c.httpPost(ctx, c.buildURL(endpoint), invitedUsers, rawInvitedUsersData); err != nil {
+		return nil, err
+	}
+
+	if rawInvitedUsersData.Notifications == nil {
+		return rawInvitedUsersData.WorkspaceUsers, nil
+	} else {
+		return rawInvitedUsersData.WorkspaceUsers, errors.New(strings.Join(rawInvitedUsersData.Notifications, "\n"))
+	}
 }
 
 func (c *Client) UpdateWorkspaceUser(ctx context.Context, workspaceUser *WorkspaceUser) (*WorkspaceUser, error) {
-	return nil, nil // TODO
+	if workspaceUser == nil {
+		return nil, ErrWorkspaceUserNotFound
+	}
+	endpoint := workspaceUsersEndpoint + "/" + strconv.Itoa(workspaceUser.Id)
+	rawWorkspaceUserData := new(rawWorkspaceUserData)
+	if err := c.httpPut(ctx, c.buildURL(endpoint), workspaceUser, rawWorkspaceUserData); err != nil {
+		return nil, err
+	}
+	return &rawWorkspaceUserData.WorkspaceUser, nil
 }
 
 func (c *Client) DeleteWorkspaceUser(ctx context.Context, workspaceUser *WorkspaceUser) error {
-	return nil // TODO
+	if workspaceUser == nil {
+		return ErrWorkspaceUserNotFound
+	}
+	endpoint := workspaceUsersEndpoint + "/" + strconv.Itoa(workspaceUser.Id)
+	if err := c.httpDelete(ctx, c.buildURL(endpoint)); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (c *Client) GetWorkspaceUsersAsWorkspaceUser(ctx context.Context, workspace *Workspace) ([]*WorkspaceUser, error) {
-	return nil, nil // TODO
+	if workspace == nil {
+		return nil, ErrWorkspaceNotFound
+	}
+	endpoint := workspacesEndpoint + "/" + strconv.Itoa(workspace.Id) + "/workspace_users"
+	var workspaceUsers []*WorkspaceUser
+	if err := c.httpGet(ctx, c.buildURL(endpoint), &workspaceUsers); err != nil {
+		return nil, err
+	}
+	return workspaceUsers, nil
 }

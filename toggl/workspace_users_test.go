@@ -229,7 +229,9 @@ func TestInviteUsersToWorkspace(t *testing.T) {
 					t.Errorf("\nwant: %#+v\ngot : %#+v\n", c.out.err, togglError)
 				}
 			} else {
-				if !errors.Is(err, c.out.err) {
+				// Since errors.New returns a distinct error value even if the text is identical,
+				// equality of errors generated dynamically by errors.New cannot be compared by errors.Is.
+				if !errors.Is(err, c.out.err) && (err.Error() != c.out.err.Error()) {
 					t.Errorf("\nwant: %#+v\ngot : %#+v\n", c.out.err, err)
 				}
 			}
@@ -241,27 +243,33 @@ func TestInviteUsersToWorkspaceConvertParamsToRequestBody(t *testing.T) {
 	workspace := &toggl.Workspace{
 		Id: 3456789,
 	}
-	expectedUsersRequest := []*toggl.User{
-		{
-			Email: "test.user@toggl.com",
-		},
+	expectedRequest := struct {
+		Emails []string `json:"emails"`
+	}{
+		Emails: []string{"test.user@toggl.com", "jane.swift@toggl.com"},
 	}
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		requestBody, err := ioutil.ReadAll(r.Body)
 		if err != nil {
 			t.Error(err.Error())
 		}
-		var actualUsersRequest []*toggl.User
-		if err := json.Unmarshal(requestBody, &actualUsersRequest); err != nil {
+		var actualRequest struct {
+			Emails []string `json:"emails"`
+		}
+		if err := json.Unmarshal(requestBody, &actualRequest); err != nil {
 			t.Error(err.Error())
 		}
-		if !reflect.DeepEqual(actualUsersRequest, expectedUsersRequest) {
-			t.Errorf("\nwant: %+#v\ngot : %+#v\n", expectedUsersRequest, actualUsersRequest)
+		if !reflect.DeepEqual(actualRequest, expectedRequest) {
+			t.Errorf("\nwant: %+#v\ngot : %+#v\n", expectedRequest, actualRequest)
 		}
 	}))
 
+	users := []*toggl.User{}
+	for _, email := range expectedRequest.Emails {
+		users = append(users, &toggl.User{Email: email})
+	}
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
-	_, _ = client.InviteUsersToWorkspace(context.Background(), workspace, expectedUsersRequest)
+	_, _ = client.InviteUsersToWorkspace(context.Background(), workspace, users)
 }
 
 func TestInviteUsersToWorkspaceUseURLIncludingWorkspaceId(t *testing.T) {
