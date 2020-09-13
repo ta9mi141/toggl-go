@@ -21,7 +21,7 @@ import (
 
 const (
 	basicAuthPassword string = "api_token" // Defined in Toggl API v8
-	defaultBaseURL    string = "https://toggl.com"
+	defaultBaseURL    string = "https://api.track.toggl.com"
 )
 
 // Error wraps error interface with status code.
