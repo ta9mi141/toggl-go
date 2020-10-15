@@ -470,7 +470,7 @@ func TestDeleteProjects(t *testing.T) {
 		{
 			name:             "200 OK Mass Actions",
 			httpStatus:       http.StatusOK,
-			testdataFilePath: "testdata/projects/delete_multiple_projects_200_ok.json",
+			testdataFilePath: "testdata/projects/mass_delete_200_ok.json",
 			in: struct {
 				ctx      context.Context
 				projects []*toggl.Project
@@ -487,7 +487,7 @@ func TestDeleteProjects(t *testing.T) {
 		{
 			name:             "400 Bad Request Mass Actions",
 			httpStatus:       http.StatusBadRequest,
-			testdataFilePath: "testdata/projects/delete_multiple_projects_400_bad_request.txt",
+			testdataFilePath: "testdata/projects/mass_delete_400_bad_request.txt",
 			in: struct {
 				ctx      context.Context
 				projects []*toggl.Project
@@ -507,7 +507,7 @@ func TestDeleteProjects(t *testing.T) {
 		{
 			name:             "403 Forbidden Mass Actions",
 			httpStatus:       http.StatusForbidden,
-			testdataFilePath: "testdata/projects/delete_multiple_projects_403_forbidden.json",
+			testdataFilePath: "testdata/projects/mass_delete_403_forbidden.json",
 			in: struct {
 				ctx      context.Context
 				projects []*toggl.Project
