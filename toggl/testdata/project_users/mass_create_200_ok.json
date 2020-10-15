@@ -1,0 +1,22 @@
+{
+  "data": [
+    {
+      "id": 12345678,
+      "pid": 987654321,
+      "uid": 3456789,
+      "wid": 5671234,
+      "manager": false,
+      "rate": 4,
+      "fullname": "John Swift"
+    },
+    {
+      "id": 23456789,
+      "pid": 987654321,
+      "uid": 4567890,
+      "wid": 5671234,
+      "manager": false,
+      "rate": 4,
+      "fullname": "Test User"
+    }
+  ]
+}
