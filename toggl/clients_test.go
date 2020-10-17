@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/it-akumi/toggl-go/toggl"
+	"github.com/ta9mi1shi1/toggl-go/toggl"
 )
 
 func TestGetTogglClient(t *testing.T) {

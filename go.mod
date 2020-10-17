@@ -1,3 +1,3 @@
-module github.com/it-akumi/toggl-go
+module github.com/ta9mi1shi1/toggl-go
 
-go 1.13
+go 1.15

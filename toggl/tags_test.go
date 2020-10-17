@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/it-akumi/toggl-go/toggl"
+	"github.com/ta9mi1shi1/toggl-go/toggl"
 )
 
 func TestCreateTag(t *testing.T) {

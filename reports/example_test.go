@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/it-akumi/toggl-go/reports"
+	"github.com/ta9mi1shi1/toggl-go/reports"
 )
 
 // Users must define a data structure for each report
