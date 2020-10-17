@@ -10,6 +10,7 @@ import (
 	"reflect"
 	"strconv"
 	"testing"
+	"time"
 
 	"github.com/ta9mi1shi1/toggl-go/toggl"
 )
@@ -225,6 +226,7 @@ func TestUpdateProjectUser(t *testing.T) {
 					Uid:     2345678,
 					Wid:     3456789,
 					Manager: true,
+					Fields:  "fullname",
 				},
 			},
 			out: struct {
@@ -232,11 +234,13 @@ func TestUpdateProjectUser(t *testing.T) {
 				err         error
 			}{
 				projectUser: &toggl.ProjectUser{
-					Id:      98765432,
-					Pid:     123456789,
-					Uid:     2345678,
-					Wid:     3456789,
-					Manager: true,
+					Id:       98765432,
+					Pid:      123456789,
+					Uid:      2345678,
+					Wid:      3456789,
+					Manager:  true,
+					Fullname: "John Swift",
+					At:       time.Date(2019, time.September, 15, 1, 24, 49, 0, time.FixedZone("", 0)),
 				},
 				err: nil,
 			},
@@ -255,6 +259,7 @@ func TestUpdateProjectUser(t *testing.T) {
 					Uid:     2345678,
 					Wid:     3456789,
 					Manager: true,
+					Fields:  "fullname",
 				},
 			},
 			out: struct {
@@ -269,9 +274,9 @@ func TestUpdateProjectUser(t *testing.T) {
 			},
 		},
 		{
-			name:             "403 Forbidden",
-			httpStatus:       http.StatusForbidden,
-			testdataFilePath: "testdata/project_users/update_403_forbidden.json",
+			name:             "404 Not Found",
+			httpStatus:       http.StatusNotFound,
+			testdataFilePath: "testdata/project_users/update_404_not_found.json",
 			in: struct {
 				ctx         context.Context
 				projectUser *toggl.ProjectUser
@@ -282,6 +287,7 @@ func TestUpdateProjectUser(t *testing.T) {
 					Uid:     2345678,
 					Wid:     3456789,
 					Manager: true,
+					Fields:  "fullname",
 				},
 			},
 			out: struct {
@@ -290,8 +296,8 @@ func TestUpdateProjectUser(t *testing.T) {
 			}{
 				projectUser: nil,
 				err: &toggl.TogglError{
-					Message: "",
-					Code:    403,
+					Message: "null\n",
+					Code:    404,
 				},
 			},
 		},
@@ -309,6 +315,7 @@ func TestUpdateProjectUser(t *testing.T) {
 					Uid:     2345678,
 					Wid:     3456789,
 					Manager: true,
+					Fields:  "fullname",
 				},
 			},
 			out: struct {
@@ -651,6 +658,7 @@ func TestGetProjectUsersInWorkspace(t *testing.T) {
 						Uid:     3456789,
 						Wid:     4567890,
 						Manager: false,
+						At:      time.Date(2018, time.March, 14, 1, 23, 45, 0, time.FixedZone("", 0)),
 					},
 					{
 						Id:      23456789,
@@ -658,6 +666,7 @@ func TestGetProjectUsersInWorkspace(t *testing.T) {
 						Uid:     4567890,
 						Wid:     4567890,
 						Manager: true,
+						At:      time.Date(2020, time.February, 17, 9, 49, 59, 0, time.FixedZone("", 0)),
 					},
 					{
 						Id:      34567890,
@@ -665,6 +674,7 @@ func TestGetProjectUsersInWorkspace(t *testing.T) {
 						Uid:     3456789,
 						Wid:     4567890,
 						Manager: true,
+						At:      time.Date(2017, time.January, 11, 5, 46, 47, 0, time.FixedZone("", 0)),
 					},
 				},
 				err: nil,

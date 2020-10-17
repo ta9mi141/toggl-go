@@ -816,6 +816,7 @@ func TestGetProjectUsers(t *testing.T) {
 			}{
 				projectUsers: []*toggl.ProjectUser{
 					{
+						Id:      12345678,
 						Pid:     123456789,
 						Uid:     1234567,
 						Wid:     1234567,
