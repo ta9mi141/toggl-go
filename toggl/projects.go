@@ -60,21 +60,12 @@ func (c *Client) UpdateProject(ctx context.Context, project *Project) (*Project,
 	return &rawProjectData.Project, nil
 }
 
-// DeleteProjects deletes projects.
-func (c *Client) DeleteProjects(ctx context.Context, projects []*Project) error {
-	if len(projects) == 0 {
+// DeleteProject deletes a project.
+func (c *Client) DeleteProject(ctx context.Context, project *Project) error {
+	if project == nil {
 		return ErrProjectNotFound
 	}
-
-	var projectIds []int
-	for _, project := range projects {
-		if project == nil {
-			return ErrProjectNotFound
-		}
-		projectIds = append(projectIds, project.Id)
-	}
-
-	endpoint := projectsEndpoint + "/" + arrayToString(projectIds, ",")
+	endpoint := projectsEndpoint + "/" + strconv.Itoa(project.Id)
 	if err := c.httpDelete(ctx, c.buildURL(endpoint)); err != nil {
 		return err
 	}

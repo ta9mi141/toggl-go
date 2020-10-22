@@ -32,7 +32,7 @@ var (
 	ErrProjectUserNotFound = errors.New("The provided project user must be non-nil")
 )
 
-// CreateProjectUsers creates project user.
+// CreateProjectUser creates a project user.
 func (c *Client) CreateProjectUser(ctx context.Context, projectUser *ProjectUser) (*ProjectUser, error) {
 	if projectUser == nil {
 		return nil, ErrProjectUserNotFound
@@ -44,7 +44,7 @@ func (c *Client) CreateProjectUser(ctx context.Context, projectUser *ProjectUser
 	return &rawProjectUserData.ProjectUser, nil
 }
 
-// UpdateProjectUsers updates project user.
+// UpdateProjectUser updates a project user.
 func (c *Client) UpdateProjectUser(ctx context.Context, projectUser *ProjectUser) (*ProjectUser, error) {
 	if projectUser == nil {
 		return nil, ErrProjectUserNotFound
@@ -57,21 +57,12 @@ func (c *Client) UpdateProjectUser(ctx context.Context, projectUser *ProjectUser
 	return &rawProjectUserData.ProjectUser, nil
 }
 
-// DeleteProjectUsers deletes project users.
-func (c *Client) DeleteProjectUsers(ctx context.Context, projectUsers []*ProjectUser) error {
-	if len(projectUsers) == 0 {
+// DeleteProjectUser deletes a project user.
+func (c *Client) DeleteProjectUser(ctx context.Context, projectUser *ProjectUser) error {
+	if projectUser == nil {
 		return ErrProjectUserNotFound
 	}
-
-	var projectUserIds []int
-	for _, projectUser := range projectUsers {
-		if projectUser == nil {
-			return ErrProjectUserNotFound
-		}
-		projectUserIds = append(projectUserIds, projectUser.Id)
-	}
-
-	endpoint := projectUsersEndpoint + "/" + arrayToString(projectUserIds, ",")
+	endpoint := projectUsersEndpoint + "/" + strconv.Itoa(projectUser.Id)
 	if err := c.httpDelete(ctx, c.buildURL(endpoint)); err != nil {
 		return err
 	}

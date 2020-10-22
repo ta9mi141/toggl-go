@@ -11,12 +11,10 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"strings"
 )
 
 const (
@@ -148,10 +146,6 @@ func Since(since string) QueryString {
 	return func(v *url.Values) {
 		v.Add("since", since)
 	}
-}
-
-func arrayToString(array []int, delimiter string) string {
-	return strings.Trim(strings.Join(strings.Fields(fmt.Sprint(array)), delimiter), "[]")
 }
 
 func (c *Client) buildURL(endpoint string, params ...QueryString) string {

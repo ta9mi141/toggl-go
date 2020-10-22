@@ -411,14 +411,14 @@ func TestUpdateProjectUserUseURLIncludingProjectUserId(t *testing.T) {
 	})
 }
 
-func TestDeleteProjectUsers(t *testing.T) {
+func TestDeleteProjectUser(t *testing.T) {
 	cases := []struct {
 		name             string
 		httpStatus       int
 		testdataFilePath string
 		in               struct {
-			ctx          context.Context
-			projectUsers []*toggl.ProjectUser
+			ctx         context.Context
+			projectUser *toggl.ProjectUser
 		}
 		out error
 	}{
@@ -427,12 +427,12 @@ func TestDeleteProjectUsers(t *testing.T) {
 			httpStatus:       http.StatusOK,
 			testdataFilePath: "testdata/project_users/delete_200_ok.json",
 			in: struct {
-				ctx          context.Context
-				projectUsers []*toggl.ProjectUser
+				ctx         context.Context
+				projectUser *toggl.ProjectUser
 			}{
 				ctx: context.Background(),
-				projectUsers: []*toggl.ProjectUser{
-					{Id: 12345678},
+				projectUser: &toggl.ProjectUser{
+					Id: 12345678,
 				},
 			},
 			out: nil,
@@ -442,12 +442,12 @@ func TestDeleteProjectUsers(t *testing.T) {
 			httpStatus:       http.StatusForbidden,
 			testdataFilePath: "testdata/project_users/delete_403_forbidden.json",
 			in: struct {
-				ctx          context.Context
-				projectUsers []*toggl.ProjectUser
+				ctx         context.Context
+				projectUser *toggl.ProjectUser
 			}{
 				ctx: context.Background(),
-				projectUsers: []*toggl.ProjectUser{
-					{Id: 12345678},
+				projectUser: &toggl.ProjectUser{
+					Id: 12345678,
 				},
 			},
 			out: &toggl.TogglError{
@@ -460,66 +460,12 @@ func TestDeleteProjectUsers(t *testing.T) {
 			httpStatus:       http.StatusNotFound,
 			testdataFilePath: "testdata/project_users/delete_404_not_found.json",
 			in: struct {
-				ctx          context.Context
-				projectUsers []*toggl.ProjectUser
+				ctx         context.Context
+				projectUser *toggl.ProjectUser
 			}{
 				ctx: context.Background(),
-				projectUsers: []*toggl.ProjectUser{
-					{Id: 12345678},
-				},
-			},
-			out: &toggl.TogglError{
-				Message: "null\n",
-				Code:    404,
-			},
-		},
-		{
-			name:             "200 OK Mass Actions",
-			httpStatus:       http.StatusOK,
-			testdataFilePath: "testdata/project_users/mass_delete_200_ok.json",
-			in: struct {
-				ctx          context.Context
-				projectUsers []*toggl.ProjectUser
-			}{
-				ctx: context.Background(),
-				projectUsers: []*toggl.ProjectUser{
-					{Id: 12345678},
-					{Id: 98765432},
-				},
-			},
-			out: nil,
-		},
-		{
-			name:             "403 Forbidden Mass Actions",
-			httpStatus:       http.StatusForbidden,
-			testdataFilePath: "testdata/project_users/mass_delete_403_forbidden.json",
-			in: struct {
-				ctx          context.Context
-				projectUsers []*toggl.ProjectUser
-			}{
-				ctx: context.Background(),
-				projectUsers: []*toggl.ProjectUser{
-					{Id: 12345678},
-					{Id: 98765432},
-				},
-			},
-			out: &toggl.TogglError{
-				Message: "",
-				Code:    403,
-			},
-		},
-		{
-			name:             "404 Not Found Mass Actions",
-			httpStatus:       http.StatusNotFound,
-			testdataFilePath: "testdata/project_users/mass_delete_404_not_found.json",
-			in: struct {
-				ctx          context.Context
-				projectUsers []*toggl.ProjectUser
-			}{
-				ctx: context.Background(),
-				projectUsers: []*toggl.ProjectUser{
-					{Id: 12345678},
-					{Id: 98765432},
+				projectUser: &toggl.ProjectUser{
+					Id: 12345678,
 				},
 			},
 			out: &toggl.TogglError{
@@ -532,27 +478,26 @@ func TestDeleteProjectUsers(t *testing.T) {
 			httpStatus:       http.StatusOK,
 			testdataFilePath: "testdata/project_users/delete_200_ok.json",
 			in: struct {
-				ctx          context.Context
-				projectUsers []*toggl.ProjectUser
+				ctx         context.Context
+				projectUser *toggl.ProjectUser
 			}{
 				ctx: nil,
-				projectUsers: []*toggl.ProjectUser{
-					{Id: 12345678},
-					{Id: 98765432},
+				projectUser: &toggl.ProjectUser{
+					Id: 12345678,
 				},
 			},
 			out: toggl.ErrContextNotFound,
 		},
 		{
-			name:             "Without project users",
+			name:             "Without project user",
 			httpStatus:       http.StatusOK,
 			testdataFilePath: "testdata/project_users/delete_200_ok.json",
 			in: struct {
-				ctx          context.Context
-				projectUsers []*toggl.ProjectUser
+				ctx         context.Context
+				projectUser *toggl.ProjectUser
 			}{
-				ctx:          context.Background(),
-				projectUsers: nil,
+				ctx:         context.Background(),
+				projectUser: nil,
 			},
 			out: toggl.ErrProjectUserNotFound,
 		},
@@ -563,7 +508,7 @@ func TestDeleteProjectUsers(t *testing.T) {
 			defer mockServer.Close()
 
 			client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
-			err := client.DeleteProjectUsers(c.in.ctx, c.in.projectUsers)
+			err := client.DeleteProjectUser(c.in.ctx, c.in.projectUser)
 
 			var togglError toggl.Error
 			if errors.As(err, &togglError) {
@@ -579,7 +524,7 @@ func TestDeleteProjectUsers(t *testing.T) {
 	}
 }
 
-func TestDeleteProjectUsersUseURLIncludingProjectUserId(t *testing.T) {
+func TestDeleteProjectUserUseURLIncludingProjectUserId(t *testing.T) {
 	projectUserId := 12345678
 	expectedRequestURI := "/api/v8/project_users/" + strconv.Itoa(projectUserId) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -590,36 +535,9 @@ func TestDeleteProjectUsersUseURLIncludingProjectUserId(t *testing.T) {
 	}))
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
-	_ = client.DeleteProjectUsers(context.Background(), []*toggl.ProjectUser{
-		{
-			Id: projectUserId,
-		},
+	_ = client.DeleteProjectUser(context.Background(), &toggl.ProjectUser{
+		Id: projectUserId,
 	})
-}
-
-func TestDeleteProjectUsersUseURLIncludingProjectUserIds(t *testing.T) {
-	projectUserIds := []int{12345678, 23456789, 34567891}
-
-	var projectUsers []*toggl.ProjectUser
-	expectedRequestURI := "/api/v8/project_users/"
-	for i, id := range projectUserIds {
-		projectUsers = append(projectUsers, &toggl.ProjectUser{Id: id})
-		if i > 0 {
-			expectedRequestURI += ","
-		}
-		expectedRequestURI += strconv.Itoa(id)
-	}
-	expectedRequestURI += "?"
-
-	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		actualRequestURI := r.URL.RequestURI()
-		if actualRequestURI != expectedRequestURI {
-			t.Errorf("\nwant: %+#v\ngot : %+#v\n", expectedRequestURI, actualRequestURI)
-		}
-	}))
-
-	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
-	_ = client.DeleteProjectUsers(context.Background(), projectUsers)
 }
 
 func TestGetProjectUsersInWorkspace(t *testing.T) {

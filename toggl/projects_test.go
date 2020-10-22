@@ -405,14 +405,14 @@ func TestUpdateProjectUseURLIncludingProjectId(t *testing.T) {
 	})
 }
 
-func TestDeleteProjects(t *testing.T) {
+func TestDeleteProject(t *testing.T) {
 	cases := []struct {
 		name             string
 		httpStatus       int
 		testdataFilePath string
 		in               struct {
-			ctx      context.Context
-			projects []*toggl.Project
+			ctx     context.Context
+			project *toggl.Project
 		}
 		out error
 	}{
@@ -421,12 +421,12 @@ func TestDeleteProjects(t *testing.T) {
 			httpStatus:       http.StatusOK,
 			testdataFilePath: "testdata/projects/delete_200_ok.json",
 			in: struct {
-				ctx      context.Context
-				projects []*toggl.Project
+				ctx     context.Context
+				project *toggl.Project
 			}{
 				ctx: context.Background(),
-				projects: []*toggl.Project{
-					{Id: 123456789},
+				project: &toggl.Project{
+					Id: 123456789,
 				},
 			},
 			out: nil,
@@ -436,12 +436,12 @@ func TestDeleteProjects(t *testing.T) {
 			httpStatus:       http.StatusBadRequest,
 			testdataFilePath: "testdata/projects/delete_400_bad_request.txt",
 			in: struct {
-				ctx      context.Context
-				projects []*toggl.Project
+				ctx     context.Context
+				project *toggl.Project
 			}{
 				ctx: context.Background(),
-				projects: []*toggl.Project{
-					{Id: 0},
+				project: &toggl.Project{
+					Id: 0,
 				},
 			},
 			out: &toggl.TogglError{
@@ -454,69 +454,12 @@ func TestDeleteProjects(t *testing.T) {
 			httpStatus:       http.StatusForbidden,
 			testdataFilePath: "testdata/projects/delete_403_forbidden.json",
 			in: struct {
-				ctx      context.Context
-				projects []*toggl.Project
+				ctx     context.Context
+				project *toggl.Project
 			}{
 				ctx: context.Background(),
-				projects: []*toggl.Project{
-					{Id: 123456789},
-				},
-			},
-			out: &toggl.TogglError{
-				Message: "",
-				Code:    403,
-			},
-		},
-		{
-			name:             "200 OK Mass Actions",
-			httpStatus:       http.StatusOK,
-			testdataFilePath: "testdata/projects/mass_delete_200_ok.json",
-			in: struct {
-				ctx      context.Context
-				projects []*toggl.Project
-			}{
-				ctx: context.Background(),
-				projects: []*toggl.Project{
-					{Id: 123456789},
-					{Id: 234567891},
-					{Id: 345678912},
-				},
-			},
-			out: nil,
-		},
-		{
-			name:             "400 Bad Request Mass Actions",
-			httpStatus:       http.StatusBadRequest,
-			testdataFilePath: "testdata/projects/mass_delete_400_bad_request.txt",
-			in: struct {
-				ctx      context.Context
-				projects []*toggl.Project
-			}{
-				ctx: context.Background(),
-				projects: []*toggl.Project{
-					{Id: 123456789},
-					{Id: 234567891},
-					{Id: 0},
-				},
-			},
-			out: &toggl.TogglError{
-				Message: "project_id must be a positive integer\n",
-				Code:    400,
-			},
-		},
-		{
-			name:             "403 Forbidden Mass Actions",
-			httpStatus:       http.StatusForbidden,
-			testdataFilePath: "testdata/projects/mass_delete_403_forbidden.json",
-			in: struct {
-				ctx      context.Context
-				projects []*toggl.Project
-			}{
-				ctx: context.Background(),
-				projects: []*toggl.Project{
-					{Id: 123456789},
-					{Id: 234567891},
-					{Id: 345678912},
+				project: &toggl.Project{
+					Id: 123456789,
 				},
 			},
 			out: &toggl.TogglError{
@@ -529,26 +472,26 @@ func TestDeleteProjects(t *testing.T) {
 			httpStatus:       http.StatusOK,
 			testdataFilePath: "testdata/projects/delete_200_ok.json",
 			in: struct {
-				ctx      context.Context
-				projects []*toggl.Project
+				ctx     context.Context
+				project *toggl.Project
 			}{
 				ctx: nil,
-				projects: []*toggl.Project{
-					{Id: 123456789},
+				project: &toggl.Project{
+					Id: 123456789,
 				},
 			},
 			out: toggl.ErrContextNotFound,
 		},
 		{
-			name:             "Without projects",
+			name:             "Without project",
 			httpStatus:       http.StatusOK,
 			testdataFilePath: "testdata/projects/delete_200_ok.json",
 			in: struct {
-				ctx      context.Context
-				projects []*toggl.Project
+				ctx     context.Context
+				project *toggl.Project
 			}{
-				ctx:      context.Background(),
-				projects: nil,
+				ctx:     context.Background(),
+				project: nil,
 			},
 			out: toggl.ErrProjectNotFound,
 		},
@@ -559,7 +502,7 @@ func TestDeleteProjects(t *testing.T) {
 			defer mockServer.Close()
 
 			client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
-			err := client.DeleteProjects(c.in.ctx, c.in.projects)
+			err := client.DeleteProject(c.in.ctx, c.in.project)
 
 			var togglError toggl.Error
 			if errors.As(err, &togglError) {
@@ -575,7 +518,7 @@ func TestDeleteProjects(t *testing.T) {
 	}
 }
 
-func TestDeleteProjectsUseURLIncludingProjectId(t *testing.T) {
+func TestDeleteProjectUseURLIncludingProjectId(t *testing.T) {
 	projectId := 123456789
 	expectedRequestURI := "/api/v8/projects/" + strconv.Itoa(projectId) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -586,36 +529,9 @@ func TestDeleteProjectsUseURLIncludingProjectId(t *testing.T) {
 	}))
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
-	_ = client.DeleteProjects(context.Background(), []*toggl.Project{
-		{
-			Id: projectId,
-		},
+	_ = client.DeleteProject(context.Background(), &toggl.Project{
+		Id: projectId,
 	})
-}
-
-func TestDeleteProjectsUseURLIncludingProjectIds(t *testing.T) {
-	projectIds := []int{123456789, 234567891, 345678912}
-
-	var projects []*toggl.Project
-	expectedRequestURI := "/api/v8/projects/"
-	for i, id := range projectIds {
-		projects = append(projects, &toggl.Project{Id: id})
-		if i > 0 {
-			expectedRequestURI += ","
-		}
-		expectedRequestURI += strconv.Itoa(id)
-	}
-	expectedRequestURI += "?"
-
-	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		actualRequestURI := r.URL.RequestURI()
-		if actualRequestURI != expectedRequestURI {
-			t.Errorf("\nwant: %+#v\ngot : %+#v\n", expectedRequestURI, actualRequestURI)
-		}
-	}))
-
-	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
-	_ = client.DeleteProjects(context.Background(), projects)
 }
 
 func TestGetProject(t *testing.T) {
