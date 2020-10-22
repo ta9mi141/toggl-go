@@ -1,0 +1,17 @@
+{
+  "data": {
+    "id": 1234567890,
+    "wid": 1234567,
+    "pid": 123456789,
+    "billable": false,
+    "start": "2018-10-29T01:23:45Z",
+    "duration": -1603274300,
+    "description": "Meeting with possible clients",
+    "tags": [
+      "billed"
+    ],
+    "duronly": false,
+    "at": "2018-10-29T01:23:45+00:00",
+    "uid": 1234567
+  }
+}

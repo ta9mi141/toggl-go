@@ -1,0 +1,16 @@
+{
+  "data": {
+    "id": 1234567890,
+    "guid": "1234567890abcdefghijklmnopqrstuv",
+    "wid": 1234567,
+    "pid": 123456789,
+    "billable": false,
+    "start": "2020-10-05T07:58:58.000Z",
+    "stop": "2020-10-05T08:18:58Z",
+    "duration": 1200,
+    "description": "Meeting with possible clients",
+    "duronly": false,
+    "at": "2020-10-11T01:23:45+00:00",
+    "uid": 9876543
+  }
+}
