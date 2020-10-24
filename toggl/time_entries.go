@@ -3,6 +3,7 @@ package toggl
 import (
 	"context"
 	"errors"
+	"strconv"
 	"time"
 )
 
@@ -31,37 +32,92 @@ type TimeEntry struct {
 	At          time.Time `json:"at"`
 }
 
+type rawTimeEntryData struct {
+	TimeEntry TimeEntry `json:"data"`
+}
+
 // CreateTimeEntry creates a time entry.
 func (c *Client) CreateTimeEntry(ctx context.Context, timeEntry *TimeEntry) (*TimeEntry, error) {
-	return nil, nil
+	if timeEntry == nil {
+		return nil, ErrTimeEntryNotFound
+	}
+	rawTimeEntryData := new(rawTimeEntryData)
+	if err := c.httpPost(ctx, c.buildURL(timeEntriesEndpoint), timeEntry, rawTimeEntryData); err != nil {
+		return nil, err
+	}
+	return &rawTimeEntryData.TimeEntry, nil
 }
 
 // UpdateTimeEntry updates a time entry.
 func (c *Client) UpdateTimeEntry(ctx context.Context, timeEntry *TimeEntry) (*TimeEntry, error) {
-	return nil, nil
+	if timeEntry == nil {
+		return nil, ErrTimeEntryNotFound
+	}
+	rawTimeEntryData := new(rawTimeEntryData)
+	endpoint := timeEntriesEndpoint + "/" + strconv.Itoa(timeEntry.Id)
+	if err := c.httpPut(ctx, c.buildURL(endpoint), timeEntry, rawTimeEntryData); err != nil {
+		return nil, err
+	}
+	return &rawTimeEntryData.TimeEntry, nil
 }
 
 // DeleteTimeEntry deletes a time entry.
 func (c *Client) DeleteTimeEntry(ctx context.Context, timeEntry *TimeEntry) error {
+	if timeEntry == nil {
+		return ErrTimeEntryNotFound
+	}
+	endpoint := timeEntriesEndpoint + "/" + strconv.Itoa(timeEntry.Id)
+	if err := c.httpDelete(ctx, c.buildURL(endpoint)); err != nil {
+		return err
+	}
 	return nil
 }
 
 // GetTimeEntry gets time entry details.
 func (c *Client) GetTimeEntry(ctx context.Context, timeEntry *TimeEntry) (*TimeEntry, error) {
-	return nil, nil
+	if timeEntry == nil {
+		return nil, ErrTimeEntryNotFound
+	}
+	rawTimeEntryData := new(rawTimeEntryData)
+	endpoint := timeEntriesEndpoint + "/" + strconv.Itoa(timeEntry.Id)
+	if err := c.httpGet(ctx, c.buildURL(endpoint), rawTimeEntryData); err != nil {
+		return nil, err
+	}
+	return &rawTimeEntryData.TimeEntry, nil
 }
 
 // GetRunningTimeEntry gets running time entry.
 func (c *Client) GetRunningTimeEntry(ctx context.Context) (*TimeEntry, error) {
-	return nil, nil
+	rawTimeEntryData := new(rawTimeEntryData)
+	endpoint := timeEntriesEndpoint + "/" + "current"
+	if err := c.httpGet(ctx, c.buildURL(endpoint), rawTimeEntryData); err != nil {
+		return nil, err
+	}
+	return &rawTimeEntryData.TimeEntry, nil
 }
 
 // Start starts a time entry.
 func (c *Client) Start(ctx context.Context, timeEntry *TimeEntry) (*TimeEntry, error) {
-	return nil, nil
+	if timeEntry == nil {
+		return nil, ErrTimeEntryNotFound
+	}
+	rawTimeEntryData := new(rawTimeEntryData)
+	endpoint := timeEntriesEndpoint + "/" + "start"
+	if err := c.httpPost(ctx, c.buildURL(endpoint), timeEntry, rawTimeEntryData); err != nil {
+		return nil, err
+	}
+	return &rawTimeEntryData.TimeEntry, nil
 }
 
 // Stop stops a time entry.
 func (c *Client) Stop(ctx context.Context, timeEntry *TimeEntry) (*TimeEntry, error) {
-	return nil, nil
+	if timeEntry == nil {
+		return nil, ErrTimeEntryNotFound
+	}
+	rawTimeEntryData := new(rawTimeEntryData)
+	endpoint := timeEntriesEndpoint + "/" + strconv.Itoa(timeEntry.Id) + "/" + "stop"
+	if err := c.httpPut(ctx, c.buildURL(endpoint), timeEntry, rawTimeEntryData); err != nil {
+		return nil, err
+	}
+	return &rawTimeEntryData.TimeEntry, nil
 }

@@ -55,8 +55,8 @@ func TestCreateTimeEntry(t *testing.T) {
 					Id:          1234567890,
 					Wid:         2345678,
 					Pid:         123456789,
-					Start:       time.Date(2013, time.March, 5, 7, 58, 58, 0, time.FixedZone("", 0)),
-					Stop:        time.Date(2013, time.March, 5, 8, 18, 58, 0, time.FixedZone("", 0)),
+					Start:       time.Date(2013, time.March, 5, 7, 58, 58, 0, time.UTC),
+					Stop:        time.Date(2013, time.March, 5, 8, 18, 58, 0, time.UTC),
 					Duration:    1200,
 					Description: "Meeting with possible clients",
 					Tags:        []string{"billed"},
@@ -69,7 +69,7 @@ func TestCreateTimeEntry(t *testing.T) {
 		{
 			name:             "400 Bad Request",
 			httpStatus:       http.StatusBadRequest,
-			testdataFilePath: "testdata/time_entries/create_400_bad_request.json",
+			testdataFilePath: "testdata/time_entries/create_400_bad_request.txt",
 			in: struct {
 				ctx       context.Context
 				timeEntry *toggl.TimeEntry
@@ -200,7 +200,8 @@ func TestCreateTimeEntryConvertParamsToRequestBody(t *testing.T) {
 		Description: "Meeting with possible clients",
 		Tags:        []string{"billed"},
 		Duration:    1200,
-		Start:       time.Date(2013, time.March, 5, 7, 58, 58, 0, time.FixedZone("", 0)),
+		// Use time.UTC as timezone because the pointer of time.UTC is always set to nil.
+		Start:       time.Date(2013, time.March, 5, 7, 58, 58, 0, time.UTC),
 		Pid:         123,
 		CreatedWith: "toggl-go",
 	}
@@ -258,8 +259,8 @@ func TestUpdateTimeEntry(t *testing.T) {
 					Id:          1234567890,
 					Wid:         1234567,
 					Pid:         123456789,
-					Start:       time.Date(2020, time.October, 5, 7, 58, 58, 0, time.FixedZone("", 0)),
-					Stop:        time.Date(2020, time.October, 5, 8, 18, 58, 0, time.FixedZone("", 0)),
+					Start:       time.Date(2020, time.October, 5, 7, 58, 58, 0, time.UTC),
+					Stop:        time.Date(2020, time.October, 5, 8, 18, 58, 0, time.UTC),
 					Duration:    1200,
 					Description: "Meeting with possible clients",
 					Duronly:     false,
@@ -313,7 +314,7 @@ func TestUpdateTimeEntry(t *testing.T) {
 			}{
 				timeEntry: nil,
 				err: &toggl.TogglError{
-					Message: "Time entry not found/no access to it",
+					Message: "\"Time entry not found/no access to it\"\n",
 					Code:    404,
 				},
 			},
@@ -390,8 +391,9 @@ func TestUpdateTimeEntryConvertParamsToRequestBody(t *testing.T) {
 		Description: "Meeting with possible clients",
 		Tags:        []string{""},
 		Duration:    1240,
-		Start:       time.Date(2013, time.March, 5, 7, 58, 58, 0, time.FixedZone("", 0)),
-		Stop:        time.Date(2013, time.March, 5, 8, 58, 58, 0, time.FixedZone("", 0)),
+		// Use time.UTC as timezone because the pointer of time.UTC is always set to nil.
+		Start:       time.Date(2013, time.March, 5, 7, 58, 58, 0, time.UTC),
+		Stop:        time.Date(2013, time.March, 5, 8, 58, 58, 0, time.UTC),
 		Pid:         123,
 		Duronly:     true,
 		CreatedWith: "toggl-go",
@@ -787,7 +789,7 @@ func TestGetRunningTimeEntry(t *testing.T) {
 				timeEntry *toggl.TimeEntry
 				err       error
 			}{
-				timeEntry: nil,
+				timeEntry: &toggl.TimeEntry{},
 				err:       nil,
 			},
 		},
@@ -854,6 +856,19 @@ func TestGetRunningTimeEntry(t *testing.T) {
 	}
 }
 
+func TestGetRunningTimeEntryUseCorrectURL(t *testing.T) {
+	expectedRequestURI := "/api/v8/time_entries/" + "current" + "?"
+	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		actualRequestURI := r.URL.RequestURI()
+		if actualRequestURI != expectedRequestURI {
+			t.Errorf("\nwant: %+#v\ngot : %+#v\n", expectedRequestURI, actualRequestURI)
+		}
+	}))
+
+	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
+	_, _ = client.GetRunningTimeEntry(context.Background())
+}
+
 func TestStart(t *testing.T) {
 	cases := []struct {
 		name             string
@@ -892,7 +907,7 @@ func TestStart(t *testing.T) {
 					Id:          1234567890,
 					Wid:         1234567,
 					Pid:         123456789,
-					Start:       time.Date(2018, time.October, 29, 1, 23, 45, 0, time.FixedZone("", 0)),
+					Start:       time.Date(2018, time.October, 29, 1, 23, 45, 0, time.UTC),
 					Duration:    -1603274300,
 					Description: "Meeting with possible clients",
 					Tags:        []string{"billed"},
@@ -924,7 +939,7 @@ func TestStart(t *testing.T) {
 			}{
 				timeEntry: nil,
 				err: &toggl.TogglError{
-					Message: "User cannot access the selected project",
+					Message: "User cannot access the selected project\n",
 					Code:    400,
 				},
 			},
@@ -1050,6 +1065,21 @@ func TestStartConvertParamsToRequestBody(t *testing.T) {
 	_, _ = client.Start(context.Background(), expectedStartRequest)
 }
 
+func TestStartUseCorrectURL(t *testing.T) {
+	expectedRequestURI := "/api/v8/time_entries/" + "start" + "?"
+	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		actualRequestURI := r.URL.RequestURI()
+		if actualRequestURI != expectedRequestURI {
+			t.Errorf("\nwant: %+#v\ngot : %+#v\n", expectedRequestURI, actualRequestURI)
+		}
+	}))
+
+	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
+	_, _ = client.Start(context.Background(), &toggl.TimeEntry{
+		Id: 1234567890,
+	})
+}
+
 func TestStop(t *testing.T) {
 	cases := []struct {
 		name             string
@@ -1139,7 +1169,7 @@ func TestStop(t *testing.T) {
 			}{
 				timeEntry: nil,
 				err: &toggl.TogglError{
-					Message: "Time entry not found/no access to it",
+					Message: "\"Time entry not found/no access to it\"\n",
 					Code:    404,
 				},
 			},
@@ -1212,7 +1242,7 @@ func TestStop(t *testing.T) {
 
 func TestStopUseURLIncludingTimeEntryId(t *testing.T) {
 	timeEntryId := 1234567890
-	expectedRequestURI := "/api/v8/time_entries/" + strconv.Itoa(timeEntryId) + "?"
+	expectedRequestURI := "/api/v8/time_entries/" + strconv.Itoa(timeEntryId) + "/" + "stop" + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
