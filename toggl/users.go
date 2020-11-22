@@ -81,7 +81,7 @@ func (c *Client) UpdateUser(ctx context.Context, user *User) (*User, error) {
 // ResetAPIToken resets API token and returns the new API token.
 func (c *Client) ResetAPIToken(ctx context.Context) (string, error) {
 	var newAPIToken string
-	if err := c.httpPut(ctx, c.buildURL(usersEndpoint), nil, &newAPIToken); err != nil {
+	if err := c.httpPost(ctx, c.buildURL(resetAPITokenEndpoint), nil, &newAPIToken); err != nil {
 		return "", err
 	}
 	return newAPIToken, nil
