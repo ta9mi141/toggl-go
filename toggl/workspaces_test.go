@@ -43,7 +43,7 @@ func TestGetWorkspaces(t *testing.T) {
 			}{
 				workspaces: []*toggl.Workspace{
 					{
-						Id:                          1234567,
+						ID:                          1234567,
 						Name:                        "Sample workspace",
 						Premium:                     false,
 						Admin:                       true,
@@ -57,7 +57,7 @@ func TestGetWorkspaces(t *testing.T) {
 						LogoURL:                     "",
 					},
 					{
-						Id:                          9876543,
+						ID:                          9876543,
 						Name:                        "toggl-go",
 						Premium:                     false,
 						Admin:                       true,
@@ -180,14 +180,14 @@ func TestGetWorkspace(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       context.Background(),
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				workspace *toggl.Workspace
 				err       error
 			}{
 				workspace: &toggl.Workspace{
-					Id:                          1234567,
+					ID:                          1234567,
 					Name:                        "toggl-go",
 					Premium:                     false,
 					Admin:                       true,
@@ -212,7 +212,7 @@ func TestGetWorkspace(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       context.Background(),
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				workspace *toggl.Workspace
@@ -234,7 +234,7 @@ func TestGetWorkspace(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       context.Background(),
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				workspace *toggl.Workspace
@@ -256,7 +256,7 @@ func TestGetWorkspace(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       nil,
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				workspace *toggl.Workspace
@@ -311,9 +311,9 @@ func TestGetWorkspace(t *testing.T) {
 	}
 }
 
-func TestGetWorkspaceUseURLIncludingWorkspaceId(t *testing.T) {
-	workspaceId := 1234567
-	expectedRequestURI := "/api/v8/workspaces/" + strconv.Itoa(workspaceId) + "?"
+func TestGetWorkspaceUseURLIncludingWorkspaceID(t *testing.T) {
+	workspaceID := 1234567
+	expectedRequestURI := "/api/v8/workspaces/" + strconv.Itoa(workspaceID) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -323,7 +323,7 @@ func TestGetWorkspaceUseURLIncludingWorkspaceId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_, _ = client.GetWorkspace(context.Background(), &toggl.Workspace{
-		Id: workspaceId,
+		ID: workspaceID,
 	})
 }
 
@@ -351,7 +351,7 @@ func TestUpdateWorkspace(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				workspace: &toggl.Workspace{
-					Id:   1234567,
+					ID:   1234567,
 					Name: "updated",
 				},
 			},
@@ -360,7 +360,7 @@ func TestUpdateWorkspace(t *testing.T) {
 				err       error
 			}{
 				workspace: &toggl.Workspace{
-					Id:                          1234567,
+					ID:                          1234567,
 					Name:                        "updated",
 					Premium:                     false,
 					Admin:                       true,
@@ -386,7 +386,7 @@ func TestUpdateWorkspace(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				workspace: &toggl.Workspace{
-					Id:   1234567,
+					ID:   1234567,
 					Name: "updated",
 				},
 			},
@@ -411,7 +411,7 @@ func TestUpdateWorkspace(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				workspace: &toggl.Workspace{
-					Id:   1234567,
+					ID:   1234567,
 					Name: "updated",
 				},
 			},
@@ -436,7 +436,7 @@ func TestUpdateWorkspace(t *testing.T) {
 			}{
 				ctx: nil,
 				workspace: &toggl.Workspace{
-					Id:   1234567,
+					ID:   1234567,
 					Name: "updated",
 				},
 			},
@@ -495,7 +495,7 @@ func TestUpdateWorkspace(t *testing.T) {
 
 func TestUpdateWorkspaceConvertParamsToRequestBody(t *testing.T) {
 	expectedWorkspaceRequest := &toggl.Workspace{
-		Id:   1234567,
+		ID:   1234567,
 		Name: "updated",
 	}
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -516,9 +516,9 @@ func TestUpdateWorkspaceConvertParamsToRequestBody(t *testing.T) {
 	_, _ = client.UpdateWorkspace(context.Background(), expectedWorkspaceRequest)
 }
 
-func TestUpdateWorkspaceUseURLIncludingWorkspaceId(t *testing.T) {
-	workspaceId := 1234567
-	expectedRequestURI := "/api/v8/workspaces/" + strconv.Itoa(workspaceId) + "?"
+func TestUpdateWorkspaceUseURLIncludingWorkspaceID(t *testing.T) {
+	workspaceID := 1234567
+	expectedRequestURI := "/api/v8/workspaces/" + strconv.Itoa(workspaceID) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -528,7 +528,7 @@ func TestUpdateWorkspaceUseURLIncludingWorkspaceId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_, _ = client.UpdateWorkspace(context.Background(), &toggl.Workspace{
-		Id: workspaceId,
+		ID: workspaceID,
 	})
 }
 
@@ -555,7 +555,7 @@ func TestGetWorkspaceUsers(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       context.Background(),
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				users []*toggl.User
@@ -563,8 +563,8 @@ func TestGetWorkspaceUsers(t *testing.T) {
 			}{
 				users: []*toggl.User{
 					{
-						Id:                     1234567,
-						DefaultWid:             9876543,
+						ID:                     1234567,
+						DefaultWID:             9876543,
 						Email:                  "john@swift.com",
 						Fullname:               "John Swift",
 						JQueryTimeofdayFormat:  "H:i",
@@ -574,7 +574,7 @@ func TestGetWorkspaceUsers(t *testing.T) {
 						StoreStartAndStopTime:  true,
 						BeginningOfWeek:        1,
 						Language:               "en_US",
-						ImageUrl:               "https://assets.toggl.com/avatars/abcdefghijklmnopqrstuvwxyz012345.png",
+						ImageURL:               "https://assets.toggl.com/avatars/abcdefghijklmnopqrstuvwxyz012345.png",
 						SidebarPiechart:        true,
 						At:                     time.Date(2013, time.March, 7, 14, 21, 38, 0, time.FixedZone("", 0)),
 						SendProductEmails:      true,
@@ -596,7 +596,7 @@ func TestGetWorkspaceUsers(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       context.Background(),
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				users []*toggl.User
@@ -618,7 +618,7 @@ func TestGetWorkspaceUsers(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       context.Background(),
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				users []*toggl.User
@@ -640,7 +640,7 @@ func TestGetWorkspaceUsers(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       nil,
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				users []*toggl.User
@@ -695,9 +695,9 @@ func TestGetWorkspaceUsers(t *testing.T) {
 	}
 }
 
-func TestGetWorkspaceUsersUseURLIncludingWorkspaceId(t *testing.T) {
-	workspaceId := 1234567
-	expectedRequestURI := "/api/v8/workspaces/" + strconv.Itoa(workspaceId) + "/users" + "?"
+func TestGetWorkspaceUsersUseURLIncludingWorkspaceID(t *testing.T) {
+	workspaceID := 1234567
+	expectedRequestURI := "/api/v8/workspaces/" + strconv.Itoa(workspaceID) + "/users" + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -707,7 +707,7 @@ func TestGetWorkspaceUsersUseURLIncludingWorkspaceId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_, _ = client.GetWorkspaceUsers(context.Background(), &toggl.Workspace{
-		Id: workspaceId,
+		ID: workspaceID,
 	})
 }
 
@@ -734,7 +734,7 @@ func TestGetWorkspaceClients(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       context.Background(),
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				clients []*toggl.TogglClient
@@ -742,15 +742,15 @@ func TestGetWorkspaceClients(t *testing.T) {
 			}{
 				clients: []*toggl.TogglClient{
 					{
-						Id:   12345678,
+						ID:   12345678,
 						Name: "toggl-go",
-						Wid:  9876543,
+						WID:  9876543,
 						At:   time.Date(2020, time.June, 10, 6, 54, 51, 0, time.FixedZone("", 0)),
 					},
 					{
-						Id:   23456789,
+						ID:   23456789,
 						Name: "sample-client",
-						Wid:  9876543,
+						WID:  9876543,
 						At:   time.Date(2020, time.June, 10, 6, 54, 47, 0, time.FixedZone("", 0)),
 					},
 				},
@@ -766,7 +766,7 @@ func TestGetWorkspaceClients(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       context.Background(),
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				clients []*toggl.TogglClient
@@ -788,7 +788,7 @@ func TestGetWorkspaceClients(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       context.Background(),
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				clients []*toggl.TogglClient
@@ -810,7 +810,7 @@ func TestGetWorkspaceClients(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       nil,
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				clients []*toggl.TogglClient
@@ -865,9 +865,9 @@ func TestGetWorkspaceClients(t *testing.T) {
 	}
 }
 
-func TestGetWorkspaceClientsUseURLIncludingWorkspaceId(t *testing.T) {
-	workspaceId := 1234567
-	expectedRequestURI := "/api/v8/workspaces/" + strconv.Itoa(workspaceId) + "/clients" + "?"
+func TestGetWorkspaceClientsUseURLIncludingWorkspaceID(t *testing.T) {
+	workspaceID := 1234567
+	expectedRequestURI := "/api/v8/workspaces/" + strconv.Itoa(workspaceID) + "/clients" + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -877,7 +877,7 @@ func TestGetWorkspaceClientsUseURLIncludingWorkspaceId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_, _ = client.GetWorkspaceClients(context.Background(), &toggl.Workspace{
-		Id: workspaceId,
+		ID: workspaceID,
 	})
 }
 
@@ -904,7 +904,7 @@ func TestGetWorkspaceGroups(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       context.Background(),
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				groups []*toggl.Group
@@ -912,15 +912,15 @@ func TestGetWorkspaceGroups(t *testing.T) {
 			}{
 				groups: []*toggl.Group{
 					{
-						Id:   123456,
+						ID:   123456,
 						Name: "toggl-go",
-						Wid:  1234567,
+						WID:  1234567,
 						At:   time.Date(2020, time.June, 10, 6, 59, 43, 0, time.FixedZone("", 0)),
 					},
 					{
-						Id:   234567,
+						ID:   234567,
 						Name: "sample-group",
-						Wid:  1234567,
+						WID:  1234567,
 						At:   time.Date(2020, time.June, 10, 6, 59, 38, 0, time.FixedZone("", 0)),
 					},
 				},
@@ -936,7 +936,7 @@ func TestGetWorkspaceGroups(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       context.Background(),
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				groups []*toggl.Group
@@ -958,7 +958,7 @@ func TestGetWorkspaceGroups(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       context.Background(),
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				groups []*toggl.Group
@@ -980,7 +980,7 @@ func TestGetWorkspaceGroups(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       nil,
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				groups []*toggl.Group
@@ -1035,9 +1035,9 @@ func TestGetWorkspaceGroups(t *testing.T) {
 	}
 }
 
-func TestGetWorkspaceGroupsUseURLIncludingWorkspaceId(t *testing.T) {
-	workspaceId := 1234567
-	expectedRequestURI := "/api/v8/workspaces/" + strconv.Itoa(workspaceId) + "/groups" + "?"
+func TestGetWorkspaceGroupsUseURLIncludingWorkspaceID(t *testing.T) {
+	workspaceID := 1234567
+	expectedRequestURI := "/api/v8/workspaces/" + strconv.Itoa(workspaceID) + "/groups" + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -1047,7 +1047,7 @@ func TestGetWorkspaceGroupsUseURLIncludingWorkspaceId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_, _ = client.GetWorkspaceGroups(context.Background(), &toggl.Workspace{
-		Id: workspaceId,
+		ID: workspaceID,
 	})
 }
 
@@ -1074,7 +1074,7 @@ func TestGetWorkspaceProjects(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       context.Background(),
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				projects []*toggl.Project
@@ -1082,9 +1082,9 @@ func TestGetWorkspaceProjects(t *testing.T) {
 			}{
 				projects: []*toggl.Project{
 					{
-						Id:        123456789,
+						ID:        123456789,
 						Name:      "sample-project",
-						Wid:       9876543,
+						WID:       9876543,
 						Active:    true,
 						IsPrivate: true,
 						Template:  false,
@@ -1093,9 +1093,9 @@ func TestGetWorkspaceProjects(t *testing.T) {
 						CreatedAt: time.Date(2020, time.June, 10, 6, 51, 48, 0, time.FixedZone("", 0)),
 					},
 					{
-						Id:        234567890,
+						ID:        234567890,
 						Name:      "toggl-go",
-						Wid:       9876543,
+						WID:       9876543,
 						Active:    true,
 						IsPrivate: true,
 						Template:  false,
@@ -1116,7 +1116,7 @@ func TestGetWorkspaceProjects(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       context.Background(),
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				projects []*toggl.Project
@@ -1138,7 +1138,7 @@ func TestGetWorkspaceProjects(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       context.Background(),
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				projects []*toggl.Project
@@ -1160,7 +1160,7 @@ func TestGetWorkspaceProjects(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       nil,
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				projects []*toggl.Project
@@ -1215,9 +1215,9 @@ func TestGetWorkspaceProjects(t *testing.T) {
 	}
 }
 
-func TestGetWorkspaceProjectsUseURLIncludingWorkspaceId(t *testing.T) {
-	workspaceId := 1234567
-	expectedRequestURI := "/api/v8/workspaces/" + strconv.Itoa(workspaceId) + "/projects" + "?"
+func TestGetWorkspaceProjectsUseURLIncludingWorkspaceID(t *testing.T) {
+	workspaceID := 1234567
+	expectedRequestURI := "/api/v8/workspaces/" + strconv.Itoa(workspaceID) + "/projects" + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -1227,14 +1227,14 @@ func TestGetWorkspaceProjectsUseURLIncludingWorkspaceId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_, _ = client.GetWorkspaceProjects(context.Background(), &toggl.Workspace{
-		Id: workspaceId,
+		ID: workspaceID,
 	})
 }
 
 func TestGetWorkspaceProjectsUseURLIncludingQueryStrings(t *testing.T) {
-	workspaceId := 1234567
+	workspaceID := 1234567
 	onlyTemplates := "true"
-	expectedRequestURI := "/api/v8/workspaces/" + strconv.Itoa(workspaceId) + "/projects?only_templates=" + onlyTemplates
+	expectedRequestURI := "/api/v8/workspaces/" + strconv.Itoa(workspaceID) + "/projects?only_templates=" + onlyTemplates
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -1243,7 +1243,7 @@ func TestGetWorkspaceProjectsUseURLIncludingQueryStrings(t *testing.T) {
 	}))
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
-	_, _ = client.GetWorkspaceProjects(context.Background(), &toggl.Workspace{Id: workspaceId}, toggl.OnlyTemplates(onlyTemplates))
+	_, _ = client.GetWorkspaceProjects(context.Background(), &toggl.Workspace{ID: workspaceID}, toggl.OnlyTemplates(onlyTemplates))
 }
 
 func TestGetWorkspaceTags(t *testing.T) {
@@ -1269,7 +1269,7 @@ func TestGetWorkspaceTags(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       context.Background(),
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				tags []*toggl.Tag
@@ -1277,14 +1277,14 @@ func TestGetWorkspaceTags(t *testing.T) {
 			}{
 				tags: []*toggl.Tag{
 					{
-						Id:   1234567,
+						ID:   1234567,
 						Name: "sample-tag",
-						Wid:  9876543,
+						WID:  9876543,
 					},
 					{
-						Id:   1234568,
+						ID:   1234568,
 						Name: "toggl-go",
-						Wid:  9876543,
+						WID:  9876543,
 					},
 				},
 				err: nil,
@@ -1299,7 +1299,7 @@ func TestGetWorkspaceTags(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       context.Background(),
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				tags []*toggl.Tag
@@ -1321,7 +1321,7 @@ func TestGetWorkspaceTags(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       context.Background(),
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				tags []*toggl.Tag
@@ -1343,7 +1343,7 @@ func TestGetWorkspaceTags(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       nil,
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				tags []*toggl.Tag
@@ -1398,9 +1398,9 @@ func TestGetWorkspaceTags(t *testing.T) {
 	}
 }
 
-func TestGetWorkspaceTagsUseURLIncludingWorkspaceId(t *testing.T) {
-	workspaceId := 1234567
-	expectedRequestURI := "/api/v8/workspaces/" + strconv.Itoa(workspaceId) + "/tags" + "?"
+func TestGetWorkspaceTagsUseURLIncludingWorkspaceID(t *testing.T) {
+	workspaceID := 1234567
+	expectedRequestURI := "/api/v8/workspaces/" + strconv.Itoa(workspaceID) + "/tags" + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -1410,6 +1410,6 @@ func TestGetWorkspaceTagsUseURLIncludingWorkspaceId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_, _ = client.GetWorkspaceTags(context.Background(), &toggl.Workspace{
-		Id: workspaceId,
+		ID: workspaceID,
 	})
 }

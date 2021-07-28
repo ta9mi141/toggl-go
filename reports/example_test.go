@@ -32,7 +32,7 @@ func Example() {
 		&reports.SummaryRequestParameters{
 			StandardRequestParameters: &reports.StandardRequestParameters{
 				UserAgent:   "YOUR_USER_AGENT",
-				WorkspaceId: "YOUR_WORKSPACE_ID",
+				WorkspaceID: "YOUR_WORKSPACE_ID",
 				Since:       time.Now().AddDate(0, 0, -7),
 				Until:       time.Now(),
 			},

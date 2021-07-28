@@ -35,18 +35,18 @@ type Client struct {
 // StandardRequestParameters represents request parameters used in all of the reports.
 type StandardRequestParameters struct {
 	UserAgent           string
-	WorkspaceId         string
+	WorkspaceID         string
 	Since               time.Time
 	Until               time.Time
 	Billable            string
-	ClientIds           string
-	ProjectIds          string
-	UserIds             string
-	MembersOfGroupIds   string
-	OrMembersOfGroupIds string
-	TagIds              string
-	TaskIds             string
-	TimeEntryIds        string
+	ClientIDs           string
+	ProjectIDs          string
+	UserIDs             string
+	MembersOfGroupIDs   string
+	OrMembersOfGroupIDs string
+	TagIDs              string
+	TaskIDs             string
+	TimeEntryIDs        string
 	Description         string
 	WithoutDescription  bool
 	OrderField          string
@@ -60,7 +60,7 @@ func (params *StandardRequestParameters) values() url.Values {
 	values := url.Values{
 		// user_agent and workspace_id are required.
 		"user_agent":   []string{params.UserAgent},
-		"workspace_id": []string{params.WorkspaceId},
+		"workspace_id": []string{params.WorkspaceID},
 	}
 
 	// since and until must be ISO 8601 date (YYYY-MM-DD) format
@@ -73,46 +73,46 @@ func (params *StandardRequestParameters) values() url.Values {
 	if params.Billable != "" {
 		values.Add("billable", params.Billable)
 	}
-	if params.ClientIds != "" {
-		values.Add("client_ids", params.ClientIds)
+	if params.ClientIDs != "" {
+		values.Add("client_ids", params.ClientIDs)
 	}
-	if params.ProjectIds != "" {
-		values.Add("project_ids", params.ProjectIds)
+	if params.ProjectIDs != "" {
+		values.Add("project_ids", params.ProjectIDs)
 	}
-	if params.UserIds != "" {
-		values.Add("user_ids", params.UserIds)
+	if params.UserIDs != "" {
+		values.Add("user_ids", params.UserIDs)
 	}
-	if params.MembersOfGroupIds != "" {
-		values.Add("members_of_group_ids", params.MembersOfGroupIds)
+	if params.MembersOfGroupIDs != "" {
+		values.Add("members_of_group_ids", params.MembersOfGroupIDs)
 	}
-	if params.OrMembersOfGroupIds != "" {
-		values.Add("or_members_of_group_ids", params.OrMembersOfGroupIds)
+	if params.OrMembersOfGroupIDs != "" {
+		values.Add("or_members_of_group_ids", params.OrMembersOfGroupIDs)
 	}
-	if params.TagIds != "" {
-		values.Add("tag_ids", params.TagIds)
+	if params.TagIDs != "" {
+		values.Add("tag_ids", params.TagIDs)
 	}
-	if params.TaskIds != "" {
-		values.Add("task_ids", params.TaskIds)
+	if params.TaskIDs != "" {
+		values.Add("task_ids", params.TaskIDs)
 	}
-	if params.TimeEntryIds != "" {
-		values.Add("time_entry_ids", params.TimeEntryIds)
+	if params.TimeEntryIDs != "" {
+		values.Add("time_entry_ids", params.TimeEntryIDs)
 	}
 	if params.Description != "" {
 		values.Add("description", params.Description)
 	}
-	if params.WithoutDescription == true {
+	if params.WithoutDescription {
 		values.Add("without_description", "true")
 	}
 	if params.OrderField != "" {
 		values.Add("order_field", params.OrderField)
 	}
-	if params.OrderDesc == true {
+	if params.OrderDesc {
 		values.Add("order_desc", "on")
 	}
-	if params.DistinctRates == true {
+	if params.DistinctRates {
 		values.Add("distinct_rates", "on")
 	}
-	if params.Rounding == true {
+	if params.Rounding {
 		values.Add("rounding", "on")
 	}
 	if params.DisplayHours != "" {
@@ -165,7 +165,7 @@ const (
 
 var (
 	// ErrContextNotFound is returned when the provided context is nil.
-	ErrContextNotFound = errors.New("The provided ctx must be non-nil")
+	ErrContextNotFound = errors.New("the provided ctx must be non-nil")
 )
 
 // Option represents optional parameters of NewClient.

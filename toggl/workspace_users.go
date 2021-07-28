@@ -13,8 +13,8 @@ const (
 
 // WorkspaceUser represents properties of workspace user.
 type WorkspaceUser struct {
-	Id        int    `json:"id"`
-	Uid       int    `json:"uid"`
+	ID        int    `json:"id"`
+	UID       int    `json:"uid"`
 	Admin     bool   `json:"admin"`
 	Active    bool   `json:"active"`
 	InviteURL string `json:"invite_url"`
@@ -22,7 +22,7 @@ type WorkspaceUser struct {
 
 var (
 	// ErrWorkspaceUserNotFound is returned when the provided wprkspace user is nil.
-	ErrWorkspaceUserNotFound = errors.New("The provided workspace user must be non-nil")
+	ErrWorkspaceUserNotFound = errors.New("the provided workspace user must be non-nil")
 )
 
 type rawInvitedUsersData struct {
@@ -55,7 +55,7 @@ func (c *Client) InviteUsersToWorkspace(ctx context.Context, workspace *Workspac
 	}{
 		Emails: emails,
 	}
-	endpoint := workspacesEndpoint + "/" + strconv.Itoa(workspace.Id) + "/invite"
+	endpoint := workspacesEndpoint + "/" + strconv.Itoa(workspace.ID) + "/invite"
 	rawInvitedUsersData := new(rawInvitedUsersData)
 
 	if err := c.httpPost(ctx, c.buildURL(endpoint), invitedUsers, rawInvitedUsersData); err != nil {
@@ -73,7 +73,7 @@ func (c *Client) UpdateWorkspaceUser(ctx context.Context, workspaceUser *Workspa
 	if workspaceUser == nil {
 		return nil, ErrWorkspaceUserNotFound
 	}
-	endpoint := workspaceUsersEndpoint + "/" + strconv.Itoa(workspaceUser.Id)
+	endpoint := workspaceUsersEndpoint + "/" + strconv.Itoa(workspaceUser.ID)
 	rawWorkspaceUserData := new(rawWorkspaceUserData)
 	if err := c.httpPut(ctx, c.buildURL(endpoint), workspaceUser, rawWorkspaceUserData); err != nil {
 		return nil, err
@@ -85,7 +85,7 @@ func (c *Client) DeleteWorkspaceUser(ctx context.Context, workspaceUser *Workspa
 	if workspaceUser == nil {
 		return ErrWorkspaceUserNotFound
 	}
-	endpoint := workspaceUsersEndpoint + "/" + strconv.Itoa(workspaceUser.Id)
+	endpoint := workspaceUsersEndpoint + "/" + strconv.Itoa(workspaceUser.ID)
 	if err := c.httpDelete(ctx, c.buildURL(endpoint)); err != nil {
 		return err
 	}
@@ -96,7 +96,7 @@ func (c *Client) GetWorkspaceUsersAsWorkspaceUser(ctx context.Context, workspace
 	if workspace == nil {
 		return nil, ErrWorkspaceNotFound
 	}
-	endpoint := workspacesEndpoint + "/" + strconv.Itoa(workspace.Id) + "/workspace_users"
+	endpoint := workspacesEndpoint + "/" + strconv.Itoa(workspace.ID) + "/workspace_users"
 	var workspaceUsers []*WorkspaceUser
 	if err := c.httpGet(ctx, c.buildURL(endpoint), &workspaceUsers); err != nil {
 		return nil, err

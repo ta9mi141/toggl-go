@@ -38,7 +38,7 @@ func TestCreateTag(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				tag: &toggl.Tag{
-					Wid:  1234567,
+					WID:  1234567,
 					Name: "toggl-go",
 				},
 			},
@@ -47,8 +47,8 @@ func TestCreateTag(t *testing.T) {
 				err error
 			}{
 				tag: &toggl.Tag{
-					Id:   1234567,
-					Wid:  1234567,
+					ID:   1234567,
+					WID:  1234567,
 					Name: "toggl-go",
 				},
 				err: nil,
@@ -64,7 +64,7 @@ func TestCreateTag(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				tag: &toggl.Tag{
-					Wid:  1234567,
+					WID:  1234567,
 					Name: "toggl-go",
 				},
 			},
@@ -89,7 +89,7 @@ func TestCreateTag(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				tag: &toggl.Tag{
-					Wid:  1234567,
+					WID:  1234567,
 					Name: "toggl-go",
 				},
 			},
@@ -114,7 +114,7 @@ func TestCreateTag(t *testing.T) {
 			}{
 				ctx: nil,
 				tag: &toggl.Tag{
-					Wid:  1234567,
+					WID:  1234567,
 					Name: "toggl-go",
 				},
 			},
@@ -173,7 +173,7 @@ func TestCreateTag(t *testing.T) {
 
 func TestCreateTagConvertParamsToRequestBody(t *testing.T) {
 	expectedTagRequest := &toggl.Tag{
-		Wid:  1234567,
+		WID:  1234567,
 		Name: "toggl-go",
 	}
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -218,8 +218,8 @@ func TestUpdateTag(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				tag: &toggl.Tag{
-					Id:   1234567,
-					Wid:  1234567,
+					ID:   1234567,
+					WID:  1234567,
 					Name: "toggl-go",
 				},
 			},
@@ -228,8 +228,8 @@ func TestUpdateTag(t *testing.T) {
 				err error
 			}{
 				tag: &toggl.Tag{
-					Id:   1234567,
-					Wid:  1234567,
+					ID:   1234567,
+					WID:  1234567,
 					Name: "toggl-go",
 				},
 				err: nil,
@@ -245,8 +245,8 @@ func TestUpdateTag(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				tag: &toggl.Tag{
-					Id:   1234567,
-					Wid:  1234567,
+					ID:   1234567,
+					WID:  1234567,
 					Name: "toggl-go",
 				},
 			},
@@ -271,8 +271,8 @@ func TestUpdateTag(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				tag: &toggl.Tag{
-					Id:   1234567,
-					Wid:  1234567,
+					ID:   1234567,
+					WID:  1234567,
 					Name: "toggl-go",
 				},
 			},
@@ -297,8 +297,8 @@ func TestUpdateTag(t *testing.T) {
 			}{
 				ctx: nil,
 				tag: &toggl.Tag{
-					Id:   1234567,
-					Wid:  1234567,
+					ID:   1234567,
+					WID:  1234567,
 					Name: "toggl-go",
 				},
 			},
@@ -357,7 +357,7 @@ func TestUpdateTag(t *testing.T) {
 
 func TestUpdateTagConvertParamsToRequestBody(t *testing.T) {
 	expectedTagRequest := &toggl.Tag{
-		Wid:  1234567,
+		WID:  1234567,
 		Name: "updated",
 	}
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -378,9 +378,9 @@ func TestUpdateTagConvertParamsToRequestBody(t *testing.T) {
 	_, _ = client.UpdateTag(context.Background(), expectedTagRequest)
 }
 
-func TestUpdateTagUseURLIncludingTagId(t *testing.T) {
-	tagId := 1234567
-	expectedRequestURI := "/api/v8/tags/" + strconv.Itoa(tagId) + "?"
+func TestUpdateTagUseURLIncludingTagID(t *testing.T) {
+	tagID := 1234567
+	expectedRequestURI := "/api/v8/tags/" + strconv.Itoa(tagID) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -390,8 +390,8 @@ func TestUpdateTagUseURLIncludingTagId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_, _ = client.UpdateTag(context.Background(), &toggl.Tag{
-		Id:   tagId,
-		Wid:  1234567,
+		ID:   tagID,
+		WID:  1234567,
 		Name: "toggl-go",
 	})
 }
@@ -417,7 +417,7 @@ func TestDeleteTag(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				tag: &toggl.Tag{
-					Id: 1234567,
+					ID: 1234567,
 				},
 			},
 			out: nil,
@@ -432,7 +432,7 @@ func TestDeleteTag(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				tag: &toggl.Tag{
-					Id: 1234567,
+					ID: 1234567,
 				},
 			},
 			out: &toggl.TogglError{
@@ -450,7 +450,7 @@ func TestDeleteTag(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				tag: &toggl.Tag{
-					Id: 1234567,
+					ID: 1234567,
 				},
 			},
 			out: &toggl.TogglError{
@@ -468,7 +468,7 @@ func TestDeleteTag(t *testing.T) {
 			}{
 				ctx: nil,
 				tag: &toggl.Tag{
-					Id: 1234567,
+					ID: 1234567,
 				},
 			},
 			out: toggl.ErrContextNotFound,
@@ -509,9 +509,9 @@ func TestDeleteTag(t *testing.T) {
 	}
 }
 
-func TestDeleteTagUseURLIncludingTagId(t *testing.T) {
-	tagId := 1234567
-	expectedRequestURI := "/api/v8/tags/" + strconv.Itoa(tagId) + "?"
+func TestDeleteTagUseURLIncludingTagID(t *testing.T) {
+	tagID := 1234567
+	expectedRequestURI := "/api/v8/tags/" + strconv.Itoa(tagID) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -521,6 +521,6 @@ func TestDeleteTagUseURLIncludingTagId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_ = client.DeleteTag(context.Background(), &toggl.Tag{
-		Id: tagId,
+		ID: tagID,
 	})
 }

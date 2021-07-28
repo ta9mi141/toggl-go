@@ -39,8 +39,8 @@ func TestCreateProjectUser(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				projectUser: &toggl.ProjectUser{
-					Pid: 123456789,
-					Uid: 2345678,
+					PID: 123456789,
+					UID: 2345678,
 				},
 			},
 			out: struct {
@@ -48,10 +48,10 @@ func TestCreateProjectUser(t *testing.T) {
 				err         error
 			}{
 				projectUser: &toggl.ProjectUser{
-					Id:      12345678,
-					Pid:     123456789,
-					Uid:     2345678,
-					Wid:     3456789,
+					ID:      12345678,
+					PID:     123456789,
+					UID:     2345678,
+					WID:     3456789,
 					Manager: false,
 				},
 				err: nil,
@@ -67,8 +67,8 @@ func TestCreateProjectUser(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				projectUser: &toggl.ProjectUser{
-					Pid: 123456789,
-					Uid: 2345678,
+					PID: 123456789,
+					UID: 2345678,
 				},
 			},
 			out: struct {
@@ -92,8 +92,8 @@ func TestCreateProjectUser(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				projectUser: &toggl.ProjectUser{
-					Pid: 123456789,
-					Uid: 2345678,
+					PID: 123456789,
+					UID: 2345678,
 				},
 			},
 			out: struct {
@@ -117,8 +117,8 @@ func TestCreateProjectUser(t *testing.T) {
 			}{
 				ctx: nil,
 				projectUser: &toggl.ProjectUser{
-					Pid: 123456789,
-					Uid: 2345678,
+					PID: 123456789,
+					UID: 2345678,
 				},
 			},
 			out: struct {
@@ -176,8 +176,8 @@ func TestCreateProjectUser(t *testing.T) {
 
 func TestCreateProjectUserConvertParamsToRequestBody(t *testing.T) {
 	expectedProjectUserRequest := &toggl.ProjectUser{
-		Pid:     777,
-		Uid:     123,
+		PID:     777,
+		UID:     123,
 		Manager: true,
 	}
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -222,9 +222,9 @@ func TestUpdateProjectUser(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				projectUser: &toggl.ProjectUser{
-					Pid:     123456789,
-					Uid:     2345678,
-					Wid:     3456789,
+					PID:     123456789,
+					UID:     2345678,
+					WID:     3456789,
 					Manager: true,
 					Fields:  "fullname",
 				},
@@ -234,10 +234,10 @@ func TestUpdateProjectUser(t *testing.T) {
 				err         error
 			}{
 				projectUser: &toggl.ProjectUser{
-					Id:       98765432,
-					Pid:      123456789,
-					Uid:      2345678,
-					Wid:      3456789,
+					ID:       98765432,
+					PID:      123456789,
+					UID:      2345678,
+					WID:      3456789,
 					Manager:  true,
 					Fullname: "John Swift",
 					At:       time.Date(2019, time.September, 15, 1, 24, 49, 0, time.FixedZone("", 0)),
@@ -255,9 +255,9 @@ func TestUpdateProjectUser(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				projectUser: &toggl.ProjectUser{
-					Pid:     123456789,
-					Uid:     2345678,
-					Wid:     3456789,
+					PID:     123456789,
+					UID:     2345678,
+					WID:     3456789,
 					Manager: true,
 					Fields:  "fullname",
 				},
@@ -283,9 +283,9 @@ func TestUpdateProjectUser(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				projectUser: &toggl.ProjectUser{
-					Pid:     123456789,
-					Uid:     2345678,
-					Wid:     3456789,
+					PID:     123456789,
+					UID:     2345678,
+					WID:     3456789,
 					Manager: true,
 					Fields:  "fullname",
 				},
@@ -311,9 +311,9 @@ func TestUpdateProjectUser(t *testing.T) {
 			}{
 				ctx: nil,
 				projectUser: &toggl.ProjectUser{
-					Pid:     123456789,
-					Uid:     2345678,
-					Wid:     3456789,
+					PID:     123456789,
+					UID:     2345678,
+					WID:     3456789,
 					Manager: true,
 					Fields:  "fullname",
 				},
@@ -373,7 +373,7 @@ func TestUpdateProjectUser(t *testing.T) {
 
 func TestUpdateProjectUserConvertParamsToRequestBody(t *testing.T) {
 	expectedProjectUserRequest := &toggl.ProjectUser{
-		Id:      1234567,
+		ID:      1234567,
 		Manager: true,
 	}
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -394,9 +394,9 @@ func TestUpdateProjectUserConvertParamsToRequestBody(t *testing.T) {
 	_, _ = client.UpdateProjectUser(context.Background(), expectedProjectUserRequest)
 }
 
-func TestUpdateProjectUserUseURLIncludingProjectUserId(t *testing.T) {
-	projectUserId := 12345678
-	expectedRequestURI := "/api/v8/project_users/" + strconv.Itoa(projectUserId) + "?"
+func TestUpdateProjectUserUseURLIncludingProjectUserID(t *testing.T) {
+	projectUserID := 12345678
+	expectedRequestURI := "/api/v8/project_users/" + strconv.Itoa(projectUserID) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -406,7 +406,7 @@ func TestUpdateProjectUserUseURLIncludingProjectUserId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_, _ = client.UpdateProjectUser(context.Background(), &toggl.ProjectUser{
-		Id:      projectUserId,
+		ID:      projectUserID,
 		Manager: true,
 	})
 }
@@ -432,7 +432,7 @@ func TestDeleteProjectUser(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				projectUser: &toggl.ProjectUser{
-					Id: 12345678,
+					ID: 12345678,
 				},
 			},
 			out: nil,
@@ -447,7 +447,7 @@ func TestDeleteProjectUser(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				projectUser: &toggl.ProjectUser{
-					Id: 12345678,
+					ID: 12345678,
 				},
 			},
 			out: &toggl.TogglError{
@@ -465,7 +465,7 @@ func TestDeleteProjectUser(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				projectUser: &toggl.ProjectUser{
-					Id: 12345678,
+					ID: 12345678,
 				},
 			},
 			out: &toggl.TogglError{
@@ -483,7 +483,7 @@ func TestDeleteProjectUser(t *testing.T) {
 			}{
 				ctx: nil,
 				projectUser: &toggl.ProjectUser{
-					Id: 12345678,
+					ID: 12345678,
 				},
 			},
 			out: toggl.ErrContextNotFound,
@@ -524,9 +524,9 @@ func TestDeleteProjectUser(t *testing.T) {
 	}
 }
 
-func TestDeleteProjectUserUseURLIncludingProjectUserId(t *testing.T) {
-	projectUserId := 12345678
-	expectedRequestURI := "/api/v8/project_users/" + strconv.Itoa(projectUserId) + "?"
+func TestDeleteProjectUserUseURLIncludingProjectUserID(t *testing.T) {
+	projectUserID := 12345678
+	expectedRequestURI := "/api/v8/project_users/" + strconv.Itoa(projectUserID) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -536,7 +536,7 @@ func TestDeleteProjectUserUseURLIncludingProjectUserId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_ = client.DeleteProjectUser(context.Background(), &toggl.ProjectUser{
-		Id: projectUserId,
+		ID: projectUserID,
 	})
 }
 
@@ -563,7 +563,7 @@ func TestGetProjectUsersInWorkspace(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       context.Background(),
-				workspace: &toggl.Workspace{Id: 4567890},
+				workspace: &toggl.Workspace{ID: 4567890},
 			},
 			out: struct {
 				projectUsers []*toggl.ProjectUser
@@ -571,26 +571,26 @@ func TestGetProjectUsersInWorkspace(t *testing.T) {
 			}{
 				projectUsers: []*toggl.ProjectUser{
 					{
-						Id:      12345678,
-						Pid:     234567890,
-						Uid:     3456789,
-						Wid:     4567890,
+						ID:      12345678,
+						PID:     234567890,
+						UID:     3456789,
+						WID:     4567890,
 						Manager: false,
 						At:      time.Date(2018, time.March, 14, 1, 23, 45, 0, time.FixedZone("", 0)),
 					},
 					{
-						Id:      23456789,
-						Pid:     234567890,
-						Uid:     4567890,
-						Wid:     4567890,
+						ID:      23456789,
+						PID:     234567890,
+						UID:     4567890,
+						WID:     4567890,
 						Manager: true,
 						At:      time.Date(2020, time.February, 17, 9, 49, 59, 0, time.FixedZone("", 0)),
 					},
 					{
-						Id:      34567890,
-						Pid:     345678901,
-						Uid:     3456789,
-						Wid:     4567890,
+						ID:      34567890,
+						PID:     345678901,
+						UID:     3456789,
+						WID:     4567890,
 						Manager: true,
 						At:      time.Date(2017, time.January, 11, 5, 46, 47, 0, time.FixedZone("", 0)),
 					},
@@ -607,7 +607,7 @@ func TestGetProjectUsersInWorkspace(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       context.Background(),
-				workspace: &toggl.Workspace{Id: 4567890},
+				workspace: &toggl.Workspace{ID: 4567890},
 			},
 			out: struct {
 				projectUsers []*toggl.ProjectUser
@@ -629,7 +629,7 @@ func TestGetProjectUsersInWorkspace(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       context.Background(),
-				workspace: &toggl.Workspace{Id: 4567890},
+				workspace: &toggl.Workspace{ID: 4567890},
 			},
 			out: struct {
 				projectUsers []*toggl.ProjectUser
@@ -651,7 +651,7 @@ func TestGetProjectUsersInWorkspace(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       nil,
-				workspace: &toggl.Workspace{Id: 4567890},
+				workspace: &toggl.Workspace{ID: 4567890},
 			},
 			out: struct {
 				projectUsers []*toggl.ProjectUser
@@ -706,9 +706,9 @@ func TestGetProjectUsersInWorkspace(t *testing.T) {
 	}
 }
 
-func TestGetProjectUsersInWorkspaceUseURLIncludingWorkspaceId(t *testing.T) {
-	workspaceId := 1234567
-	expectedRequestURI := "/api/v8/workspaces/" + strconv.Itoa(workspaceId) + "/project_users" + "?"
+func TestGetProjectUsersInWorkspaceUseURLIncludingWorkspaceID(t *testing.T) {
+	workspaceID := 1234567
+	expectedRequestURI := "/api/v8/workspaces/" + strconv.Itoa(workspaceID) + "/project_users" + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -718,6 +718,6 @@ func TestGetProjectUsersInWorkspaceUseURLIncludingWorkspaceId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_, _ = client.GetProjectUsersInWorkspace(context.Background(), &toggl.Workspace{
-		Id: workspaceId,
+		ID: workspaceID,
 	})
 }

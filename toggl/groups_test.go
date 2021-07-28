@@ -39,7 +39,7 @@ func TestCreateGroup(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				group: &toggl.Group{
-					Wid:  1234567,
+					WID:  1234567,
 					Name: "toggl-go",
 				},
 			},
@@ -48,8 +48,8 @@ func TestCreateGroup(t *testing.T) {
 				err   error
 			}{
 				group: &toggl.Group{
-					Id:   123456,
-					Wid:  1234567,
+					ID:   123456,
+					WID:  1234567,
 					Name: "toggl-go",
 				},
 				err: nil,
@@ -65,7 +65,7 @@ func TestCreateGroup(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				group: &toggl.Group{
-					Wid:  1234567,
+					WID:  1234567,
 					Name: "toggl-go",
 				},
 			},
@@ -90,7 +90,7 @@ func TestCreateGroup(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				group: &toggl.Group{
-					Wid:  1234567,
+					WID:  1234567,
 					Name: "toggl-go",
 				},
 			},
@@ -115,7 +115,7 @@ func TestCreateGroup(t *testing.T) {
 			}{
 				ctx: nil,
 				group: &toggl.Group{
-					Wid:  1234567,
+					WID:  1234567,
 					Name: "toggl-go",
 				},
 			},
@@ -174,7 +174,7 @@ func TestCreateGroup(t *testing.T) {
 
 func TestCreateGroupConvertParamsToRequestBody(t *testing.T) {
 	expectedGroupRequest := &toggl.Group{
-		Wid:  1234567,
+		WID:  1234567,
 		Name: "toggl-go",
 	}
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -219,7 +219,7 @@ func TestUpdateGroup(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				group: &toggl.Group{
-					Id:   123456,
+					ID:   123456,
 					Name: "toggl-go",
 				},
 			},
@@ -228,8 +228,8 @@ func TestUpdateGroup(t *testing.T) {
 				err   error
 			}{
 				group: &toggl.Group{
-					Id:   123456,
-					Wid:  1234567,
+					ID:   123456,
+					WID:  1234567,
 					Name: "toggl-go",
 					At:   time.Date(2020, time.February, 2, 6, 40, 53, 0, time.FixedZone("", 0)),
 				},
@@ -246,7 +246,7 @@ func TestUpdateGroup(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				group: &toggl.Group{
-					Id:   1234567,
+					ID:   1234567,
 					Name: "toggl-go",
 				},
 			},
@@ -271,7 +271,7 @@ func TestUpdateGroup(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				group: &toggl.Group{
-					Id:   123456,
+					ID:   123456,
 					Name: "toggl-go",
 				},
 			},
@@ -296,8 +296,8 @@ func TestUpdateGroup(t *testing.T) {
 			}{
 				ctx: nil,
 				group: &toggl.Group{
-					Id:   123456,
-					Wid:  1234567,
+					ID:   123456,
+					WID:  1234567,
 					Name: "toggl-go",
 				},
 			},
@@ -356,7 +356,7 @@ func TestUpdateGroup(t *testing.T) {
 
 func TestUpdateGroupConvertParamsToRequestBody(t *testing.T) {
 	expectedGroupRequest := &toggl.Group{
-		Wid:  1234567,
+		WID:  1234567,
 		Name: "updated",
 	}
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -377,9 +377,9 @@ func TestUpdateGroupConvertParamsToRequestBody(t *testing.T) {
 	_, _ = client.UpdateGroup(context.Background(), expectedGroupRequest)
 }
 
-func TestUpdateGroupUseURLIncludingGroupId(t *testing.T) {
-	groupId := 123456
-	expectedRequestURI := "/api/v8/groups/" + strconv.Itoa(groupId) + "?"
+func TestUpdateGroupUseURLIncludingGroupID(t *testing.T) {
+	groupID := 123456
+	expectedRequestURI := "/api/v8/groups/" + strconv.Itoa(groupID) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -389,8 +389,8 @@ func TestUpdateGroupUseURLIncludingGroupId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_, _ = client.UpdateGroup(context.Background(), &toggl.Group{
-		Id:   groupId,
-		Wid:  1234567,
+		ID:   groupID,
+		WID:  1234567,
 		Name: "toggl-go",
 	})
 }
@@ -416,7 +416,7 @@ func TestDeleteGroup(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				group: &toggl.Group{
-					Id: 123456,
+					ID: 123456,
 				},
 			},
 			out: nil,
@@ -431,7 +431,7 @@ func TestDeleteGroup(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				group: &toggl.Group{
-					Id: 123456,
+					ID: 123456,
 				},
 			},
 			out: &toggl.TogglError{
@@ -449,7 +449,7 @@ func TestDeleteGroup(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				group: &toggl.Group{
-					Id: 123456,
+					ID: 123456,
 				},
 			},
 			out: &toggl.TogglError{
@@ -467,7 +467,7 @@ func TestDeleteGroup(t *testing.T) {
 			}{
 				ctx: nil,
 				group: &toggl.Group{
-					Id: 123456,
+					ID: 123456,
 				},
 			},
 			out: toggl.ErrContextNotFound,
@@ -508,9 +508,9 @@ func TestDeleteGroup(t *testing.T) {
 	}
 }
 
-func TestDeleteGroupUseURLIncludingGroupId(t *testing.T) {
-	groupId := 123456
-	expectedRequestURI := "/api/v8/groups/" + strconv.Itoa(groupId) + "?"
+func TestDeleteGroupUseURLIncludingGroupID(t *testing.T) {
+	groupID := 123456
+	expectedRequestURI := "/api/v8/groups/" + strconv.Itoa(groupID) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -520,6 +520,6 @@ func TestDeleteGroupUseURLIncludingGroupId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_ = client.DeleteGroup(context.Background(), &toggl.Group{
-		Id: groupId,
+		ID: groupID,
 	})
 }

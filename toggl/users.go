@@ -14,14 +14,14 @@ const (
 
 var (
 	// ErrUserNotFound is returned when the provided user is nil.
-	ErrUserNotFound = errors.New("The provided user must be non-nil")
+	ErrUserNotFound = errors.New("the provided user must be non-nil")
 )
 
 // User represents properties of user including ones only used to update or sign up.
 type User struct {
-	Id                    int       `json:"id"`
+	ID                    int       `json:"id"`
 	APIToken              string    `json:"api_token"`
-	DefaultWid            int       `json:"default_wid"`
+	DefaultWID            int       `json:"default_wid"`
 	Email                 string    `json:"email"`
 	Fullname              string    `json:"fullname"`
 	JQueryTimeofdayFormat string    `json:"jquery_timeofday_format"`
@@ -31,7 +31,7 @@ type User struct {
 	StoreStartAndStopTime bool      `json:"store_start_and_stop_time"`
 	BeginningOfWeek       int       `json:"beginning_of_week"`
 	Language              string    `json:"language"`
-	ImageUrl              string    `json:"image_url"`
+	ImageURL              string    `json:"image_url"`
 	SidebarPiechart       bool      `json:"sidebar_piechart"`
 	At                    time.Time `json:"at"`
 	NewBlogPost           struct {

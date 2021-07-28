@@ -13,12 +13,12 @@ const (
 
 var (
 	// ErrWorkspaceNotFound is returned when the provided workspace is nil.
-	ErrWorkspaceNotFound = errors.New("The provided workspace must be non-nil")
+	ErrWorkspaceNotFound = errors.New("the provided workspace must be non-nil")
 )
 
 // Workspace represents properties of workspace.
 type Workspace struct {
-	Id                          int       `json:"id"`
+	ID                          int       `json:"id"`
 	Name                        string    `json:"name"`
 	Premium                     bool      `json:"premium"`
 	Admin                       bool      `json:"admin"`
@@ -51,7 +51,7 @@ func (c *Client) GetWorkspace(ctx context.Context, workspace *Workspace) (*Works
 		return nil, ErrWorkspaceNotFound
 	}
 	rawWorkspaceData := new(rawWorkspaceData)
-	endpoint := workspacesEndpoint + "/" + strconv.Itoa(workspace.Id)
+	endpoint := workspacesEndpoint + "/" + strconv.Itoa(workspace.ID)
 	if err := c.httpGet(ctx, c.buildURL(endpoint), rawWorkspaceData); err != nil {
 		return nil, err
 	}
@@ -64,7 +64,7 @@ func (c *Client) UpdateWorkspace(ctx context.Context, workspace *Workspace) (*Wo
 		return nil, ErrWorkspaceNotFound
 	}
 	rawWorkspaceData := new(rawWorkspaceData)
-	endpoint := workspacesEndpoint + "/" + strconv.Itoa(workspace.Id)
+	endpoint := workspacesEndpoint + "/" + strconv.Itoa(workspace.ID)
 	if err := c.httpPut(ctx, c.buildURL(endpoint), workspace, rawWorkspaceData); err != nil {
 		return nil, err
 	}
@@ -77,7 +77,7 @@ func (c *Client) GetWorkspaceUsers(ctx context.Context, workspace *Workspace) ([
 		return nil, ErrWorkspaceNotFound
 	}
 	var workspaceUsers []*User
-	endpoint := workspacesEndpoint + "/" + strconv.Itoa(workspace.Id) + "/users"
+	endpoint := workspacesEndpoint + "/" + strconv.Itoa(workspace.ID) + "/users"
 	if err := c.httpGet(ctx, c.buildURL(endpoint), &workspaceUsers); err != nil {
 		return nil, err
 	}
@@ -90,7 +90,7 @@ func (c *Client) GetWorkspaceClients(ctx context.Context, workspace *Workspace) 
 		return nil, ErrWorkspaceNotFound
 	}
 	var workspaceClients []*TogglClient
-	endpoint := workspacesEndpoint + "/" + strconv.Itoa(workspace.Id) + "/clients"
+	endpoint := workspacesEndpoint + "/" + strconv.Itoa(workspace.ID) + "/clients"
 	if err := c.httpGet(ctx, c.buildURL(endpoint), &workspaceClients); err != nil {
 		return nil, err
 	}
@@ -103,7 +103,7 @@ func (c *Client) GetWorkspaceGroups(ctx context.Context, workspace *Workspace) (
 		return nil, ErrWorkspaceNotFound
 	}
 	var workspaceGroups []*Group
-	endpoint := workspacesEndpoint + "/" + strconv.Itoa(workspace.Id) + "/groups"
+	endpoint := workspacesEndpoint + "/" + strconv.Itoa(workspace.ID) + "/groups"
 	if err := c.httpGet(ctx, c.buildURL(endpoint), &workspaceGroups); err != nil {
 		return nil, err
 	}
@@ -116,7 +116,7 @@ func (c *Client) GetWorkspaceProjects(ctx context.Context, workspace *Workspace,
 		return nil, ErrWorkspaceNotFound
 	}
 	var workspaceProjects []*Project
-	endpoint := workspacesEndpoint + "/" + strconv.Itoa(workspace.Id) + "/projects"
+	endpoint := workspacesEndpoint + "/" + strconv.Itoa(workspace.ID) + "/projects"
 	if err := c.httpGet(ctx, c.buildURL(endpoint, params...), &workspaceProjects); err != nil {
 		return nil, err
 	}
@@ -129,7 +129,7 @@ func (c *Client) GetWorkspaceTags(ctx context.Context, workspace *Workspace) ([]
 		return nil, ErrWorkspaceNotFound
 	}
 	var workspaceTags []*Tag
-	endpoint := workspacesEndpoint + "/" + strconv.Itoa(workspace.Id) + "/tags"
+	endpoint := workspacesEndpoint + "/" + strconv.Itoa(workspace.ID) + "/tags"
 	if err := c.httpGet(ctx, c.buildURL(endpoint), &workspaceTags); err != nil {
 		return nil, err
 	}

@@ -53,13 +53,13 @@ func TestNewClient_WithHTTPClient(t *testing.T) {
 	}
 }
 
-func ExampleNewClient_APIToken() {
+func ExampleNewClient() {
 	client := toggl.NewClient(toggl.APIToken("YOUR_API_TOKEN"))
 	fmt.Println(client.APIToken)
 	// Output: YOUR_API_TOKEN
 }
 
-func ExampleNewClient_Email_and_Password() {
+func ExampleNewClient_email() {
 	client := toggl.NewClient(
 		toggl.Email("YOUR_EMAIL"),
 		toggl.Password("YOUR_PASSWORD"),
@@ -77,7 +77,7 @@ func setupMockServer(t *testing.T, httpStatus int, testdataFilePath string) *htt
 
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(httpStatus)
-		fmt.Fprintf(w, string(testdata))
+		fmt.Fprint(w, string(testdata))
 	}))
 
 	return mockServer

@@ -12,14 +12,14 @@ const (
 
 var (
 	// ErrTagNotFound is returned when the provided tag is nil.
-	ErrTagNotFound = errors.New("The provided tag must be non-nil")
+	ErrTagNotFound = errors.New("the provided tag must be non-nil")
 )
 
 // Tag represents properties of tag.
 type Tag struct {
-	Id   int    `json:"id"`
+	ID   int    `json:"id"`
 	Name string `json:"name"`
-	Wid  int    `json:"wid"`
+	WID  int    `json:"wid"`
 }
 
 type rawTagData struct {
@@ -44,7 +44,7 @@ func (c *Client) UpdateTag(ctx context.Context, tag *Tag) (*Tag, error) {
 		return nil, ErrTagNotFound
 	}
 	rawTagData := new(rawTagData)
-	endpoint := tagsEndpoint + "/" + strconv.Itoa(tag.Id)
+	endpoint := tagsEndpoint + "/" + strconv.Itoa(tag.ID)
 	if err := c.httpPut(ctx, c.buildURL(endpoint), tag, rawTagData); err != nil {
 		return nil, err
 	}
@@ -56,7 +56,7 @@ func (c *Client) DeleteTag(ctx context.Context, tag *Tag) error {
 	if tag == nil {
 		return ErrTagNotFound
 	}
-	endpoint := tagsEndpoint + "/" + strconv.Itoa(tag.Id)
+	endpoint := tagsEndpoint + "/" + strconv.Itoa(tag.ID)
 	if err := c.httpDelete(ctx, c.buildURL(endpoint)); err != nil {
 		return err
 	}

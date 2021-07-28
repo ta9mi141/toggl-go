@@ -102,7 +102,7 @@ func TestGetWeekly(t *testing.T) {
 				&reports.WeeklyRequestParameters{
 					StandardRequestParameters: &reports.StandardRequestParameters{
 						UserAgent:   userAgent,
-						WorkspaceId: workspaceId,
+						WorkspaceID: workspaceID,
 					},
 				},
 				actualWeeklyReport,
@@ -139,7 +139,7 @@ func TestGetWeekly(t *testing.T) {
 func TestGetWeeklyEncodeRequestParameters(t *testing.T) {
 	expectedQueryString := url.Values{
 		"user_agent":   []string{userAgent},
-		"workspace_id": []string{workspaceId},
+		"workspace_id": []string{workspaceID},
 		"grouping":     []string{"users"},
 	}
 
@@ -156,7 +156,7 @@ func TestGetWeeklyEncodeRequestParameters(t *testing.T) {
 		&reports.WeeklyRequestParameters{
 			StandardRequestParameters: &reports.StandardRequestParameters{
 				UserAgent:   userAgent,
-				WorkspaceId: workspaceId,
+				WorkspaceID: workspaceID,
 			},
 			Grouping: "users",
 		},

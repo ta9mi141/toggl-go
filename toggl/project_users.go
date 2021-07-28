@@ -13,10 +13,10 @@ const (
 
 // ProjectUser represents properties of project user including additional fields.
 type ProjectUser struct {
-	Id       int       `json:"id"`
-	Pid      int       `json:"pid"`
-	Uid      int       `json:"uid"`
-	Wid      int       `json:"wid"`
+	ID       int       `json:"id"`
+	PID      int       `json:"pid"`
+	UID      int       `json:"uid"`
+	WID      int       `json:"wid"`
 	Manager  bool      `json:"manager"`
 	At       time.Time `json:"at"`
 	Fullname string    `json:"fullname"`
@@ -29,7 +29,7 @@ type rawProjectUserData struct {
 
 var (
 	// ErrProjectUserNotFound is returned when the provided project user is nil.
-	ErrProjectUserNotFound = errors.New("The provided project user must be non-nil")
+	ErrProjectUserNotFound = errors.New("the provided project user must be non-nil")
 )
 
 // CreateProjectUser creates a project user.
@@ -50,7 +50,7 @@ func (c *Client) UpdateProjectUser(ctx context.Context, projectUser *ProjectUser
 		return nil, ErrProjectUserNotFound
 	}
 	rawProjectUserData := new(rawProjectUserData)
-	endpoint := projectUsersEndpoint + "/" + strconv.Itoa(projectUser.Id)
+	endpoint := projectUsersEndpoint + "/" + strconv.Itoa(projectUser.ID)
 	if err := c.httpPut(ctx, c.buildURL(endpoint), projectUser, rawProjectUserData); err != nil {
 		return nil, err
 	}
@@ -62,7 +62,7 @@ func (c *Client) DeleteProjectUser(ctx context.Context, projectUser *ProjectUser
 	if projectUser == nil {
 		return ErrProjectUserNotFound
 	}
-	endpoint := projectUsersEndpoint + "/" + strconv.Itoa(projectUser.Id)
+	endpoint := projectUsersEndpoint + "/" + strconv.Itoa(projectUser.ID)
 	if err := c.httpDelete(ctx, c.buildURL(endpoint)); err != nil {
 		return err
 	}
@@ -75,7 +75,7 @@ func (c *Client) GetProjectUsersInWorkspace(ctx context.Context, workspace *Work
 		return nil, ErrWorkspaceNotFound
 	}
 	var projectUsers []*ProjectUser
-	endpoint := workspacesEndpoint + "/" + strconv.Itoa(workspace.Id) + "/project_users"
+	endpoint := workspacesEndpoint + "/" + strconv.Itoa(workspace.ID) + "/project_users"
 	if err := c.httpGet(ctx, c.buildURL(endpoint), &projectUsers); err != nil {
 		return nil, err
 	}

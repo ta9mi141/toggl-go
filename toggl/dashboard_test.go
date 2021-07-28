@@ -36,7 +36,7 @@ func TestGetDashboard(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       context.Background(),
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				dashboard *toggl.Dashboard
@@ -44,54 +44,54 @@ func TestGetDashboard(t *testing.T) {
 			}{
 				dashboard: &toggl.Dashboard{
 					Activity: []struct {
-						UserId      int       `json:"user_id"`
-						ProjectId   int       `json:"project_id"`
+						UserID      int       `json:"user_id"`
+						ProjectID   int       `json:"project_id"`
 						Duration    int       `json:"duration"`
 						Description string    `json:"description"`
 						Stop        time.Time `json:"stop"`
-						Tid         int       `json:"tid"`
+						TID         int       `json:"tid"`
 					}{
 						{
-							UserId:      1234567,
-							ProjectId:   12345678,
+							UserID:      1234567,
+							ProjectID:   12345678,
 							Duration:    -1580912718,
 							Description: "toggl-go",
 						},
 						{
-							UserId:      1234567,
-							ProjectId:   12345678,
+							UserID:      1234567,
+							ProjectID:   12345678,
 							Duration:    1413,
 							Description: "toggl-go",
 							Stop:        time.Date(2020, time.February, 5, 0, 24, 23, 0, time.FixedZone("", 0)),
 						},
 						{
-							UserId:      1234567,
-							ProjectId:   87654321,
+							UserID:      1234567,
+							ProjectID:   87654321,
 							Duration:    3426,
 							Description: "og-lggot",
 							Stop:        time.Date(2020, time.February, 4, 13, 20, 44, 0, time.FixedZone("", 0)),
 						},
 						{
-							UserId:      1234567,
-							ProjectId:   87654321,
+							UserID:      1234567,
+							ProjectID:   87654321,
 							Duration:    178,
 							Description: "og-lggot",
 							Stop:        time.Date(2020, time.February, 3, 1, 48, 17, 0, time.FixedZone("", 0)),
 						},
 						{
-							UserId:      1234567,
-							ProjectId:   12345678,
+							UserID:      1234567,
+							ProjectID:   12345678,
 							Duration:    4510,
 							Description: "toggl-go",
 							Stop:        time.Date(2020, time.February, 2, 7, 51, 23, 0, time.FixedZone("", 0)),
 						},
 					},
 					MostActiveUser: []struct {
-						UserId   int `json:"user_id"`
+						UserID   int `json:"user_id"`
 						Duration int `json:"duration"`
 					}{
 						{
-							UserId:   1234567,
+							UserID:   1234567,
 							Duration: 123456,
 						},
 					},
@@ -108,7 +108,7 @@ func TestGetDashboard(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       context.Background(),
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				dashboard *toggl.Dashboard
@@ -130,7 +130,7 @@ func TestGetDashboard(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       context.Background(),
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				dashboard *toggl.Dashboard
@@ -152,7 +152,7 @@ func TestGetDashboard(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       context.Background(),
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				dashboard *toggl.Dashboard
@@ -174,7 +174,7 @@ func TestGetDashboard(t *testing.T) {
 				workspace *toggl.Workspace
 			}{
 				ctx:       nil,
-				workspace: &toggl.Workspace{Id: 1234567},
+				workspace: &toggl.Workspace{ID: 1234567},
 			},
 			out: struct {
 				dashboard *toggl.Dashboard
@@ -229,9 +229,9 @@ func TestGetDashboard(t *testing.T) {
 	}
 }
 
-func TestGetDashboardUseURLIncludingWorkspaceId(t *testing.T) {
-	workspaceId := 1234567
-	expectedRequestURI := "/api/v8/dashboard/" + strconv.Itoa(workspaceId) + "?"
+func TestGetDashboardUseURLIncludingWorkspaceID(t *testing.T) {
+	workspaceID := 1234567
+	expectedRequestURI := "/api/v8/dashboard/" + strconv.Itoa(workspaceID) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -241,6 +241,6 @@ func TestGetDashboardUseURLIncludingWorkspaceId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_, _ = client.GetDashboard(context.Background(), &toggl.Workspace{
-		Id: workspaceId,
+		ID: workspaceID,
 	})
 }

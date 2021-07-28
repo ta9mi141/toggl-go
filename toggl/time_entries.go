@@ -13,16 +13,16 @@ const (
 
 var (
 	// ErrTimeEntryNotFound is returned when the provided time entry is nil.
-	ErrTimeEntryNotFound = errors.New("The provided time entry must be non-nil")
+	ErrTimeEntryNotFound = errors.New("the provided time entry must be non-nil")
 )
 
 // TimeEntry represents properties of time entry.
 type TimeEntry struct {
-	Id          int       `json:"id"`
+	ID          int       `json:"id"`
 	Description string    `json:"description"`
-	Wid         int       `json:"wid"`
-	Pid         int       `json:"pid"`
-	Tid         int       `json:"tid"`
+	WID         int       `json:"wid"`
+	PID         int       `json:"pid"`
+	TID         int       `json:"tid"`
 	Start       time.Time `json:"start"`
 	Stop        time.Time `json:"stop"`
 	Duration    int       `json:"duration"`
@@ -54,7 +54,7 @@ func (c *Client) UpdateTimeEntry(ctx context.Context, timeEntry *TimeEntry) (*Ti
 		return nil, ErrTimeEntryNotFound
 	}
 	rawTimeEntryData := new(rawTimeEntryData)
-	endpoint := timeEntriesEndpoint + "/" + strconv.Itoa(timeEntry.Id)
+	endpoint := timeEntriesEndpoint + "/" + strconv.Itoa(timeEntry.ID)
 	if err := c.httpPut(ctx, c.buildURL(endpoint), timeEntry, rawTimeEntryData); err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (c *Client) DeleteTimeEntry(ctx context.Context, timeEntry *TimeEntry) erro
 	if timeEntry == nil {
 		return ErrTimeEntryNotFound
 	}
-	endpoint := timeEntriesEndpoint + "/" + strconv.Itoa(timeEntry.Id)
+	endpoint := timeEntriesEndpoint + "/" + strconv.Itoa(timeEntry.ID)
 	if err := c.httpDelete(ctx, c.buildURL(endpoint)); err != nil {
 		return err
 	}
@@ -79,7 +79,7 @@ func (c *Client) GetTimeEntry(ctx context.Context, timeEntry *TimeEntry) (*TimeE
 		return nil, ErrTimeEntryNotFound
 	}
 	rawTimeEntryData := new(rawTimeEntryData)
-	endpoint := timeEntriesEndpoint + "/" + strconv.Itoa(timeEntry.Id)
+	endpoint := timeEntriesEndpoint + "/" + strconv.Itoa(timeEntry.ID)
 	if err := c.httpGet(ctx, c.buildURL(endpoint), rawTimeEntryData); err != nil {
 		return nil, err
 	}
@@ -115,7 +115,7 @@ func (c *Client) Stop(ctx context.Context, timeEntry *TimeEntry) (*TimeEntry, er
 		return nil, ErrTimeEntryNotFound
 	}
 	rawTimeEntryData := new(rawTimeEntryData)
-	endpoint := timeEntriesEndpoint + "/" + strconv.Itoa(timeEntry.Id) + "/" + "stop"
+	endpoint := timeEntriesEndpoint + "/" + strconv.Itoa(timeEntry.ID) + "/" + "stop"
 	if err := c.httpPut(ctx, c.buildURL(endpoint), timeEntry, rawTimeEntryData); err != nil {
 		return nil, err
 	}

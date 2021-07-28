@@ -39,7 +39,7 @@ func TestCreateTimeEntry(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				timeEntry: &toggl.TimeEntry{
-					Pid:         123456789,
+					PID:         123456789,
 					Start:       time.Date(2013, time.March, 5, 7, 58, 58, 0, time.FixedZone("", 0)),
 					Duration:    1200,
 					Description: "Meeting with possible clients",
@@ -52,9 +52,9 @@ func TestCreateTimeEntry(t *testing.T) {
 				err       error
 			}{
 				timeEntry: &toggl.TimeEntry{
-					Id:          1234567890,
-					Wid:         2345678,
-					Pid:         123456789,
+					ID:          1234567890,
+					WID:         2345678,
+					PID:         123456789,
 					Start:       time.Date(2013, time.March, 5, 7, 58, 58, 0, time.UTC),
 					Stop:        time.Date(2013, time.March, 5, 8, 18, 58, 0, time.UTC),
 					Duration:    1200,
@@ -76,7 +76,7 @@ func TestCreateTimeEntry(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				timeEntry: &toggl.TimeEntry{
-					Pid:         123456789,
+					PID:         123456789,
 					Start:       time.Date(2013, time.March, 5, 7, 58, 58, 0, time.FixedZone("", 0)),
 					Duration:    1200,
 					Description: "Meeting with possible clients",
@@ -105,7 +105,7 @@ func TestCreateTimeEntry(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				timeEntry: &toggl.TimeEntry{
-					Pid:         123456789,
+					PID:         123456789,
 					Start:       time.Date(2013, time.March, 5, 7, 58, 58, 0, time.FixedZone("", 0)),
 					Duration:    1200,
 					Description: "Meeting with possible clients",
@@ -134,7 +134,7 @@ func TestCreateTimeEntry(t *testing.T) {
 			}{
 				ctx: nil,
 				timeEntry: &toggl.TimeEntry{
-					Pid:         123456789,
+					PID:         123456789,
 					Start:       time.Date(2013, time.March, 5, 7, 58, 58, 0, time.FixedZone("", 0)),
 					Duration:    1200,
 					Description: "Meeting with possible clients",
@@ -202,7 +202,7 @@ func TestCreateTimeEntryConvertParamsToRequestBody(t *testing.T) {
 		Duration:    1200,
 		// Use time.UTC as timezone because the pointer of time.UTC is always set to nil.
 		Start:       time.Date(2013, time.March, 5, 7, 58, 58, 0, time.UTC),
-		Pid:         123,
+		PID:         123,
 		CreatedWith: "toggl-go",
 	}
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -256,9 +256,9 @@ func TestUpdateTimeEntry(t *testing.T) {
 				err       error
 			}{
 				timeEntry: &toggl.TimeEntry{
-					Id:          1234567890,
-					Wid:         1234567,
-					Pid:         123456789,
+					ID:          1234567890,
+					WID:         1234567,
+					PID:         123456789,
 					Start:       time.Date(2020, time.October, 5, 7, 58, 58, 0, time.UTC),
 					Stop:        time.Date(2020, time.October, 5, 8, 18, 58, 0, time.UTC),
 					Duration:    1200,
@@ -394,7 +394,7 @@ func TestUpdateTimeEntryConvertParamsToRequestBody(t *testing.T) {
 		// Use time.UTC as timezone because the pointer of time.UTC is always set to nil.
 		Start:       time.Date(2013, time.March, 5, 7, 58, 58, 0, time.UTC),
 		Stop:        time.Date(2013, time.March, 5, 8, 58, 58, 0, time.UTC),
-		Pid:         123,
+		PID:         123,
 		Duronly:     true,
 		CreatedWith: "toggl-go",
 	}
@@ -416,9 +416,9 @@ func TestUpdateTimeEntryConvertParamsToRequestBody(t *testing.T) {
 	_, _ = client.UpdateTimeEntry(context.Background(), expectedTimeEntryRequest)
 }
 
-func TestUpdateTimeEntryUseURLIncludingTimeEntryId(t *testing.T) {
-	timeEntryId := 1234567890
-	expectedRequestURI := "/api/v8/time_entries/" + strconv.Itoa(timeEntryId) + "?"
+func TestUpdateTimeEntryUseURLIncludingTimeEntryID(t *testing.T) {
+	timeEntryID := 1234567890
+	expectedRequestURI := "/api/v8/time_entries/" + strconv.Itoa(timeEntryID) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -428,7 +428,7 @@ func TestUpdateTimeEntryUseURLIncludingTimeEntryId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_, _ = client.UpdateTimeEntry(context.Background(), &toggl.TimeEntry{
-		Id: timeEntryId,
+		ID: timeEntryID,
 	})
 }
 
@@ -453,7 +453,7 @@ func TestDeleteTimeEntry(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				timeEntry: &toggl.TimeEntry{
-					Id: 1234567890,
+					ID: 1234567890,
 				},
 			},
 			out: nil,
@@ -468,7 +468,7 @@ func TestDeleteTimeEntry(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				timeEntry: &toggl.TimeEntry{
-					Id: 1234567890,
+					ID: 1234567890,
 				},
 			},
 			out: &toggl.TogglError{
@@ -486,7 +486,7 @@ func TestDeleteTimeEntry(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				timeEntry: &toggl.TimeEntry{
-					Id: 1234567890,
+					ID: 1234567890,
 				},
 			},
 			out: &toggl.TogglError{
@@ -504,7 +504,7 @@ func TestDeleteTimeEntry(t *testing.T) {
 			}{
 				ctx: nil,
 				timeEntry: &toggl.TimeEntry{
-					Id: 1234567890,
+					ID: 1234567890,
 				},
 			},
 			out: toggl.ErrContextNotFound,
@@ -545,9 +545,9 @@ func TestDeleteTimeEntry(t *testing.T) {
 	}
 }
 
-func TestDeleteTimeEntryUseURLIncludingTimeEntryId(t *testing.T) {
-	timeEntryId := 1234567890
-	expectedRequestURI := "/api/v8/time_entries/" + strconv.Itoa(timeEntryId) + "?"
+func TestDeleteTimeEntryUseURLIncludingTimeEntryID(t *testing.T) {
+	timeEntryID := 1234567890
+	expectedRequestURI := "/api/v8/time_entries/" + strconv.Itoa(timeEntryID) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -557,7 +557,7 @@ func TestDeleteTimeEntryUseURLIncludingTimeEntryId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_ = client.DeleteTimeEntry(context.Background(), &toggl.TimeEntry{
-		Id: timeEntryId,
+		ID: timeEntryID,
 	})
 }
 
@@ -585,7 +585,7 @@ func TestGetTimeEntry(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				timeEntry: &toggl.TimeEntry{
-					Id: 1234567890,
+					ID: 1234567890,
 				},
 			},
 			out: struct {
@@ -593,9 +593,9 @@ func TestGetTimeEntry(t *testing.T) {
 				err       error
 			}{
 				timeEntry: &toggl.TimeEntry{
-					Id:          1234567890,
-					Wid:         1234567,
-					Pid:         123456789,
+					ID:          1234567890,
+					WID:         1234567,
+					PID:         123456789,
 					Start:       time.Date(2018, time.October, 23, 10, 11, 59, 0, time.FixedZone("", 0)),
 					Stop:        time.Date(2018, time.October, 23, 10, 16, 20, 0, time.FixedZone("", 0)),
 					Duration:    261,
@@ -616,7 +616,7 @@ func TestGetTimeEntry(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				timeEntry: &toggl.TimeEntry{
-					Id: 1234567890,
+					ID: 1234567890,
 				},
 			},
 			out: struct {
@@ -640,7 +640,7 @@ func TestGetTimeEntry(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				timeEntry: &toggl.TimeEntry{
-					Id: 1234567890,
+					ID: 1234567890,
 				},
 			},
 			out: struct {
@@ -664,7 +664,7 @@ func TestGetTimeEntry(t *testing.T) {
 			}{
 				ctx: nil,
 				timeEntry: &toggl.TimeEntry{
-					Id: 1234567890,
+					ID: 1234567890,
 				},
 			},
 			out: struct {
@@ -720,9 +720,9 @@ func TestGetTimeEntry(t *testing.T) {
 	}
 }
 
-func TestGetTimeEntryUseURLIncludingTimeEntryId(t *testing.T) {
-	timeEntryId := 1234567890
-	expectedRequestURI := "/api/v8/time_entries/" + strconv.Itoa(timeEntryId) + "?"
+func TestGetTimeEntryUseURLIncludingTimeEntryID(t *testing.T) {
+	timeEntryID := 1234567890
+	expectedRequestURI := "/api/v8/time_entries/" + strconv.Itoa(timeEntryID) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -732,7 +732,7 @@ func TestGetTimeEntryUseURLIncludingTimeEntryId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_, _ = client.GetTimeEntry(context.Background(), &toggl.TimeEntry{
-		Id: timeEntryId,
+		ID: timeEntryID,
 	})
 }
 
@@ -763,9 +763,9 @@ func TestGetRunningTimeEntry(t *testing.T) {
 				err       error
 			}{
 				timeEntry: &toggl.TimeEntry{
-					Id:          1234567890,
-					Wid:         1234567,
-					Pid:         123456789,
+					ID:          1234567890,
+					WID:         1234567,
+					PID:         123456789,
 					Start:       time.Date(2018, time.October, 22, 9, 58, 20, 0, time.FixedZone("", 0)),
 					Duration:    -1603274300,
 					Description: "Meeting with possible clients",
@@ -895,7 +895,7 @@ func TestStart(t *testing.T) {
 				timeEntry: &toggl.TimeEntry{
 					Description: "Meeting with possible clients",
 					Tags:        []string{"billed"},
-					Pid:         123456789,
+					PID:         123456789,
 					CreatedWith: "toggl-go",
 				},
 			},
@@ -904,9 +904,9 @@ func TestStart(t *testing.T) {
 				err       error
 			}{
 				timeEntry: &toggl.TimeEntry{
-					Id:          1234567890,
-					Wid:         1234567,
-					Pid:         123456789,
+					ID:          1234567890,
+					WID:         1234567,
+					PID:         123456789,
 					Start:       time.Date(2018, time.October, 29, 1, 23, 45, 0, time.UTC),
 					Duration:    -1603274300,
 					Description: "Meeting with possible clients",
@@ -929,7 +929,7 @@ func TestStart(t *testing.T) {
 				timeEntry: &toggl.TimeEntry{
 					Description: "Meeting with possible clients",
 					Tags:        []string{"billed"},
-					Pid:         123456789,
+					PID:         123456789,
 					CreatedWith: "toggl-go",
 				},
 			},
@@ -956,7 +956,7 @@ func TestStart(t *testing.T) {
 				timeEntry: &toggl.TimeEntry{
 					Description: "Meeting with possible clients",
 					Tags:        []string{"billed"},
-					Pid:         123456789,
+					PID:         123456789,
 					CreatedWith: "toggl-go",
 				},
 			},
@@ -983,7 +983,7 @@ func TestStart(t *testing.T) {
 				timeEntry: &toggl.TimeEntry{
 					Description: "Meeting with possible clients",
 					Tags:        []string{"billed"},
-					Pid:         123456789,
+					PID:         123456789,
 					CreatedWith: "toggl-go",
 				},
 			},
@@ -1044,7 +1044,7 @@ func TestStartConvertParamsToRequestBody(t *testing.T) {
 	expectedStartRequest := &toggl.TimeEntry{
 		Description: "Meeting with possible clients",
 		Tags:        []string{"billed"},
-		Pid:         123,
+		PID:         123,
 		CreatedWith: "toggl-go",
 	}
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -1076,7 +1076,7 @@ func TestStartUseCorrectURL(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_, _ = client.Start(context.Background(), &toggl.TimeEntry{
-		Id: 1234567890,
+		ID: 1234567890,
 	})
 }
 
@@ -1104,7 +1104,7 @@ func TestStop(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				timeEntry: &toggl.TimeEntry{
-					Id: 1234567890,
+					ID: 1234567890,
 				},
 			},
 			out: struct {
@@ -1112,9 +1112,9 @@ func TestStop(t *testing.T) {
 				err       error
 			}{
 				timeEntry: &toggl.TimeEntry{
-					Id:          1234567890,
-					Wid:         1234567,
-					Pid:         123456789,
+					ID:          1234567890,
+					WID:         1234567,
+					PID:         123456789,
 					Start:       time.Date(2018, time.October, 22, 9, 58, 20, 0, time.FixedZone("", 0)),
 					Stop:        time.Date(2018, time.October, 22, 10, 8, 4, 0, time.FixedZone("", 0)),
 					Duration:    584,
@@ -1136,7 +1136,7 @@ func TestStop(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				timeEntry: &toggl.TimeEntry{
-					Id: 1234567890,
+					ID: 1234567890,
 				},
 			},
 			out: struct {
@@ -1160,7 +1160,7 @@ func TestStop(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				timeEntry: &toggl.TimeEntry{
-					Id: 1234567890,
+					ID: 1234567890,
 				},
 			},
 			out: struct {
@@ -1184,7 +1184,7 @@ func TestStop(t *testing.T) {
 			}{
 				ctx: nil,
 				timeEntry: &toggl.TimeEntry{
-					Id: 1234567890,
+					ID: 1234567890,
 				},
 			},
 			out: struct {
@@ -1240,9 +1240,9 @@ func TestStop(t *testing.T) {
 	}
 }
 
-func TestStopUseURLIncludingTimeEntryId(t *testing.T) {
-	timeEntryId := 1234567890
-	expectedRequestURI := "/api/v8/time_entries/" + strconv.Itoa(timeEntryId) + "/" + "stop" + "?"
+func TestStopUseURLIncludingTimeEntryID(t *testing.T) {
+	timeEntryID := 1234567890
+	expectedRequestURI := "/api/v8/time_entries/" + strconv.Itoa(timeEntryID) + "/" + "stop" + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -1252,6 +1252,6 @@ func TestStopUseURLIncludingTimeEntryId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_, _ = client.Stop(context.Background(), &toggl.TimeEntry{
-		Id: timeEntryId,
+		ID: timeEntryID,
 	})
 }

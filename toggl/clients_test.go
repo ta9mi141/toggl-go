@@ -38,16 +38,16 @@ func TestGetTogglClient(t *testing.T) {
 				togglClient *toggl.TogglClient
 			}{
 				ctx:         context.Background(),
-				togglClient: &toggl.TogglClient{Id: 12345678},
+				togglClient: &toggl.TogglClient{ID: 12345678},
 			},
 			out: struct {
 				togglClient *toggl.TogglClient
 				err         error
 			}{
 				togglClient: &toggl.TogglClient{
-					Id:   12345678,
+					ID:   12345678,
 					Name: "Very Big Company",
-					Wid:  1234567,
+					WID:  1234567,
 					At:   time.Date(2020, time.February, 10, 10, 25, 54, 0, time.FixedZone("", 0)),
 				},
 				err: nil,
@@ -62,7 +62,7 @@ func TestGetTogglClient(t *testing.T) {
 				togglClient *toggl.TogglClient
 			}{
 				ctx:         context.Background(),
-				togglClient: &toggl.TogglClient{Id: 12345678},
+				togglClient: &toggl.TogglClient{ID: 12345678},
 			},
 			out: struct {
 				togglClient *toggl.TogglClient
@@ -84,7 +84,7 @@ func TestGetTogglClient(t *testing.T) {
 				togglClient *toggl.TogglClient
 			}{
 				ctx:         context.Background(),
-				togglClient: &toggl.TogglClient{Id: 12345678},
+				togglClient: &toggl.TogglClient{ID: 12345678},
 			},
 			out: struct {
 				togglClient *toggl.TogglClient
@@ -106,7 +106,7 @@ func TestGetTogglClient(t *testing.T) {
 				togglClient *toggl.TogglClient
 			}{
 				ctx:         nil,
-				togglClient: &toggl.TogglClient{Id: 12345678},
+				togglClient: &toggl.TogglClient{ID: 12345678},
 			},
 			out: struct {
 				togglClient *toggl.TogglClient
@@ -161,9 +161,9 @@ func TestGetTogglClient(t *testing.T) {
 	}
 }
 
-func TestGetTogglClientUseURLIncludingClientId(t *testing.T) {
-	togglClientId := 12345678
-	expectedRequestURI := "/api/v8/clients/" + strconv.Itoa(togglClientId) + "?"
+func TestGetTogglClientUseURLIncludingClientID(t *testing.T) {
+	togglClientID := 12345678
+	expectedRequestURI := "/api/v8/clients/" + strconv.Itoa(togglClientID) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -173,7 +173,7 @@ func TestGetTogglClientUseURLIncludingClientId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_, _ = client.GetTogglClient(context.Background(), &toggl.TogglClient{
-		Id: togglClientId,
+		ID: togglClientID,
 	})
 }
 
@@ -199,16 +199,16 @@ func TestGetTogglClients(t *testing.T) {
 			}{
 				togglClients: []*toggl.TogglClient{
 					{
-						Id:    12349455,
+						ID:    12349455,
 						Name:  "Very Big Company",
-						Wid:   777,
+						WID:   777,
 						Notes: "something about the client",
 						At:    time.Date(2020, time.February, 10, 10, 25, 54, 0, time.FixedZone("", 0)),
 					},
 					{
-						Id:    1239456,
+						ID:    1239456,
 						Name:  "Small startup",
-						Wid:   777,
+						WID:   777,
 						Notes: "Really cool people",
 						At:    time.Date(2019, time.March, 11, 10, 25, 54, 0, time.FixedZone("", 0)),
 					},
@@ -294,7 +294,7 @@ func TestGetTogglClientProjects(t *testing.T) {
 				togglClient *toggl.TogglClient
 			}{
 				ctx:         context.Background(),
-				togglClient: &toggl.TogglClient{Id: 12345678},
+				togglClient: &toggl.TogglClient{ID: 12345678},
 			},
 			out: struct {
 				togglClientProjects []*toggl.Project
@@ -302,18 +302,18 @@ func TestGetTogglClientProjects(t *testing.T) {
 			}{
 				togglClientProjects: []*toggl.Project{
 					{
-						Id:        909,
-						Wid:       777,
-						Cid:       987,
+						ID:        909,
+						WID:       777,
+						CID:       987,
 						Name:      "Very lucrative project",
 						IsPrivate: true,
 						Active:    true,
 						At:        time.Date(2013, time.March, 6, 9, 15, 18, 0, time.FixedZone("", 0)),
 					},
 					{
-						Id:        32143,
-						Wid:       777,
-						Cid:       987,
+						ID:        32143,
+						WID:       777,
+						CID:       987,
 						Name:      "Factory server infrastructure",
 						IsPrivate: true,
 						Active:    true,
@@ -332,7 +332,7 @@ func TestGetTogglClientProjects(t *testing.T) {
 				togglClient *toggl.TogglClient
 			}{
 				ctx:         context.Background(),
-				togglClient: &toggl.TogglClient{Id: 12345678},
+				togglClient: &toggl.TogglClient{ID: 12345678},
 			},
 			out: struct {
 				togglClientProjects []*toggl.Project
@@ -354,7 +354,7 @@ func TestGetTogglClientProjects(t *testing.T) {
 				togglClient *toggl.TogglClient
 			}{
 				ctx:         context.Background(),
-				togglClient: &toggl.TogglClient{Id: 12345678},
+				togglClient: &toggl.TogglClient{ID: 12345678},
 			},
 			out: struct {
 				togglClientProjects []*toggl.Project
@@ -376,7 +376,7 @@ func TestGetTogglClientProjects(t *testing.T) {
 				togglClient *toggl.TogglClient
 			}{
 				ctx:         nil,
-				togglClient: &toggl.TogglClient{Id: 12345678},
+				togglClient: &toggl.TogglClient{ID: 12345678},
 			},
 			out: struct {
 				togglClientProjects []*toggl.Project
@@ -431,9 +431,9 @@ func TestGetTogglClientProjects(t *testing.T) {
 	}
 }
 
-func TestGetTogglClientProjectsUseURLIncludingClientId(t *testing.T) {
-	togglClientId := 12345678
-	expectedRequestURI := "/api/v8/clients/" + strconv.Itoa(togglClientId) + "/projects" + "?"
+func TestGetTogglClientProjectsUseURLIncludingClientID(t *testing.T) {
+	togglClientID := 12345678
+	expectedRequestURI := "/api/v8/clients/" + strconv.Itoa(togglClientID) + "/projects" + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -443,14 +443,14 @@ func TestGetTogglClientProjectsUseURLIncludingClientId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_, _ = client.GetTogglClientProjects(context.Background(), &toggl.TogglClient{
-		Id: togglClientId,
+		ID: togglClientID,
 	})
 }
 
 func TestGetTogglClientProjectsUseURLIncludingQueryStrings(t *testing.T) {
-	togglClientId := 12345678
+	togglClientID := 12345678
 	active := "both"
-	expectedRequestURI := "/api/v8/clients/" + strconv.Itoa(togglClientId) + "/projects?active=" + active
+	expectedRequestURI := "/api/v8/clients/" + strconv.Itoa(togglClientID) + "/projects?active=" + active
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -459,7 +459,7 @@ func TestGetTogglClientProjectsUseURLIncludingQueryStrings(t *testing.T) {
 	}))
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
-	_, _ = client.GetTogglClientProjects(context.Background(), &toggl.TogglClient{Id: togglClientId}, toggl.Active(active))
+	_, _ = client.GetTogglClientProjects(context.Background(), &toggl.TogglClient{ID: togglClientID}, toggl.Active(active))
 }
 
 func TestCreateTogglClient(t *testing.T) {
@@ -487,7 +487,7 @@ func TestCreateTogglClient(t *testing.T) {
 				ctx: context.Background(),
 				togglClient: &toggl.TogglClient{
 					Name: "Very Big Company",
-					Wid:  1234567,
+					WID:  1234567,
 				},
 			},
 			out: struct {
@@ -495,9 +495,9 @@ func TestCreateTogglClient(t *testing.T) {
 				err         error
 			}{
 				togglClient: &toggl.TogglClient{
-					Id:   12345678,
+					ID:   12345678,
 					Name: "Very Big Company",
-					Wid:  1234567,
+					WID:  1234567,
 				},
 				err: nil,
 			},
@@ -513,7 +513,7 @@ func TestCreateTogglClient(t *testing.T) {
 				ctx: context.Background(),
 				togglClient: &toggl.TogglClient{
 					Name: "Very Big Company",
-					Wid:  777,
+					WID:  777,
 				},
 			},
 			out: struct {
@@ -538,7 +538,7 @@ func TestCreateTogglClient(t *testing.T) {
 				ctx: context.Background(),
 				togglClient: &toggl.TogglClient{
 					Name: "Very Big Company",
-					Wid:  777,
+					WID:  777,
 				},
 			},
 			out: struct {
@@ -563,7 +563,7 @@ func TestCreateTogglClient(t *testing.T) {
 				ctx: nil,
 				togglClient: &toggl.TogglClient{
 					Name: "Very Big Company",
-					Wid:  777,
+					WID:  777,
 				},
 			},
 			out: struct {
@@ -621,7 +621,7 @@ func TestCreateTogglClient(t *testing.T) {
 
 func TestCreateTogglClientConvertParamsToRequestBody(t *testing.T) {
 	expectedTogglClientRequest := &toggl.TogglClient{
-		Wid:  1234567,
+		WID:  1234567,
 		Name: "Very Big Company",
 	}
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -666,7 +666,7 @@ func TestUpdateTogglClient(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				togglClient: &toggl.TogglClient{
-					Id:    12345678,
+					ID:    12345678,
 					Name:  "Very Big Company",
 					Notes: "something about the client",
 				},
@@ -676,9 +676,9 @@ func TestUpdateTogglClient(t *testing.T) {
 				err         error
 			}{
 				togglClient: &toggl.TogglClient{
-					Id:    12345678,
+					ID:    12345678,
 					Name:  "Very Big Company",
-					Wid:   1234567,
+					WID:   1234567,
 					Notes: "something about the client",
 					At:    time.Date(2020, time.February, 10, 10, 15, 46, 0, time.FixedZone("", 0)),
 				},
@@ -720,7 +720,7 @@ func TestUpdateTogglClient(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				togglClient: &toggl.TogglClient{
-					Id:    12345678,
+					ID:    12345678,
 					Name:  "Very Big Company",
 					Notes: "something about the client",
 				},
@@ -746,7 +746,7 @@ func TestUpdateTogglClient(t *testing.T) {
 			}{
 				ctx: nil,
 				togglClient: &toggl.TogglClient{
-					Id:    12345678,
+					ID:    12345678,
 					Name:  "Very Big Company",
 					Notes: "something about the client",
 				},
@@ -827,9 +827,9 @@ func TestUpdateTogglClientConvertParamsToRequestBody(t *testing.T) {
 	_, _ = client.UpdateTogglClient(context.Background(), expectedTogglClientRequest)
 }
 
-func TestUpdateTogglClientUseURLIncludingClientId(t *testing.T) {
-	togglClientId := 12345678
-	expectedRequestURI := "/api/v8/clients/" + strconv.Itoa(togglClientId) + "?"
+func TestUpdateTogglClientUseURLIncludingClientID(t *testing.T) {
+	togglClientID := 12345678
+	expectedRequestURI := "/api/v8/clients/" + strconv.Itoa(togglClientID) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -839,7 +839,7 @@ func TestUpdateTogglClientUseURLIncludingClientId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_, _ = client.UpdateTogglClient(context.Background(), &toggl.TogglClient{
-		Id: togglClientId,
+		ID: togglClientID,
 	})
 }
 
@@ -863,7 +863,7 @@ func TestDeleteTogglClient(t *testing.T) {
 				togglClient *toggl.TogglClient
 			}{
 				ctx:         context.Background(),
-				togglClient: &toggl.TogglClient{Id: 12345678},
+				togglClient: &toggl.TogglClient{ID: 12345678},
 			},
 			out: nil,
 		},
@@ -876,7 +876,7 @@ func TestDeleteTogglClient(t *testing.T) {
 				togglClient *toggl.TogglClient
 			}{
 				ctx:         context.Background(),
-				togglClient: &toggl.TogglClient{Id: 12345678},
+				togglClient: &toggl.TogglClient{ID: 12345678},
 			},
 			out: &toggl.TogglError{
 				Message: "User 1234567 cannot access client 12345678\n",
@@ -892,7 +892,7 @@ func TestDeleteTogglClient(t *testing.T) {
 				togglClient *toggl.TogglClient
 			}{
 				ctx:         context.Background(),
-				togglClient: &toggl.TogglClient{Id: 12345678},
+				togglClient: &toggl.TogglClient{ID: 12345678},
 			},
 			out: &toggl.TogglError{
 				Message: "",
@@ -908,7 +908,7 @@ func TestDeleteTogglClient(t *testing.T) {
 				togglClient *toggl.TogglClient
 			}{
 				ctx:         nil,
-				togglClient: &toggl.TogglClient{Id: 12345678},
+				togglClient: &toggl.TogglClient{ID: 12345678},
 			},
 			out: toggl.ErrContextNotFound,
 		},
@@ -948,9 +948,9 @@ func TestDeleteTogglClient(t *testing.T) {
 	}
 }
 
-func TestDeleteTogglClientUseURLIncludingClientId(t *testing.T) {
-	togglClientId := 12345678
-	expectedRequestURI := "/api/v8/clients/" + strconv.Itoa(togglClientId) + "?"
+func TestDeleteTogglClientUseURLIncludingClientID(t *testing.T) {
+	togglClientID := 12345678
+	expectedRequestURI := "/api/v8/clients/" + strconv.Itoa(togglClientID) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -960,6 +960,6 @@ func TestDeleteTogglClientUseURLIncludingClientId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_ = client.DeleteTogglClient(context.Background(), &toggl.TogglClient{
-		Id: togglClientId,
+		ID: togglClientID,
 	})
 }

@@ -13,14 +13,14 @@ const (
 
 var (
 	// ErrGroupNotFound is returned when the provided group is nil.
-	ErrGroupNotFound = errors.New("The provided group must be non-nil")
+	ErrGroupNotFound = errors.New("the provided group must be non-nil")
 )
 
 // Group represents properties of group.
 type Group struct {
-	Id   int       `json:"id"`
+	ID   int       `json:"id"`
 	Name string    `json:"name"`
-	Wid  int       `json:"wid"`
+	WID  int       `json:"wid"`
 	At   time.Time `json:"at"`
 }
 
@@ -46,7 +46,7 @@ func (c *Client) UpdateGroup(ctx context.Context, group *Group) (*Group, error) 
 		return nil, ErrGroupNotFound
 	}
 	rawGroupData := new(rawGroupData)
-	endpoint := groupsEndpoint + "/" + strconv.Itoa(group.Id)
+	endpoint := groupsEndpoint + "/" + strconv.Itoa(group.ID)
 	if err := c.httpPut(ctx, c.buildURL(endpoint), group, rawGroupData); err != nil {
 		return nil, err
 	}
@@ -58,7 +58,7 @@ func (c *Client) DeleteGroup(ctx context.Context, group *Group) error {
 	if group == nil {
 		return ErrGroupNotFound
 	}
-	endpoint := groupsEndpoint + "/" + strconv.Itoa(group.Id)
+	endpoint := groupsEndpoint + "/" + strconv.Itoa(group.ID)
 	if err := c.httpDelete(ctx, c.buildURL(endpoint)); err != nil {
 		return err
 	}

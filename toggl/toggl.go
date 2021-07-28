@@ -47,7 +47,7 @@ func (e TogglError) StatusCode() int {
 
 var (
 	// ErrContextNotFound is returned when the provided context is nil.
-	ErrContextNotFound = errors.New("The provided ctx must be non-nil")
+	ErrContextNotFound = errors.New("the provided ctx must be non-nil")
 )
 
 // Client implements the basic request and response handling used by all types of APIs.

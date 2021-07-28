@@ -15,7 +15,7 @@ import (
 const (
 	apiToken    string = "api_token"
 	userAgent   string = "user_agent"
-	workspaceId string = "workspace_id"
+	workspaceID string = "workspace_id"
 )
 
 func TestNewClient(t *testing.T) {
@@ -70,7 +70,7 @@ func setupMockServer(t *testing.T, httpStatus int, testdataFilePath string) (*ht
 
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(httpStatus)
-		fmt.Fprintf(w, string(testdata))
+		fmt.Fprint(w, string(testdata))
 	}))
 
 	return mockServer, testdata

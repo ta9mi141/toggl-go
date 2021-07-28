@@ -15,7 +15,7 @@ import (
 
 type summaryReport struct {
 	Data []struct {
-		Id    int `json:"id"`
+		ID    int `json:"id"`
 		Title struct {
 			Project string `json:"project"`
 			Color   string `json:"color"`
@@ -102,7 +102,7 @@ func TestGetSummary(t *testing.T) {
 				&reports.SummaryRequestParameters{
 					StandardRequestParameters: &reports.StandardRequestParameters{
 						UserAgent:   userAgent,
-						WorkspaceId: workspaceId,
+						WorkspaceID: workspaceID,
 					},
 				},
 				actualSummaryReport,
@@ -139,7 +139,7 @@ func TestGetSummary(t *testing.T) {
 func TestGetSummaryEncodeRequestParameters(t *testing.T) {
 	expectedQueryString := url.Values{
 		"user_agent":   []string{userAgent},
-		"workspace_id": []string{workspaceId},
+		"workspace_id": []string{workspaceID},
 		"grouping":     []string{"projects"},
 	}
 
@@ -156,7 +156,7 @@ func TestGetSummaryEncodeRequestParameters(t *testing.T) {
 		&reports.SummaryRequestParameters{
 			StandardRequestParameters: &reports.StandardRequestParameters{
 				UserAgent:   userAgent,
-				WorkspaceId: workspaceId,
+				WorkspaceID: workspaceID,
 			},
 			Grouping: "projects",
 		},

@@ -41,9 +41,9 @@ func TestGetUser(t *testing.T) {
 				err  error
 			}{
 				user: &toggl.User{
-					Id:                    1234567,
+					ID:                    1234567,
 					APIToken:              "1234567890abcdefghijklmnopqrstuv",
-					DefaultWid:            1234567,
+					DefaultWID:            1234567,
 					Email:                 "test.user@toggl.com",
 					Fullname:              "Test User",
 					JQueryTimeofdayFormat: "H:i",
@@ -53,7 +53,7 @@ func TestGetUser(t *testing.T) {
 					StoreStartAndStopTime: true,
 					BeginningOfWeek:       1,
 					Language:              "en_US",
-					ImageUrl:              "https://assets.toggl.com/avatars/12345678901234567890abcdefghijkl.png",
+					ImageURL:              "https://assets.toggl.com/avatars/12345678901234567890abcdefghijkl.png",
 					SidebarPiechart:       true,
 					At:                    time.Date(2013, time.October, 5, 3, 21, 34, 0, time.FixedZone("", 0)),
 					NewBlogPost: struct {
@@ -66,19 +66,19 @@ func TestGetUser(t *testing.T) {
 					OpenidEnabled:          false,
 					Timezone:               "Asia/Tokyo",
 					TimeEntries: []*toggl.TimeEntry{{
-						Id:          1234567890,
+						ID:          1234567890,
 						Description: "sample time entry",
-						Wid:         1234567,
-						Pid:         12345678,
+						WID:         1234567,
+						PID:         12345678,
 						Start:       time.Date(2019, time.October, 12, 3, 21, 34, 0, time.FixedZone("", 0)),
 						Duration:    -1234567890,
 						Duronly:     false,
 						At:          time.Date(2019, time.December, 12, 3, 21, 34, 0, time.FixedZone("", 0)),
 					}},
 					Projects: []*toggl.Project{{
-						Id:        234567890,
+						ID:        234567890,
 						Name:      "Sample Project",
-						Wid:       9876543,
+						WID:       9876543,
 						Active:    true,
 						IsPrivate: true,
 						At:        time.Date(2019, time.October, 12, 3, 21, 34, 0, time.FixedZone("", 0)),
@@ -86,12 +86,12 @@ func TestGetUser(t *testing.T) {
 						CreatedAt: time.Date(2019, time.February, 14, 3, 21, 34, 0, time.FixedZone("", 0)),
 					}},
 					Tags: []*toggl.Tag{{
-						Id:   8901234,
+						ID:   8901234,
 						Name: "sample-tag",
-						Wid:  4321098,
+						WID:  4321098,
 					}},
 					Workspaces: []*toggl.Workspace{{
-						Id:                          1234567,
+						ID:                          1234567,
 						Name:                        "sample workspace",
 						Premium:                     false,
 						Admin:                       true,
@@ -104,9 +104,9 @@ func TestGetUser(t *testing.T) {
 						At:                          time.Date(2019, time.December, 12, 3, 21, 34, 0, time.FixedZone("", 0)),
 					}},
 					Clients: []*toggl.TogglClient{{
-						Id:   12345678,
+						ID:   12345678,
 						Name: "sample-client",
-						Wid:  1234567,
+						WID:  1234567,
 						At:   time.Date(2019, time.December, 12, 3, 21, 34, 0, time.FixedZone("", 0)),
 					}},
 				},
@@ -244,9 +244,9 @@ func TestUpdateUser(t *testing.T) {
 				err  error
 			}{
 				user: &toggl.User{
-					Id:                    1234567,
+					ID:                    1234567,
 					APIToken:              "1234567890abcdefghijklmnopqrstuv",
-					DefaultWid:            1234567,
+					DefaultWID:            1234567,
 					Email:                 "test.user@toggl.com",
 					Fullname:              "Test User",
 					JQueryTimeofdayFormat: "H:i",
@@ -256,7 +256,7 @@ func TestUpdateUser(t *testing.T) {
 					StoreStartAndStopTime: true,
 					BeginningOfWeek:       0,
 					Language:              "en_US",
-					ImageUrl:              "https://assets.toggl.com/avatars/1234567890abcdefghijklmnopqrstuv.png",
+					ImageURL:              "https://assets.toggl.com/avatars/1234567890abcdefghijklmnopqrstuv.png",
 					SidebarPiechart:       true,
 					At:                    time.Date(2013, time.October, 5, 3, 21, 34, 0, time.FixedZone("", 0)),
 					NewBlogPost: struct {
@@ -562,8 +562,8 @@ func TestSignUp(t *testing.T) {
 				err  error
 			}{
 				user: &toggl.User{
-					Id:                    1234567,
-					DefaultWid:            9876543,
+					ID:                    1234567,
+					DefaultWID:            9876543,
 					Email:                 "test.user@toggl.com",
 					Fullname:              "Test User",
 					JQueryTimeofdayFormat: "",

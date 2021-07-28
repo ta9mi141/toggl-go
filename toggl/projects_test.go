@@ -40,7 +40,7 @@ func TestCreateProject(t *testing.T) {
 				ctx: context.Background(),
 				project: &toggl.Project{
 					Name: "toggl-go",
-					Wid:  1234567,
+					WID:  1234567,
 				},
 			},
 			out: struct {
@@ -48,9 +48,9 @@ func TestCreateProject(t *testing.T) {
 				err     error
 			}{
 				project: &toggl.Project{
-					Id:        123456789,
+					ID:        123456789,
 					Name:      "toggl-go",
-					Wid:       1234567,
+					WID:       1234567,
 					Active:    true,
 					IsPrivate: true,
 					Template:  false,
@@ -71,7 +71,7 @@ func TestCreateProject(t *testing.T) {
 				ctx: context.Background(),
 				project: &toggl.Project{
 					Name: "toggl-go",
-					Wid:  1234567,
+					WID:  1234567,
 				},
 			},
 			out: struct {
@@ -96,7 +96,7 @@ func TestCreateProject(t *testing.T) {
 				ctx: context.Background(),
 				project: &toggl.Project{
 					Name: "toggl-go",
-					Wid:  1234567,
+					WID:  1234567,
 				},
 			},
 			out: struct {
@@ -121,7 +121,7 @@ func TestCreateProject(t *testing.T) {
 				ctx: nil,
 				project: &toggl.Project{
 					Name: "toggl-go",
-					Wid:  1234567,
+					WID:  1234567,
 				},
 			},
 			out: struct {
@@ -180,7 +180,7 @@ func TestCreateProject(t *testing.T) {
 func TestCreateProjectConvertParamsToRequestBody(t *testing.T) {
 	expectedProjectRequest := &toggl.Project{
 		Name:      "toggl-go",
-		Wid:       1234567,
+		WID:       1234567,
 		IsPrivate: true,
 	}
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -225,7 +225,7 @@ func TestUpdateProject(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				project: &toggl.Project{
-					Wid:  1234567,
+					WID:  1234567,
 					Name: "updated",
 				},
 			},
@@ -234,9 +234,9 @@ func TestUpdateProject(t *testing.T) {
 				err     error
 			}{
 				project: &toggl.Project{
-					Id:        123456789,
+					ID:        123456789,
 					Name:      "updated",
-					Wid:       1234567,
+					WID:       1234567,
 					Active:    true,
 					IsPrivate: true,
 					Template:  false,
@@ -258,7 +258,7 @@ func TestUpdateProject(t *testing.T) {
 				ctx: context.Background(),
 				project: &toggl.Project{
 					Name: "updated",
-					Wid:  1234567,
+					WID:  1234567,
 				},
 			},
 			out: struct {
@@ -283,7 +283,7 @@ func TestUpdateProject(t *testing.T) {
 				ctx: context.Background(),
 				project: &toggl.Project{
 					Name: "updated",
-					Wid:  1234567,
+					WID:  1234567,
 				},
 			},
 			out: struct {
@@ -308,7 +308,7 @@ func TestUpdateProject(t *testing.T) {
 				ctx: nil,
 				project: &toggl.Project{
 					Name: "updated",
-					Wid:  1234567,
+					WID:  1234567,
 				},
 			},
 			out: struct {
@@ -367,7 +367,7 @@ func TestUpdateProject(t *testing.T) {
 func TestUpdateProjectConvertParamsToRequestBody(t *testing.T) {
 	expectedProjectRequest := &toggl.Project{
 		Name: "updated",
-		Wid:  1234567,
+		WID:  1234567,
 	}
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		requestBody, err := ioutil.ReadAll(r.Body)
@@ -387,9 +387,9 @@ func TestUpdateProjectConvertParamsToRequestBody(t *testing.T) {
 	_, _ = client.UpdateProject(context.Background(), expectedProjectRequest)
 }
 
-func TestUpdateProjectUseURLIncludingProjectId(t *testing.T) {
-	projectId := 123456789
-	expectedRequestURI := "/api/v8/projects/" + strconv.Itoa(projectId) + "?"
+func TestUpdateProjectUseURLIncludingProjectID(t *testing.T) {
+	projectID := 123456789
+	expectedRequestURI := "/api/v8/projects/" + strconv.Itoa(projectID) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -399,7 +399,7 @@ func TestUpdateProjectUseURLIncludingProjectId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_, _ = client.UpdateProject(context.Background(), &toggl.Project{
-		Id:        projectId,
+		ID:        projectID,
 		Name:      "toggl-go",
 		IsPrivate: false,
 	})
@@ -426,7 +426,7 @@ func TestDeleteProject(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				project: &toggl.Project{
-					Id: 123456789,
+					ID: 123456789,
 				},
 			},
 			out: nil,
@@ -441,7 +441,7 @@ func TestDeleteProject(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				project: &toggl.Project{
-					Id: 0,
+					ID: 0,
 				},
 			},
 			out: &toggl.TogglError{
@@ -459,7 +459,7 @@ func TestDeleteProject(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				project: &toggl.Project{
-					Id: 123456789,
+					ID: 123456789,
 				},
 			},
 			out: &toggl.TogglError{
@@ -477,7 +477,7 @@ func TestDeleteProject(t *testing.T) {
 			}{
 				ctx: nil,
 				project: &toggl.Project{
-					Id: 123456789,
+					ID: 123456789,
 				},
 			},
 			out: toggl.ErrContextNotFound,
@@ -518,9 +518,9 @@ func TestDeleteProject(t *testing.T) {
 	}
 }
 
-func TestDeleteProjectUseURLIncludingProjectId(t *testing.T) {
-	projectId := 123456789
-	expectedRequestURI := "/api/v8/projects/" + strconv.Itoa(projectId) + "?"
+func TestDeleteProjectUseURLIncludingProjectID(t *testing.T) {
+	projectID := 123456789
+	expectedRequestURI := "/api/v8/projects/" + strconv.Itoa(projectID) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -530,7 +530,7 @@ func TestDeleteProjectUseURLIncludingProjectId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_ = client.DeleteProject(context.Background(), &toggl.Project{
-		Id: projectId,
+		ID: projectID,
 	})
 }
 
@@ -557,16 +557,16 @@ func TestGetProject(t *testing.T) {
 				project *toggl.Project
 			}{
 				ctx:     context.Background(),
-				project: &toggl.Project{Id: 123456789},
+				project: &toggl.Project{ID: 123456789},
 			},
 			out: struct {
 				project *toggl.Project
 				err     error
 			}{
 				project: &toggl.Project{
-					Id:        123456789,
+					ID:        123456789,
 					Name:      "toggl-go",
-					Wid:       1234567,
+					WID:       1234567,
 					Active:    true,
 					IsPrivate: true,
 					Template:  false,
@@ -586,7 +586,7 @@ func TestGetProject(t *testing.T) {
 				project *toggl.Project
 			}{
 				ctx:     context.Background(),
-				project: &toggl.Project{Id: 123456789},
+				project: &toggl.Project{ID: 123456789},
 			},
 			out: struct {
 				project *toggl.Project
@@ -608,7 +608,7 @@ func TestGetProject(t *testing.T) {
 				project *toggl.Project
 			}{
 				ctx:     context.Background(),
-				project: &toggl.Project{Id: 123456789},
+				project: &toggl.Project{ID: 123456789},
 			},
 			out: struct {
 				project *toggl.Project
@@ -630,7 +630,7 @@ func TestGetProject(t *testing.T) {
 				project *toggl.Project
 			}{
 				ctx:     nil,
-				project: &toggl.Project{Id: 123456789},
+				project: &toggl.Project{ID: 123456789},
 			},
 			out: struct {
 				project *toggl.Project
@@ -685,9 +685,9 @@ func TestGetProject(t *testing.T) {
 	}
 }
 
-func TestGetProjectUseURLIncludingProjectId(t *testing.T) {
-	projectId := 123456789
-	expectedRequestURI := "/api/v8/projects/" + strconv.Itoa(projectId) + "?"
+func TestGetProjectUseURLIncludingProjectID(t *testing.T) {
+	projectID := 123456789
+	expectedRequestURI := "/api/v8/projects/" + strconv.Itoa(projectID) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -697,7 +697,7 @@ func TestGetProjectUseURLIncludingProjectId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_, _ = client.GetProject(context.Background(), &toggl.Project{
-		Id: projectId,
+		ID: projectID,
 	})
 }
 
@@ -724,7 +724,7 @@ func TestGetProjectUsers(t *testing.T) {
 				project *toggl.Project
 			}{
 				ctx:     context.Background(),
-				project: &toggl.Project{Id: 123456789},
+				project: &toggl.Project{ID: 123456789},
 			},
 			out: struct {
 				projectUsers []*toggl.ProjectUser
@@ -732,10 +732,10 @@ func TestGetProjectUsers(t *testing.T) {
 			}{
 				projectUsers: []*toggl.ProjectUser{
 					{
-						Id:      12345678,
-						Pid:     123456789,
-						Uid:     1234567,
-						Wid:     1234567,
+						ID:      12345678,
+						PID:     123456789,
+						UID:     1234567,
+						WID:     1234567,
 						Manager: true,
 						At:      time.Date(2020, time.May, 17, 7, 1, 10, 0, time.FixedZone("", 0)),
 					},
@@ -752,7 +752,7 @@ func TestGetProjectUsers(t *testing.T) {
 				project *toggl.Project
 			}{
 				ctx:     context.Background(),
-				project: &toggl.Project{Id: 123456789},
+				project: &toggl.Project{ID: 123456789},
 			},
 			out: struct {
 				projectUsers []*toggl.ProjectUser
@@ -774,7 +774,7 @@ func TestGetProjectUsers(t *testing.T) {
 				project *toggl.Project
 			}{
 				ctx:     context.Background(),
-				project: &toggl.Project{Id: 123456789},
+				project: &toggl.Project{ID: 123456789},
 			},
 			out: struct {
 				projectUsers []*toggl.ProjectUser
@@ -796,7 +796,7 @@ func TestGetProjectUsers(t *testing.T) {
 				project *toggl.Project
 			}{
 				ctx:     nil,
-				project: &toggl.Project{Id: 123456789},
+				project: &toggl.Project{ID: 123456789},
 			},
 			out: struct {
 				projectUsers []*toggl.ProjectUser
@@ -851,9 +851,9 @@ func TestGetProjectUsers(t *testing.T) {
 	}
 }
 
-func TestGetProjectUsersUseURLIncludingProjectId(t *testing.T) {
-	projectId := 123456789
-	expectedRequestURI := "/api/v8/projects/" + strconv.Itoa(projectId) + "/project_users" + "?"
+func TestGetProjectUsersUseURLIncludingProjectID(t *testing.T) {
+	projectID := 123456789
+	expectedRequestURI := "/api/v8/projects/" + strconv.Itoa(projectID) + "/project_users" + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -863,6 +863,6 @@ func TestGetProjectUsersUseURLIncludingProjectId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_, _ = client.GetProjectUsers(context.Background(), &toggl.Project{
-		Id: projectId,
+		ID: projectID,
 	})
 }

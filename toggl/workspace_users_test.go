@@ -40,7 +40,7 @@ func TestInviteUsersToWorkspace(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				workspace: &toggl.Workspace{
-					Id: 3456789,
+					ID: 3456789,
 				},
 				users: []*toggl.User{
 					{
@@ -57,8 +57,8 @@ func TestInviteUsersToWorkspace(t *testing.T) {
 			}{
 				workspaceUsers: []*toggl.WorkspaceUser{
 					{
-						Id:        1234567,
-						Uid:       2345678,
+						ID:        1234567,
+						UID:       2345678,
 						Admin:     false,
 						Active:    false,
 						InviteURL: "https://toggl.com/",
@@ -78,7 +78,7 @@ func TestInviteUsersToWorkspace(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				workspace: &toggl.Workspace{
-					Id: 3456789,
+					ID: 3456789,
 				},
 				users: []*toggl.User{
 					{
@@ -108,7 +108,7 @@ func TestInviteUsersToWorkspace(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				workspace: &toggl.Workspace{
-					Id: 3456789,
+					ID: 3456789,
 				},
 				users: []*toggl.User{
 					{
@@ -141,7 +141,7 @@ func TestInviteUsersToWorkspace(t *testing.T) {
 			}{
 				ctx: nil,
 				workspace: &toggl.Workspace{
-					Id: 3456789,
+					ID: 3456789,
 				},
 				users: []*toggl.User{
 					{
@@ -199,7 +199,7 @@ func TestInviteUsersToWorkspace(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				workspace: &toggl.Workspace{
-					Id: 3456789,
+					ID: 3456789,
 				},
 				users: nil,
 			},
@@ -241,7 +241,7 @@ func TestInviteUsersToWorkspace(t *testing.T) {
 
 func TestInviteUsersToWorkspaceConvertParamsToRequestBody(t *testing.T) {
 	workspace := &toggl.Workspace{
-		Id: 3456789,
+		ID: 3456789,
 	}
 	expectedRequest := struct {
 		Emails []string `json:"emails"`
@@ -272,14 +272,14 @@ func TestInviteUsersToWorkspaceConvertParamsToRequestBody(t *testing.T) {
 	_, _ = client.InviteUsersToWorkspace(context.Background(), workspace, users)
 }
 
-func TestInviteUsersToWorkspaceUseURLIncludingWorkspaceId(t *testing.T) {
-	workspaceId := 1234567
+func TestInviteUsersToWorkspaceUseURLIncludingWorkspaceID(t *testing.T) {
+	workspaceID := 1234567
 	users := []*toggl.User{
 		{
 			Email: "test.user@toggl.com",
 		},
 	}
-	expectedRequestURI := "/api/v8/workspaces/" + strconv.Itoa(workspaceId) + "/invite" + "?"
+	expectedRequestURI := "/api/v8/workspaces/" + strconv.Itoa(workspaceID) + "/invite" + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -288,7 +288,7 @@ func TestInviteUsersToWorkspaceUseURLIncludingWorkspaceId(t *testing.T) {
 	}))
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
-	_, _ = client.InviteUsersToWorkspace(context.Background(), &toggl.Workspace{Id: workspaceId}, users)
+	_, _ = client.InviteUsersToWorkspace(context.Background(), &toggl.Workspace{ID: workspaceID}, users)
 }
 
 func TestUpdateWorkspaceUser(t *testing.T) {
@@ -315,7 +315,7 @@ func TestUpdateWorkspaceUser(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				workspaceUser: &toggl.WorkspaceUser{
-					Id:    1234567,
+					ID:    1234567,
 					Admin: false,
 				},
 			},
@@ -324,8 +324,8 @@ func TestUpdateWorkspaceUser(t *testing.T) {
 				err           error
 			}{
 				workspaceUser: &toggl.WorkspaceUser{
-					Id:     1234567,
-					Uid:    2345678,
+					ID:     1234567,
+					UID:    2345678,
 					Admin:  false,
 					Active: true,
 				},
@@ -342,7 +342,7 @@ func TestUpdateWorkspaceUser(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				workspaceUser: &toggl.WorkspaceUser{
-					Id:    1234567,
+					ID:    1234567,
 					Admin: true,
 				},
 			},
@@ -490,7 +490,7 @@ func TestDeleteWorkspaceUser(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				workspaceUser: &toggl.WorkspaceUser{
-					Id: 1234567,
+					ID: 1234567,
 				},
 			},
 			out: nil,
@@ -505,7 +505,7 @@ func TestDeleteWorkspaceUser(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				workspaceUser: &toggl.WorkspaceUser{
-					Id: 1234567,
+					ID: 1234567,
 				},
 			},
 			out: &toggl.TogglError{
@@ -523,7 +523,7 @@ func TestDeleteWorkspaceUser(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				workspaceUser: &toggl.WorkspaceUser{
-					Id: 1234567,
+					ID: 1234567,
 				},
 			},
 			out: &toggl.TogglError{
@@ -541,7 +541,7 @@ func TestDeleteWorkspaceUser(t *testing.T) {
 			}{
 				ctx: nil,
 				workspaceUser: &toggl.WorkspaceUser{
-					Id: 1234567,
+					ID: 1234567,
 				},
 			},
 			out: toggl.ErrContextNotFound,
@@ -582,9 +582,9 @@ func TestDeleteWorkspaceUser(t *testing.T) {
 	}
 }
 
-func TestDeleteWorkspaceUserUseURLIncludingWorkspaceUserId(t *testing.T) {
-	workspaceUserId := 1234567
-	expectedRequestURI := "/api/v8/workspace_users/" + strconv.Itoa(workspaceUserId) + "?"
+func TestDeleteWorkspaceUserUseURLIncludingWorkspaceUserID(t *testing.T) {
+	workspaceUserID := 1234567
+	expectedRequestURI := "/api/v8/workspace_users/" + strconv.Itoa(workspaceUserID) + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -594,7 +594,7 @@ func TestDeleteWorkspaceUserUseURLIncludingWorkspaceUserId(t *testing.T) {
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_ = client.DeleteWorkspaceUser(context.Background(), &toggl.WorkspaceUser{
-		Id: workspaceUserId,
+		ID: workspaceUserID,
 	})
 }
 
@@ -622,7 +622,7 @@ func TestGetWorkspaceUsersAsWorkspaceUser(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				workspace: &toggl.Workspace{
-					Id: 3456789,
+					ID: 3456789,
 				},
 			},
 			out: struct {
@@ -631,14 +631,14 @@ func TestGetWorkspaceUsersAsWorkspaceUser(t *testing.T) {
 			}{
 				workspaceUsers: []*toggl.WorkspaceUser{
 					{
-						Id:     1234567,
-						Uid:    2345678,
+						ID:     1234567,
+						UID:    2345678,
 						Admin:  false,
 						Active: true,
 					},
 					{
-						Id:     9876543,
-						Uid:    8765432,
+						ID:     9876543,
+						UID:    8765432,
 						Admin:  true,
 						Active: true,
 					},
@@ -656,7 +656,7 @@ func TestGetWorkspaceUsersAsWorkspaceUser(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				workspace: &toggl.Workspace{
-					Id: 3456789,
+					ID: 3456789,
 				},
 			},
 			out: struct {
@@ -680,7 +680,7 @@ func TestGetWorkspaceUsersAsWorkspaceUser(t *testing.T) {
 			}{
 				ctx: context.Background(),
 				workspace: &toggl.Workspace{
-					Id: 3456789,
+					ID: 3456789,
 				},
 			},
 			out: struct {
@@ -704,7 +704,7 @@ func TestGetWorkspaceUsersAsWorkspaceUser(t *testing.T) {
 			}{
 				ctx: nil,
 				workspace: &toggl.Workspace{
-					Id: 3456789,
+					ID: 3456789,
 				},
 			},
 			out: struct {
@@ -760,9 +760,9 @@ func TestGetWorkspaceUsersAsWorkspaceUser(t *testing.T) {
 	}
 }
 
-func TestGetWorkspaceUsersAsWorkspaceUserUseURLIncludingWorkspaceId(t *testing.T) {
-	workspaceId := 1234567
-	expectedRequestURI := "/api/v8/workspaces/" + strconv.Itoa(workspaceId) + "/workspace_users" + "?"
+func TestGetWorkspaceUsersAsWorkspaceUserUseURLIncludingWorkspaceID(t *testing.T) {
+	workspaceID := 1234567
+	expectedRequestURI := "/api/v8/workspaces/" + strconv.Itoa(workspaceID) + "/workspace_users" + "?"
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualRequestURI := r.URL.RequestURI()
 		if actualRequestURI != expectedRequestURI {
@@ -772,6 +772,6 @@ func TestGetWorkspaceUsersAsWorkspaceUserUseURLIncludingWorkspaceId(t *testing.T
 
 	client := toggl.NewClient(toggl.APIToken(apiToken), baseURL(mockServer.URL))
 	_, _ = client.GetWorkspaceUsersAsWorkspaceUser(context.Background(), &toggl.Workspace{
-		Id: workspaceId,
+		ID: workspaceID,
 	})
 }

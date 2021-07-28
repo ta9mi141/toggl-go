@@ -13,15 +13,15 @@ const (
 // Dashboard represents properties of two objects dashboard request returns.
 type Dashboard struct {
 	Activity []struct {
-		UserId      int       `json:"user_id"`
-		ProjectId   int       `json:"project_id"`
+		UserID      int       `json:"user_id"`
+		ProjectID   int       `json:"project_id"`
 		Duration    int       `json:"duration"`
 		Description string    `json:"description"`
 		Stop        time.Time `json:"stop"`
-		Tid         int       `json:"tid"`
+		TID         int       `json:"tid"`
 	} `json:"activity"`
 	MostActiveUser []struct {
-		UserId   int `json:"user_id"`
+		UserID   int `json:"user_id"`
 		Duration int `json:"duration"`
 	} `json:"most_active_user"`
 }
@@ -32,7 +32,7 @@ func (c *Client) GetDashboard(ctx context.Context, workspace *Workspace) (*Dashb
 		return nil, ErrWorkspaceNotFound
 	}
 	dashboard := new(Dashboard)
-	endpoint := dashboardEndpoint + "/" + strconv.Itoa(workspace.Id)
+	endpoint := dashboardEndpoint + "/" + strconv.Itoa(workspace.ID)
 	if err := c.httpGet(ctx, c.buildURL(endpoint), dashboard); err != nil {
 		return nil, err
 	}

@@ -13,14 +13,14 @@ const (
 
 // Project represents properties of project.
 type Project struct {
-	Id         int       `json:"id"`
+	ID         int       `json:"id"`
 	Name       string    `json:"name"`
-	Wid        int       `json:"wid"`
-	Cid        int       `json:"cid"`
+	WID        int       `json:"wid"`
+	CID        int       `json:"cid"`
 	Active     bool      `json:"active"`
 	IsPrivate  bool      `json:"is_private"`
 	Template   bool      `json:"template"`
-	TemplateId int       `json:"template_id"`
+	TemplateID int       `json:"template_id"`
 	At         time.Time `json:"at"`
 	Color      string    `json:"color"`
 	CreatedAt  time.Time `json:"created_at"`
@@ -32,7 +32,7 @@ type rawProjectData struct {
 
 var (
 	// ErrProjectNotFound is returned when the provided project is nil.
-	ErrProjectNotFound = errors.New("The provided project must be non-nil")
+	ErrProjectNotFound = errors.New("the provided project must be non-nil")
 )
 
 // CreateProject creates a project.
@@ -53,7 +53,7 @@ func (c *Client) UpdateProject(ctx context.Context, project *Project) (*Project,
 		return nil, ErrProjectNotFound
 	}
 	rawProjectData := new(rawProjectData)
-	endpoint := projectsEndpoint + "/" + strconv.Itoa(project.Id)
+	endpoint := projectsEndpoint + "/" + strconv.Itoa(project.ID)
 	if err := c.httpPut(ctx, c.buildURL(endpoint), project, rawProjectData); err != nil {
 		return nil, err
 	}
@@ -65,7 +65,7 @@ func (c *Client) DeleteProject(ctx context.Context, project *Project) error {
 	if project == nil {
 		return ErrProjectNotFound
 	}
-	endpoint := projectsEndpoint + "/" + strconv.Itoa(project.Id)
+	endpoint := projectsEndpoint + "/" + strconv.Itoa(project.ID)
 	if err := c.httpDelete(ctx, c.buildURL(endpoint)); err != nil {
 		return err
 	}
@@ -78,7 +78,7 @@ func (c *Client) GetProject(ctx context.Context, project *Project) (*Project, er
 		return nil, ErrProjectNotFound
 	}
 	rawProjectData := new(rawProjectData)
-	endpoint := projectsEndpoint + "/" + strconv.Itoa(project.Id)
+	endpoint := projectsEndpoint + "/" + strconv.Itoa(project.ID)
 	if err := c.httpGet(ctx, c.buildURL(endpoint), rawProjectData); err != nil {
 		return nil, err
 	}
@@ -91,7 +91,7 @@ func (c *Client) GetProjectUsers(ctx context.Context, project *Project) ([]*Proj
 		return nil, ErrProjectNotFound
 	}
 	var projectUsers []*ProjectUser
-	endpoint := projectsEndpoint + "/" + strconv.Itoa(project.Id) + "/project_users"
+	endpoint := projectsEndpoint + "/" + strconv.Itoa(project.ID) + "/project_users"
 	if err := c.httpGet(ctx, c.buildURL(endpoint), &projectUsers); err != nil {
 		return nil, err
 	}

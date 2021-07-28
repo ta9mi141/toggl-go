@@ -13,8 +13,8 @@ type SummaryRequestParameters struct {
 	*StandardRequestParameters
 	Grouping            string
 	Subgrouping         string
-	SubgroupingIds      bool
-	GroupedTimeEntryIds bool
+	SubgroupingIDs      bool
+	GroupedTimeEntryIDs bool
 }
 
 func (params *SummaryRequestParameters) urlEncode() string {
@@ -26,10 +26,10 @@ func (params *SummaryRequestParameters) urlEncode() string {
 	if params.Subgrouping != "" {
 		values.Add("subgrouping", params.Subgrouping)
 	}
-	if params.GroupedTimeEntryIds == true {
+	if params.GroupedTimeEntryIDs {
 		values.Add("grouped_time_entry_ids", "true")
 	}
-	if params.SubgroupingIds == true {
+	if params.SubgroupingIDs {
 		values.Add("subgrouping_ids", "true")
 	}
 

@@ -13,14 +13,14 @@ const (
 
 var (
 	// ErrTogglClinetNotFound is returned when the provided toggl client is nil.
-	ErrTogglClientNotFound = errors.New("The provided toggl client must be non-nil")
+	ErrTogglClientNotFound = errors.New("the provided toggl client must be non-nil")
 )
 
 // TogglClient represents properties of client.
 type TogglClient struct {
-	Id    int       `json:"id"`
+	ID    int       `json:"id"`
 	Name  string    `json:"name"`
-	Wid   int       `json:"wid"`
+	WID   int       `json:"wid"`
 	Notes string    `json:"notes"`
 	At    time.Time `json:"at"`
 }
@@ -35,7 +35,7 @@ func (c *Client) GetTogglClient(ctx context.Context, togglClient *TogglClient) (
 		return nil, ErrTogglClientNotFound
 	}
 	rawTogglClientData := new(rawTogglClientData)
-	endpoint := clientsEndpoint + "/" + strconv.Itoa(togglClient.Id)
+	endpoint := clientsEndpoint + "/" + strconv.Itoa(togglClient.ID)
 	if err := c.httpGet(ctx, c.buildURL(endpoint), rawTogglClientData); err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (c *Client) GetTogglClientProjects(ctx context.Context, togglClient *TogglC
 		return nil, ErrTogglClientNotFound
 	}
 	var projects []*Project
-	endpoint := clientsEndpoint + "/" + strconv.Itoa(togglClient.Id) + "/projects"
+	endpoint := clientsEndpoint + "/" + strconv.Itoa(togglClient.ID) + "/projects"
 	if err := c.httpGet(ctx, c.buildURL(endpoint, params...), &projects); err != nil {
 		return nil, err
 	}
@@ -82,7 +82,7 @@ func (c *Client) UpdateTogglClient(ctx context.Context, togglClient *TogglClient
 		return nil, ErrTogglClientNotFound
 	}
 	rawTogglClientData := new(rawTogglClientData)
-	endpoint := clientsEndpoint + "/" + strconv.Itoa(togglClient.Id)
+	endpoint := clientsEndpoint + "/" + strconv.Itoa(togglClient.ID)
 	if err := c.httpPut(ctx, c.buildURL(endpoint), togglClient, rawTogglClientData); err != nil {
 		return nil, err
 	}
@@ -94,7 +94,7 @@ func (c *Client) DeleteTogglClient(ctx context.Context, togglClient *TogglClient
 	if togglClient == nil {
 		return ErrTogglClientNotFound
 	}
-	endpoint := clientsEndpoint + "/" + strconv.Itoa(togglClient.Id)
+	endpoint := clientsEndpoint + "/" + strconv.Itoa(togglClient.ID)
 	if err := c.httpDelete(ctx, c.buildURL(endpoint)); err != nil {
 		return err
 	}
