@@ -1,7 +1,0 @@
-{
-  "error": {
-    "message": "api token missing",
-    "tip": "You can find your API Token in your profile at https://www.toggl.com",
-    "code": 401
-  }
-}
