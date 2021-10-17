@@ -7,10 +7,6 @@ import (
 	"testing"
 )
 
-func errorf(t *testing.T, got, want interface{}) {
-	t.Errorf("\ngot : %+#v\nwant: %+#v\n", got, want)
-}
-
 func TestNewClient(t *testing.T) {
 	client := NewClient()
 
@@ -37,7 +33,6 @@ func TestNewClientWithHTTPClient(t *testing.T) {
 }
 
 func TestNewClientWithAPIToken(t *testing.T) {
-	apiToken := "example_api_token"
 	client := NewClient(WithAPIToken(apiToken))
 
 	if client.apiToken != apiToken {

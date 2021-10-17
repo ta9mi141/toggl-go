@@ -7,14 +7,6 @@ import (
 	"testing"
 )
 
-const (
-	apiToken string = "api_token"
-)
-
-func errorf(t *testing.T, got, want interface{}) {
-	t.Errorf("\ngot : %+#v\nwant: %+#v\n", got, want)
-}
-
 func TestNewClient(t *testing.T) {
 	client := NewClient(apiToken)
 
