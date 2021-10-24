@@ -1,6 +1,11 @@
 package toggl
 
 import (
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"net/http/httptest"
+	"net/url"
 	"testing"
 )
 
@@ -15,4 +20,29 @@ func errorf(t *testing.T, got, want interface{}) {
 	// The order of the arguments in t.Errorf is swapped
 	// because it's easier to read the error message when want is before got.
 	t.Errorf("\nwant: %+#v\ngot : %+#v\n", want, got)
+}
+
+func newMockServer(t *testing.T, endpoint string, statusCode int, testdataFile string) *httptest.Server {
+	testdata, err := ioutil.ReadFile(testdataFile)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+
+	mux := http.NewServeMux()
+	mux.HandleFunc(endpoint, func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(statusCode)
+		fmt.Fprint(w, string(testdata))
+	})
+
+	mockServer := httptest.NewTLSServer(mux)
+	// The caller should call Close to shut down the server.
+	return mockServer
+}
+
+// withBaseURL makes client testable by configurable URL.
+func withBaseURL(rawURL string) Option {
+	return func(c *Client) {
+		url, _ := url.Parse(rawURL)
+		c.baseURL = url
+	}
 }

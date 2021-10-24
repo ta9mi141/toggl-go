@@ -7,6 +7,7 @@ https://github.com/toggl/toggl_api_docs/blob/master/toggl_api.md
 package toggl
 
 import (
+	"errors"
 	"net/http"
 	"net/url"
 )
@@ -24,11 +25,12 @@ type Client struct {
 }
 
 // NewClient creates a new Toggl API v8 client.
-func NewClient(options ...Option) *Client {
+func NewClient(apiToken string, options ...Option) *Client {
 	baseURL, _ := url.Parse(defaultBaseURL)
 	newClient := &Client{
 		baseURL:    baseURL,
 		httpClient: http.DefaultClient,
+		apiToken:   apiToken,
 	}
 	for _, option := range options {
 		option(newClient)
@@ -46,9 +48,10 @@ func WithHTTPClient(httpClient *http.Client) Option {
 	}
 }
 
-// WithAPIToken returns a Option that specifies an API token for authentication.
-func WithAPIToken(apiToken string) Option {
-	return func(c *Client) {
-		c.apiToken = apiToken
-	}
-}
+var (
+	// ErrAPITokenNotFound is returned when the provided API token is empty.
+	ErrAPITokenNotFound = errors.New("the provided API token must be non-empty")
+
+	// ErrContextNotFound is returned when the provided context is nil.
+	ErrContextNotFound = errors.New("the provided ctx must be non-nil")
+)
