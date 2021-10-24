@@ -15,8 +15,7 @@ func TestGetWorkspaces(t *testing.T) {
 		statusCode   int
 		testdataFile string
 		in           struct {
-			apiToken string
-			ctx      context.Context
+			ctx context.Context
 		}
 		out struct {
 			workspaces []*Workspace
@@ -28,11 +27,9 @@ func TestGetWorkspaces(t *testing.T) {
 			statusCode:   http.StatusOK,
 			testdataFile: "testdata/workspaces/get_workspaces_200_ok.json",
 			in: struct {
-				apiToken string
-				ctx      context.Context
+				ctx context.Context
 			}{
-				apiToken: apiToken,
-				ctx:      context.Background(),
+				ctx: context.Background(),
 			},
 			out: struct {
 				workspaces []*Workspace
@@ -86,11 +83,9 @@ func TestGetWorkspaces(t *testing.T) {
 			statusCode:   http.StatusForbidden,
 			testdataFile: "testdata/workspaces/get_workspaces_403_forbidden.json",
 			in: struct {
-				apiToken string
-				ctx      context.Context
+				ctx context.Context
 			}{
-				apiToken: "",
-				ctx:      context.Background(),
+				ctx: context.Background(),
 			},
 			out: struct {
 				workspaces []*Workspace
@@ -105,11 +100,9 @@ func TestGetWorkspaces(t *testing.T) {
 			statusCode:   http.StatusOK,
 			testdataFile: "testdata/workspaces/get_workspaces_200_ok.json",
 			in: struct {
-				apiToken string
-				ctx      context.Context
+				ctx context.Context
 			}{
-				apiToken: apiToken,
-				ctx:      nil,
+				ctx: nil,
 			},
 			out: struct {
 				workspaces []*Workspace
@@ -125,7 +118,7 @@ func TestGetWorkspaces(t *testing.T) {
 			mockServer := newMockServer(t, workspacesEndpoint, tt.statusCode, tt.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(tt.in.apiToken, withBaseURL(mockServer.URL))
+			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
 			workspaces, err := client.GetWorkspaces(tt.in.ctx)
 
 			if !reflect.DeepEqual(workspaces, tt.out.workspaces) {

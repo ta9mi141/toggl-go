@@ -24,12 +24,11 @@ type Client struct {
 }
 
 // NewClient creates a new Toggl Reports API v2 client.
-func NewClient(apiToken string, options ...Option) *Client {
+func NewClient(options ...Option) *Client {
 	baseURL, _ := url.Parse(defaultBaseURL)
 	newClient := &Client{
 		baseURL:    baseURL,
 		httpClient: http.DefaultClient,
-		apiToken:   apiToken,
 	}
 	for _, option := range options {
 		option(newClient)
@@ -44,5 +43,12 @@ type Option func(*Client)
 func WithHTTPClient(httpClient *http.Client) Option {
 	return func(c *Client) {
 		c.httpClient = httpClient
+	}
+}
+
+// WithAPIToken returns a Option that specifies an API token for authentication.
+func WithAPIToken(apiToken string) Option {
+	return func(c *Client) {
+		c.apiToken = apiToken
 	}
 }
