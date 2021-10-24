@@ -49,9 +49,9 @@ func WithHTTPClient(httpClient *http.Client) Option {
 }
 
 var (
-	// ErrAPITokenNotFound is returned when the provided API token is empty.
-	ErrAPITokenNotFound = errors.New("the provided API token must be non-empty")
-
 	// ErrContextNotFound is returned when the provided context is nil.
-	ErrContextNotFound = errors.New("the provided ctx must be non-nil")
+	ErrContextNotFound = errors.New("the provided context must be non-nil")
+
+	// ErrAuthenticationFailure is returned when the API returns 403.
+	ErrAuthenticationFailure = errors.New("authentication failed")
 )

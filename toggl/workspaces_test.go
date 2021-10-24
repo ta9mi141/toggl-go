@@ -82,9 +82,9 @@ func TestGetWorkspaces(t *testing.T) {
 			},
 		},
 		{
-			name:         "Without API token",
-			statusCode:   http.StatusOK,
-			testdataFile: "testdata/workspaces/get_workspaces_200_ok.json",
+			name:         "403 Forbidden",
+			statusCode:   http.StatusForbidden,
+			testdataFile: "testdata/workspaces/get_workspaces_403_forbidden.json",
 			in: struct {
 				apiToken string
 				ctx      context.Context
@@ -97,7 +97,7 @@ func TestGetWorkspaces(t *testing.T) {
 				err        error
 			}{
 				workspaces: nil,
-				err:        ErrAPITokenNotFound,
+				err:        ErrAuthenticationFailure,
 			},
 		},
 		{
