@@ -10,8 +10,8 @@ import (
 func TestNewClient(t *testing.T) {
 	client := NewClient()
 
-	if client.baseURL.String() != defaultBaseURL {
-		errorf(t, client.baseURL.String(), defaultBaseURL)
+	if client.url.String() != defaultBaseURL+apiVersionPath {
+		errorf(t, client.url.String(), defaultBaseURL+apiVersionPath)
 	}
 	if !reflect.DeepEqual(client.httpClient, http.DefaultClient) {
 		errorf(t, client.httpClient, http.DefaultClient)
@@ -25,6 +25,7 @@ func TestNewClientWithHTTPClient(t *testing.T) {
 			Proxy: http.ProxyURL(proxyURL),
 		},
 	}
+
 	client := NewClient(WithHTTPClient(httpClient))
 
 	if !reflect.DeepEqual(client.httpClient, httpClient) {

@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"testing"
 )
 
@@ -40,13 +39,12 @@ func newMockServer(t *testing.T, path string, statusCode int, testdataFile strin
 }
 
 // withBaseURL makes client testable by configurable URL.
-func withBaseURL(rawURL string) Option {
-	return baseURLOption(rawURL)
+func withBaseURL(baseURL string) Option {
+	return baseURLOption(baseURL)
 }
 
 type baseURLOption string
 
 func (b baseURLOption) apply(c *Client) {
-	url, _ := url.Parse(string(b))
-	c.baseURL = url
+	c.setBaseURL(string(b))
 }
