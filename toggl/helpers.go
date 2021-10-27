@@ -41,8 +41,12 @@ func newMockServer(t *testing.T, path string, statusCode int, testdataFile strin
 
 // withBaseURL makes client testable by configurable URL.
 func withBaseURL(rawURL string) Option {
-	return func(c *Client) {
-		url, _ := url.Parse(rawURL)
-		c.baseURL = url
-	}
+	return baseURLOption(rawURL)
+}
+
+type baseURLOption string
+
+func (b baseURLOption) apply(c *Client) {
+	url, _ := url.Parse(string(b))
+	c.baseURL = url
 }

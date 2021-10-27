@@ -33,26 +33,38 @@ func NewClient(options ...Option) *Client {
 		httpClient: http.DefaultClient,
 	}
 	for _, option := range options {
-		option(newClient)
+		option.apply(newClient)
 	}
 	return newClient
 }
 
 // Option is an option for a Toggl API v8 client.
-type Option func(*Client)
+type Option interface {
+	apply(*Client)
+}
 
 // WithHTTPClient returns a Option that specifies the HTTP client for communication.
 func WithHTTPClient(httpClient *http.Client) Option {
-	return func(c *Client) {
-		c.httpClient = httpClient
-	}
+	return &httpClientOption{httpClient: httpClient}
+}
+
+type httpClientOption struct {
+	httpClient *http.Client
+}
+
+func (h *httpClientOption) apply(c *Client) {
+	c.httpClient = h.httpClient
 }
 
 // WithAPIToken returns a Option that specifies an API token for authentication.
 func WithAPIToken(apiToken string) Option {
-	return func(c *Client) {
-		c.apiToken = apiToken
-	}
+	return apiTokenOption(apiToken)
+}
+
+type apiTokenOption string
+
+func (a apiTokenOption) apply(c *Client) {
+	c.apiToken = string(a)
 }
 
 var (
