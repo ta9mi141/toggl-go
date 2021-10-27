@@ -22,14 +22,14 @@ func errorf(t *testing.T, got, want interface{}) {
 	t.Errorf("\nwant: %+#v\ngot : %+#v\n", want, got)
 }
 
-func newMockServer(t *testing.T, endpoint string, statusCode int, testdataFile string) *httptest.Server {
+func newMockServer(t *testing.T, path string, statusCode int, testdataFile string) *httptest.Server {
 	testdata, err := ioutil.ReadFile(testdataFile)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
 
 	mux := http.NewServeMux()
-	mux.HandleFunc(endpoint, func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(statusCode)
 		fmt.Fprint(w, string(testdata))
 	})

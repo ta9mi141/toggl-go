@@ -5,10 +5,6 @@ import (
 	"time"
 )
 
-const (
-	workspacesEndpoint = "/api/v8/workspaces"
-)
-
 // Workspace represents properties of workspace.
 // Some properties not listed in the documentation are also included.
 type Workspace struct {

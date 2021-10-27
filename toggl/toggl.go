@@ -13,7 +13,8 @@ import (
 )
 
 const (
-	defaultBaseURL string = "https://api.track.toggl.com"
+	defaultBaseURL string = "https://api.track.toggl.com/"
+	apiVersionPath string = "api/v8/"
 )
 
 // Client is a client for interacting with Toggl API v8.
