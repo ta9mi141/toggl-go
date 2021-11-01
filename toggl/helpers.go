@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 )
 
@@ -46,5 +47,6 @@ func withBaseURL(baseURL string) Option {
 type baseURLOption string
 
 func (b baseURLOption) apply(c *Client) {
-	c.setBaseURL(string(b))
+	baseURL, _ := url.Parse(string(b))
+	c.baseURL = baseURL
 }

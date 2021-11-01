@@ -10,17 +10,15 @@ import (
 	"errors"
 	"net/http"
 	"net/url"
-	"strings"
 )
 
 const (
-	defaultBaseURL string = "https://api.track.toggl.com/"
-	apiVersionPath string = "api/v8/"
+	defaultBaseURL string = "https://api.track.toggl.com/api/v8/"
 )
 
 // Client is a client for interacting with Toggl API v8.
 type Client struct {
-	url        *url.URL
+	baseURL    *url.URL
 	httpClient *http.Client
 
 	apiToken string
@@ -28,27 +26,17 @@ type Client struct {
 
 // NewClient creates a new Toggl API v8 client.
 func NewClient(options ...Option) *Client {
+	baseURL, _ := url.Parse(defaultBaseURL)
 	newClient := &Client{
+		baseURL:    baseURL,
 		httpClient: http.DefaultClient,
 	}
-	newClient.setBaseURL(defaultBaseURL)
 
 	for _, option := range options {
 		option.apply(newClient)
 	}
 
 	return newClient
-}
-
-func (c *Client) setBaseURL(baseURL string) {
-	if !strings.HasSuffix(baseURL, "/") {
-		baseURL += "/"
-	}
-	url, _ := url.Parse(baseURL)
-	if !strings.HasSuffix(url.Path, apiVersionPath) {
-		url.Path += apiVersionPath
-	}
-	c.url = url
 }
 
 // Option is an option for a Toggl API v8 client.
