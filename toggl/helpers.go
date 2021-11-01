@@ -33,7 +33,7 @@ func newMockServer(t *testing.T, path string, statusCode int, testdataFile strin
 		fmt.Fprint(w, string(testdata))
 	})
 
-	mockServer := httptest.NewTLSServer(mux)
+	mockServer := httptest.NewServer(mux)
 	// The caller should call Close to shut down the server.
 	return mockServer
 }
