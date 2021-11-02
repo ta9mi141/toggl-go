@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
+	"path"
 	"testing"
 )
 
@@ -21,14 +23,15 @@ func errorf(t *testing.T, got, want interface{}) {
 	t.Errorf("\nwant: %+#v\ngot : %+#v\n", want, got)
 }
 
-func newMockServer(t *testing.T, path string, statusCode int, testdataFile string) *httptest.Server {
+func newMockServer(t *testing.T, apiSpecificPath string, statusCode int, testdataFile string) *httptest.Server {
 	testdata, err := ioutil.ReadFile(testdataFile)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
 
 	mux := http.NewServeMux()
-	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
+	pattern := path.Join("/", apiSpecificPath) // mockServer returns 404 page not found if pattern does not start with "/".
+	mux.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(statusCode)
 		fmt.Fprint(w, string(testdata))
 	})
@@ -46,5 +49,6 @@ func withBaseURL(baseURL string) Option {
 type baseURLOption string
 
 func (b baseURLOption) apply(c *Client) {
-	c.setBaseURL(string(b))
+	baseURL, _ := url.Parse(string(b))
+	c.baseURL = baseURL
 }

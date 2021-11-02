@@ -115,8 +115,7 @@ func TestGetWorkspaces(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			path := apiVersionPath + "workspaces"
-			mockServer := newMockServer(t, path, tt.statusCode, tt.testdataFile)
+			mockServer := newMockServer(t, "workspaces", tt.statusCode, tt.testdataFile)
 			defer mockServer.Close()
 
 			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))

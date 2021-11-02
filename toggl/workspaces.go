@@ -30,5 +30,9 @@ type Workspace struct {
 
 // GetWorkspaces gets data about all the workspaces where the token owner belongs to.
 func (c *Client) GetWorkspaces(ctx context.Context) ([]*Workspace, error) {
-	return nil, nil
+	var workspaces []*Workspace
+	if err := c.httpGet(ctx, "workspaces", &workspaces); err != nil {
+		return nil, err
+	}
+	return workspaces, nil
 }
