@@ -36,3 +36,8 @@ func (c *Client) GetWorkspaces(ctx context.Context) ([]*Workspace, error) {
 	}
 	return workspaces, nil
 }
+
+// GetWorkspace gets data about the single workspace.
+func (c *Client) GetWorkspace(ctx context.Context, id int) (*Workspace, error) {
+	return nil, nil
+}
