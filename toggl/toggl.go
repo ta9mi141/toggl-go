@@ -1,5 +1,5 @@
 /*
-Package toggl is a library of Toggl API v8 for the Go programming language.
+Package toggl is a library of Toggl API v8 and Toggl Reports API v2 for the Go programming language.
 
 See API documentation for more details.
 https://github.com/toggl/toggl_api_docs/blob/master/toggl_api.md
@@ -20,7 +20,7 @@ import (
 const (
 	defaultBaseURL string = "https://api.track.toggl.com/api/v8/"
 
-	basicAuthPassword string = "api_token" // Defined in Toggl API v8
+	basicAuthPassword string = "api_token" // Defined in Toggl API
 )
 
 // Client is a client for interacting with Toggl API v8.
