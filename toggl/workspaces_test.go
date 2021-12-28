@@ -16,10 +16,7 @@ func TestGetWorkspaces(t *testing.T) {
 		name         string
 		statusCode   int
 		testdataFile string
-		in           struct {
-			ctx context.Context
-		}
-		out struct {
+		out          struct {
 			workspaces []*Workspace
 			err        error
 		}
@@ -28,11 +25,6 @@ func TestGetWorkspaces(t *testing.T) {
 			name:         "200 OK",
 			statusCode:   http.StatusOK,
 			testdataFile: "testdata/workspaces/get_workspaces_200_ok.json",
-			in: struct {
-				ctx context.Context
-			}{
-				ctx: context.Background(),
-			},
 			out: struct {
 				workspaces []*Workspace
 				err        error
@@ -84,34 +76,12 @@ func TestGetWorkspaces(t *testing.T) {
 			name:         "403 Forbidden",
 			statusCode:   http.StatusForbidden,
 			testdataFile: "testdata/workspaces/get_workspaces_403_forbidden.json",
-			in: struct {
-				ctx context.Context
-			}{
-				ctx: context.Background(),
-			},
 			out: struct {
 				workspaces []*Workspace
 				err        error
 			}{
 				workspaces: nil,
 				err:        ErrAuthenticationFailure,
-			},
-		},
-		{
-			name:         "Without context",
-			statusCode:   http.StatusOK,
-			testdataFile: "testdata/workspaces/get_workspaces_200_ok.json",
-			in: struct {
-				ctx context.Context
-			}{
-				ctx: nil,
-			},
-			out: struct {
-				workspaces []*Workspace
-				err        error
-			}{
-				workspaces: nil,
-				err:        ErrContextNotFound,
 			},
 		},
 	}
@@ -121,7 +91,7 @@ func TestGetWorkspaces(t *testing.T) {
 			defer mockServer.Close()
 
 			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
-			workspaces, err := client.GetWorkspaces(tt.in.ctx)
+			workspaces, err := client.GetWorkspaces(context.Background())
 
 			if !reflect.DeepEqual(workspaces, tt.out.workspaces) {
 				errorf(t, workspaces, tt.out.workspaces)
@@ -139,8 +109,7 @@ func TestGetWorkspace(t *testing.T) {
 		statusCode   int
 		testdataFile string
 		in           struct {
-			ctx context.Context
-			id  int
+			id int
 		}
 		out struct {
 			workspace *Workspace
@@ -152,11 +121,9 @@ func TestGetWorkspace(t *testing.T) {
 			statusCode:   http.StatusOK,
 			testdataFile: "testdata/workspaces/get_workspace_200_ok.json",
 			in: struct {
-				ctx context.Context
-				id  int
+				id int
 			}{
-				ctx: context.Background(),
-				id:  3134975,
+				id: 3134975,
 			},
 			out: struct {
 				workspace *Workspace
@@ -190,11 +157,9 @@ func TestGetWorkspace(t *testing.T) {
 			statusCode:   http.StatusForbidden,
 			testdataFile: "testdata/workspaces/get_workspace_403_forbidden.json",
 			in: struct {
-				ctx context.Context
-				id  int
+				id int
 			}{
-				ctx: context.Background(),
-				id:  3134975,
+				id: 3134975,
 			},
 			out: struct {
 				workspace *Workspace
@@ -209,11 +174,9 @@ func TestGetWorkspace(t *testing.T) {
 			statusCode:   http.StatusNotFound,
 			testdataFile: "testdata/workspaces/get_workspace_404_not_found.json",
 			in: struct {
-				ctx context.Context
-				id  int
+				id int
 			}{
-				ctx: context.Background(),
-				id:  1234567,
+				id: 1234567,
 			},
 			out: struct {
 				workspace *Workspace
@@ -221,25 +184,6 @@ func TestGetWorkspace(t *testing.T) {
 			}{
 				workspace: nil,
 				err:       errors.New("null"),
-			},
-		},
-		{
-			name:         "Without context",
-			statusCode:   http.StatusOK,
-			testdataFile: "testdata/workspaces/get_workspace_200_ok.json",
-			in: struct {
-				ctx context.Context
-				id  int
-			}{
-				ctx: nil,
-				id:  3134975,
-			},
-			out: struct {
-				workspace *Workspace
-				err       error
-			}{
-				workspace: nil,
-				err:       ErrContextNotFound,
 			},
 		},
 	}
@@ -250,7 +194,7 @@ func TestGetWorkspace(t *testing.T) {
 			defer mockServer.Close()
 
 			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
-			workspace, err := client.GetWorkspace(tt.in.ctx, tt.in.id)
+			workspace, err := client.GetWorkspace(context.Background(), tt.in.id)
 
 			if !reflect.DeepEqual(workspace, tt.out.workspace) {
 				errorf(t, workspace, tt.out.workspace)

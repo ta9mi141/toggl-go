@@ -76,9 +76,6 @@ func (a apiTokenOption) apply(c *Client) {
 }
 
 var (
-	// ErrContextNotFound is returned when the provided context is nil.
-	ErrContextNotFound = errors.New("the provided context must be non-nil")
-
 	// ErrAuthenticationFailure is returned when the API returns 403.
 	ErrAuthenticationFailure = errors.New("authentication failed")
 )
@@ -92,10 +89,6 @@ func (c *Client) httpGet(ctx context.Context, path string, respBody interface{})
 }
 
 func (c *Client) newRequest(ctx context.Context, httpMethod, apiSpecificPath string, reqBody interface{}) (*http.Request, error) {
-	if ctx == nil {
-		return nil, ErrContextNotFound
-	}
-
 	url := *c.baseURL
 	url.Path = path.Join(url.Path, apiSpecificPath)
 
