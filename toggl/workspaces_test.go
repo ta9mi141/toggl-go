@@ -198,9 +198,10 @@ func TestGetWorkspace(t *testing.T) {
 				workspace: nil,
 				err: &errorResponse{
 					statusCode: 404,
-					message:    "null",
+					message:    "null\n",
 					header: http.Header{
-						"Content-Length": []string{"4"},
+						"Content-Length": []string{"5"},
+						"Content-Type":   []string{"text/plain; charset=utf-8"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
 				},

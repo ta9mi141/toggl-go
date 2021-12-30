@@ -2,6 +2,8 @@ package toggl
 
 import (
 	"context"
+	"path"
+	"strconv"
 	"time"
 )
 
@@ -28,6 +30,10 @@ type Workspace struct {
 	IcalURL                     string    `json:"ical_url,omitempty"`
 }
 
+type rawWorkspaceData struct {
+	Workspace Workspace `json:"data"`
+}
+
 // GetWorkspaces gets data about all the workspaces where the token owner belongs to.
 func (c *Client) GetWorkspaces(ctx context.Context) ([]*Workspace, error) {
 	var workspaces []*Workspace
@@ -39,5 +45,10 @@ func (c *Client) GetWorkspaces(ctx context.Context) ([]*Workspace, error) {
 
 // GetWorkspace gets data about the single workspace.
 func (c *Client) GetWorkspace(ctx context.Context, id int) (*Workspace, error) {
-	return nil, nil
+	rawWorkspaceData := new(rawWorkspaceData)
+	apiSpecificPath := path.Join("workspaces", strconv.Itoa(id))
+	if err := c.httpGet(ctx, apiSpecificPath, rawWorkspaceData); err != nil {
+		return nil, err
+	}
+	return &rawWorkspaceData.Workspace, nil
 }
