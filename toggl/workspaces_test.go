@@ -93,7 +93,7 @@ func TestGetWorkspaces(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockServer := newMockServer(t, "workspaces", tt.statusCode, tt.testdataFile)
+			mockServer := newMockServer(t, workspacesPath, tt.statusCode, tt.testdataFile)
 			defer mockServer.Close()
 
 			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
@@ -210,7 +210,7 @@ func TestGetWorkspace(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			apiSpecificPath := path.Join("workspaces", strconv.Itoa(tt.in.id))
+			apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(tt.in.id))
 			mockServer := newMockServer(t, apiSpecificPath, tt.statusCode, tt.testdataFile)
 			defer mockServer.Close()
 

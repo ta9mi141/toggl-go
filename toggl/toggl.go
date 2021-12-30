@@ -17,12 +17,12 @@ import (
 )
 
 const (
-	defaultBaseURL string = "https://api.track.toggl.com/api/v8/"
+	defaultBaseURL string = "https://api.track.toggl.com/"
 
 	basicAuthPassword string = "api_token" // Defined in Toggl API
 )
 
-// Client is a client for interacting with Toggl API v8.
+// Client is a client for interacting with Toggl API.
 type Client struct {
 	baseURL    *url.URL
 	httpClient *http.Client
@@ -30,7 +30,7 @@ type Client struct {
 	apiToken string
 }
 
-// NewClient creates a new Toggl API v8 client.
+// NewClient creates a new Toggl API client.
 func NewClient(options ...Option) *Client {
 	baseURL, _ := url.Parse(defaultBaseURL)
 	newClient := &Client{
@@ -45,7 +45,7 @@ func NewClient(options ...Option) *Client {
 	return newClient
 }
 
-// Option is an option for a Toggl API v8 client.
+// Option is an option for a Toggl API client.
 type Option interface {
 	apply(*Client)
 }

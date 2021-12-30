@@ -7,6 +7,10 @@ import (
 	"time"
 )
 
+const (
+	workspacesPath string = "api/v8/workspaces"
+)
+
 // Workspace represents properties of workspace.
 // Some properties not listed in the documentation are also included.
 type Workspace struct {
@@ -37,7 +41,7 @@ type rawWorkspaceData struct {
 // GetWorkspaces gets data about all the workspaces where the token owner belongs to.
 func (c *Client) GetWorkspaces(ctx context.Context) ([]*Workspace, error) {
 	var workspaces []*Workspace
-	if err := c.httpGet(ctx, "workspaces", &workspaces); err != nil {
+	if err := c.httpGet(ctx, workspacesPath, &workspaces); err != nil {
 		return nil, err
 	}
 	return workspaces, nil
@@ -46,7 +50,7 @@ func (c *Client) GetWorkspaces(ctx context.Context) ([]*Workspace, error) {
 // GetWorkspace gets data about the single workspace.
 func (c *Client) GetWorkspace(ctx context.Context, id int) (*Workspace, error) {
 	rawWorkspaceData := new(rawWorkspaceData)
-	apiSpecificPath := path.Join("workspaces", strconv.Itoa(id))
+	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(id))
 	if err := c.httpGet(ctx, apiSpecificPath, rawWorkspaceData); err != nil {
 		return nil, err
 	}
