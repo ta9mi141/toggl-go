@@ -9,7 +9,6 @@ package toggl
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -75,11 +74,6 @@ func (a apiTokenOption) apply(c *Client) {
 	c.apiToken = string(a)
 }
 
-var (
-	// ErrAuthenticationFailure is returned when the API returns 403.
-	ErrAuthenticationFailure = errors.New("authentication failed")
-)
-
 func (c *Client) httpGet(ctx context.Context, path string, respBody interface{}) error {
 	req, err := c.newRequest(ctx, http.MethodGet, path, nil)
 	if err != nil {
@@ -105,36 +99,38 @@ func (c *Client) newRequest(ctx context.Context, httpMethod, apiSpecificPath str
 }
 
 func (c *Client) do(req *http.Request, respBody interface{}) error {
-	resp, err := checkResponse(c.httpClient.Do(req))
+	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return err
 	}
+
+	err = checkResponse(resp)
+	if err != nil {
+		return err
+	}
+
 	err = decodeJSON(resp, respBody)
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
-func checkResponse(resp *http.Response, err error) (*http.Response, error) {
-	if err != nil {
-		return nil, err
+func checkResponse(resp *http.Response) error {
+	switch resp.StatusCode {
+	case 200, 201, 204:
+		return nil
 	}
 
-	switch {
-	case resp.StatusCode == http.StatusForbidden:
-		// Since resp.Body is empty if the API returns 403 Forbidden,
-		// an explicit error message is needed to indicate why the request failed.
-		return nil, ErrAuthenticationFailure
-	case resp.StatusCode <= 199 || 300 <= resp.StatusCode:
-		message, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return nil, err
-		}
-		return nil, errors.New(string(message))
-	default:
-		return resp, nil
+	errorResponse := &errorResponse{statusCode: resp.StatusCode, header: resp.Header}
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
 	}
+	errorResponse.message = string(body)
+
+	return errorResponse
 }
 
 func decodeJSON(resp *http.Response, out interface{}) error {

@@ -2,7 +2,6 @@ package toggl
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"path"
 	"reflect"
@@ -81,7 +80,14 @@ func TestGetWorkspaces(t *testing.T) {
 				err        error
 			}{
 				workspaces: nil,
-				err:        ErrAuthenticationFailure,
+				err: &errorResponse{
+					statusCode: 403,
+					message:    "",
+					header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
 			},
 		},
 	}
@@ -96,7 +102,7 @@ func TestGetWorkspaces(t *testing.T) {
 			if !reflect.DeepEqual(workspaces, tt.out.workspaces) {
 				errorf(t, workspaces, tt.out.workspaces)
 			}
-			if !errors.Is(err, tt.out.err) {
+			if !reflect.DeepEqual(err, tt.out.err) {
 				errorf(t, err, tt.out.err)
 			}
 		})
@@ -166,7 +172,14 @@ func TestGetWorkspace(t *testing.T) {
 				err       error
 			}{
 				workspace: nil,
-				err:       ErrAuthenticationFailure,
+				err: &errorResponse{
+					statusCode: 403,
+					message:    "",
+					header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
 			},
 		},
 		{
@@ -183,7 +196,14 @@ func TestGetWorkspace(t *testing.T) {
 				err       error
 			}{
 				workspace: nil,
-				err:       errors.New("null"),
+				err: &errorResponse{
+					statusCode: 404,
+					message:    "null",
+					header: http.Header{
+						"Content-Length": []string{"4"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
 			},
 		},
 	}
@@ -199,7 +219,7 @@ func TestGetWorkspace(t *testing.T) {
 			if !reflect.DeepEqual(workspace, tt.out.workspace) {
 				errorf(t, workspace, tt.out.workspace)
 			}
-			if !errors.Is(err, tt.out.err) {
+			if !reflect.DeepEqual(err, tt.out.err) {
 				errorf(t, err, tt.out.err)
 			}
 		})
