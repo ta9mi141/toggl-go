@@ -2,6 +2,7 @@ package toggl
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"path"
 	"reflect"
@@ -102,8 +103,16 @@ func TestGetWorkspaces(t *testing.T) {
 			if !reflect.DeepEqual(workspaces, tt.out.workspaces) {
 				errorf(t, workspaces, tt.out.workspaces)
 			}
-			if !reflect.DeepEqual(err, tt.out.err) {
-				errorf(t, err, tt.out.err)
+
+			errorResp := new(errorResponse)
+			if errors.As(err, &errorResp) {
+				if !reflect.DeepEqual(errorResp, tt.out.err) {
+					errorf(t, errorResp, tt.out.err)
+				}
+			} else {
+				if !reflect.DeepEqual(err, tt.out.err) {
+					errorf(t, err, tt.out.err)
+				}
 			}
 		})
 	}
@@ -220,8 +229,16 @@ func TestGetWorkspace(t *testing.T) {
 			if !reflect.DeepEqual(workspace, tt.out.workspace) {
 				errorf(t, workspace, tt.out.workspace)
 			}
-			if !reflect.DeepEqual(err, tt.out.err) {
-				errorf(t, err, tt.out.err)
+
+			errorResp := new(errorResponse)
+			if errors.As(err, &errorResp) {
+				if !reflect.DeepEqual(errorResp, tt.out.err) {
+					errorf(t, errorResp, tt.out.err)
+				}
+			} else {
+				if !reflect.DeepEqual(err, tt.out.err) {
+					errorf(t, err, tt.out.err)
+				}
 			}
 		})
 	}

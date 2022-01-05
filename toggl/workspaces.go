@@ -5,6 +5,8 @@ import (
 	"path"
 	"strconv"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 const (
@@ -42,7 +44,7 @@ type rawWorkspaceData struct {
 func (c *Client) GetWorkspaces(ctx context.Context) ([]*Workspace, error) {
 	var workspaces []*Workspace
 	if err := c.httpGet(ctx, workspacesPath, &workspaces); err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "")
 	}
 	return workspaces, nil
 }
@@ -52,7 +54,7 @@ func (c *Client) GetWorkspace(ctx context.Context, id int) (*Workspace, error) {
 	rawWorkspaceData := new(rawWorkspaceData)
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(id))
 	if err := c.httpGet(ctx, apiSpecificPath, rawWorkspaceData); err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "")
 	}
 	return &rawWorkspaceData.Workspace, nil
 }

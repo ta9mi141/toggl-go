@@ -14,6 +14,8 @@ import (
 	"net/http"
 	"net/url"
 	"path"
+
+	"github.com/pkg/errors"
 )
 
 const (
@@ -77,7 +79,7 @@ func (a apiTokenOption) apply(c *Client) {
 func (c *Client) httpGet(ctx context.Context, apiSpecificPath string, respBody interface{}) error {
 	req, err := c.newRequest(ctx, http.MethodGet, apiSpecificPath, nil)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "")
 	}
 	return c.do(req, respBody)
 }
@@ -90,7 +92,7 @@ func (c *Client) newRequest(ctx context.Context, httpMethod, apiSpecificPath str
 
 	req, err := http.NewRequestWithContext(ctx, httpMethod, url.String(), requestBody)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "")
 	}
 
 	req.SetBasicAuth(c.apiToken, basicAuthPassword)
@@ -101,17 +103,17 @@ func (c *Client) newRequest(ctx context.Context, httpMethod, apiSpecificPath str
 func (c *Client) do(req *http.Request, respBody interface{}) error {
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "")
 	}
 
 	err = checkResponse(resp)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "")
 	}
 
 	err = decodeJSON(resp, respBody)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "")
 	}
 
 	return nil
@@ -126,7 +128,7 @@ func checkResponse(resp *http.Response) error {
 	errorResponse := &errorResponse{statusCode: resp.StatusCode, header: resp.Header}
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "")
 	}
 	errorResponse.message = string(body)
 
