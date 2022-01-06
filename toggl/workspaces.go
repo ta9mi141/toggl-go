@@ -40,7 +40,7 @@ type rawWorkspaceData struct {
 	Workspace Workspace `json:"data"`
 }
 
-// GetWorkspaces gets data about all the workspaces where the token owner belongs to.
+// GetWorkspaces gets all the workspaces where the token owner belongs to.
 func (c *Client) GetWorkspaces(ctx context.Context) ([]*Workspace, error) {
 	var workspaces []*Workspace
 	if err := c.httpGet(ctx, workspacesPath, &workspaces); err != nil {
@@ -49,7 +49,7 @@ func (c *Client) GetWorkspaces(ctx context.Context) ([]*Workspace, error) {
 	return workspaces, nil
 }
 
-// GetWorkspace gets data about the single workspace.
+// GetWorkspace gets the single workspace.
 func (c *Client) GetWorkspace(ctx context.Context, id int) (*Workspace, error) {
 	rawWorkspaceData := new(rawWorkspaceData)
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(id))
@@ -57,4 +57,9 @@ func (c *Client) GetWorkspace(ctx context.Context, id int) (*Workspace, error) {
 		return nil, errors.Wrap(err, "")
 	}
 	return &rawWorkspaceData.Workspace, nil
+}
+
+// GetWorkspaceUsers gets the workspace users.
+func (c *Client) GetWorkspaceUsers(ctx context.Context, id int) ([]*User, error) {
+	return nil, nil
 }
