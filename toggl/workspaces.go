@@ -61,5 +61,10 @@ func (c *Client) GetWorkspace(ctx context.Context, id int) (*Workspace, error) {
 
 // GetWorkspaceUsers gets the workspace users.
 func (c *Client) GetWorkspaceUsers(ctx context.Context, id int) ([]*User, error) {
-	return nil, nil
+	var users []*User
+	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(id), "users")
+	if err := c.httpGet(ctx, apiSpecificPath, &users); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return users, nil
 }

@@ -14,10 +14,10 @@ type User struct {
 	JqueryDateFormat      string    `json:"jquery_date_format"`
 	TimeofdayFormat       string    `json:"timeofday_format"`
 	DateFormat            string    `json:"date_format"`
-	StoreStartAndStop     bool      `json:"store_start_and_stop"`
+	StoreStartAndStopTime bool      `json:"store_start_and_stop_time"`
 	BeginningOfWeek       int       `json:"beginning_of_week"`
 	Language              string    `json:"language"`
-	ImageURL              string    `json:"imgae_url"`
+	ImageURL              string    `json:"image_url"`
 	SidebarPiechart       bool      `json:"sidebar_piechart"`
 	At                    time.Time `json:"at"`
 	CreatedAt             time.Time `json:"created_at"`
