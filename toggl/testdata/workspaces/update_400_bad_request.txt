@@ -1,0 +1,1 @@
+workspace missing from json structure
