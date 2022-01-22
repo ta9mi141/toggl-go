@@ -410,3 +410,137 @@ func TestGetWorkspaceUsers(t *testing.T) {
 		})
 	}
 }
+
+func TestUpdateWorkspace(t *testing.T) {
+	tests := []struct {
+		name         string
+		statusCode   int
+		testdataFile string
+		in           struct {
+			workspace *Workspace
+		}
+		out struct {
+			workspace *Workspace
+			err       error
+		}
+	}{
+		{
+			name:         "200 OK",
+			statusCode:   http.StatusOK,
+			testdataFile: "testdata/workspaces/update_200_ok.json",
+			in: struct {
+				workspace *Workspace
+			}{
+				workspace: &Workspace{
+					ID:   3134975,
+					Name: "John's ws",
+				},
+			},
+			out: struct {
+				workspace *Workspace
+				err       error
+			}{
+				workspace: &Workspace{
+					ID:                          3134975,
+					Name:                        "John's ws",
+					Profile:                     0,
+					Premium:                     true,
+					Admin:                       true,
+					DefaultHourlyRate:           50,
+					DefaultCurrency:             "USD",
+					OnlyAdminsMayCreateProjects: false,
+					OnlyAdminsSeeBillableRates:  true,
+					OnlyAdminsSeeTeamDashboard:  false,
+					ProjectsBillableByDefault:   true,
+					Rounding:                    1,
+					RoundingMinutes:             60,
+					APIToken:                    "1234567890abcdefghijklmnopqrstuv",
+					At:                          time.Date(2013, time.August, 28, 16, 22, 21, 0, time.FixedZone("", 3*60*60)),
+					LogoURL:                     "my_logo.png",
+					IcalEnabled:                 true,
+				},
+				err: nil,
+			},
+		},
+		{
+			name:         "400 Bad Request",
+			statusCode:   http.StatusBadRequest,
+			testdataFile: "testdata/workspaces/update_400_bad_request.txt",
+			in: struct {
+				workspace *Workspace
+			}{
+				workspace: &Workspace{
+					ID:   3134975,
+					Name: "John's ws",
+				},
+			},
+			out: struct {
+				workspace *Workspace
+				err       error
+			}{
+				workspace: nil,
+				err: &errorResponse{
+					statusCode: 400,
+					message:    "workspace missing from json structure\n",
+					header: http.Header{
+						"Content-Length": []string{"38"},
+						"Content-Type":   []string{"text/plain; charset=utf-8"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
+			name:         "403 Forbidden",
+			statusCode:   http.StatusForbidden,
+			testdataFile: "testdata/workspaces/update_403_forbidden.json",
+			in: struct {
+				workspace *Workspace
+			}{
+				workspace: &Workspace{
+					ID:   3134975,
+					Name: "John's ws",
+				},
+			},
+			out: struct {
+				workspace *Workspace
+				err       error
+			}{
+				workspace: nil,
+				err: &errorResponse{
+					statusCode: 403,
+					message:    "",
+					header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(tt.in.workspace.ID))
+			mockServer := newMockServer(t, apiSpecificPath, tt.statusCode, tt.testdataFile)
+			defer mockServer.Close()
+
+			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			workspace, err := client.UpdateWorkspace(context.Background(), tt.in.workspace)
+
+			if !reflect.DeepEqual(workspace, tt.out.workspace) {
+				errorf(t, workspace, tt.out.workspace)
+			}
+
+			errorResp := new(errorResponse)
+			if errors.As(err, &errorResp) {
+				if !reflect.DeepEqual(errorResp, tt.out.err) {
+					errorf(t, errorResp, tt.out.err)
+				}
+			} else {
+				if !reflect.DeepEqual(err, tt.out.err) {
+					errorf(t, err, tt.out.err)
+				}
+			}
+		})
+	}
+}
