@@ -70,6 +70,6 @@ func (c *Client) GetWorkspaceUsers(ctx context.Context, id int) ([]*User, error)
 }
 
 // UpdateWorkspace updates the workspace.
-func (c *Client) UpdateWorkspace(ctx context.Context, workspace *Workspace) (*Workspace, error) {
+func (c *Client) UpdateWorkspace(ctx context.Context, id int, workspace *Workspace) (*Workspace, error) {
 	return nil, nil
 }

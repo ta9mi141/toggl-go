@@ -417,6 +417,7 @@ func TestUpdateWorkspace(t *testing.T) {
 		statusCode   int
 		testdataFile string
 		in           struct {
+			id        int
 			workspace *Workspace
 		}
 		out struct {
@@ -429,10 +430,11 @@ func TestUpdateWorkspace(t *testing.T) {
 			statusCode:   http.StatusOK,
 			testdataFile: "testdata/workspaces/update_200_ok.json",
 			in: struct {
+				id        int
 				workspace *Workspace
 			}{
+				id: 3134975,
 				workspace: &Workspace{
-					ID:   3134975,
 					Name: "John's ws",
 				},
 			},
@@ -467,10 +469,11 @@ func TestUpdateWorkspace(t *testing.T) {
 			statusCode:   http.StatusBadRequest,
 			testdataFile: "testdata/workspaces/update_400_bad_request.txt",
 			in: struct {
+				id        int
 				workspace *Workspace
 			}{
+				id: 3134975,
 				workspace: &Workspace{
-					ID:   3134975,
 					Name: "John's ws",
 				},
 			},
@@ -495,10 +498,11 @@ func TestUpdateWorkspace(t *testing.T) {
 			statusCode:   http.StatusForbidden,
 			testdataFile: "testdata/workspaces/update_403_forbidden.json",
 			in: struct {
+				id        int
 				workspace *Workspace
 			}{
+				id: 3134975,
 				workspace: &Workspace{
-					ID:   3134975,
 					Name: "John's ws",
 				},
 			},
@@ -520,12 +524,12 @@ func TestUpdateWorkspace(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(tt.in.workspace.ID))
+			apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(tt.in.id))
 			mockServer := newMockServer(t, apiSpecificPath, tt.statusCode, tt.testdataFile)
 			defer mockServer.Close()
 
 			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
-			workspace, err := client.UpdateWorkspace(context.Background(), tt.in.workspace)
+			workspace, err := client.UpdateWorkspace(context.Background(), tt.in.id, tt.in.workspace)
 
 			if !reflect.DeepEqual(workspace, tt.out.workspace) {
 				errorf(t, workspace, tt.out.workspace)
