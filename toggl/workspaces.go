@@ -36,8 +36,12 @@ type Workspace struct {
 	IcalURL                     string    `json:"ical_url,omitempty"`
 }
 
-type rawWorkspaceData struct {
+type workspaceResponse struct {
 	Workspace Workspace `json:"data"`
+}
+
+type workspaceRequest struct {
+	Workspace Workspace `json:"workspace"`
 }
 
 // GetWorkspaces gets all the workspaces where the token owner belongs to.
@@ -51,12 +55,12 @@ func (c *Client) GetWorkspaces(ctx context.Context) ([]*Workspace, error) {
 
 // GetWorkspace gets the single workspace.
 func (c *Client) GetWorkspace(ctx context.Context, id int) (*Workspace, error) {
-	rawWorkspaceData := new(rawWorkspaceData)
+	response := new(workspaceResponse)
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(id))
-	if err := c.httpGet(ctx, apiSpecificPath, rawWorkspaceData); err != nil {
+	if err := c.httpGet(ctx, apiSpecificPath, response); err != nil {
 		return nil, errors.Wrap(err, "")
 	}
-	return &rawWorkspaceData.Workspace, nil
+	return &response.Workspace, nil
 }
 
 // GetWorkspaceUsers gets the workspace users.

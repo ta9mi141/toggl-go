@@ -548,3 +548,60 @@ func TestUpdateWorkspace(t *testing.T) {
 		})
 	}
 }
+
+func TestUpdateWorkspaceRequestBody(t *testing.T) {
+	tests := []struct {
+		name string
+		in   *Workspace
+		out  *workspaceRequest
+	}{
+		{
+			name: "string",
+			in: &Workspace{
+				Name: "John's ws",
+			},
+			out: &workspaceRequest{
+				Workspace: Workspace{
+					Name: "John's ws",
+				},
+			},
+		},
+		{
+			name: "string and float64",
+			in: &Workspace{
+				Name:              "John's ws",
+				DefaultHourlyRate: 50,
+			},
+			out: &workspaceRequest{
+				Workspace: Workspace{
+					Name:              "John's ws",
+					DefaultHourlyRate: 50,
+				},
+			},
+		},
+		{
+			name: "string, float64, and bool",
+			in: &Workspace{
+				Name:                        "John's ws",
+				DefaultHourlyRate:           50,
+				OnlyAdminsMayCreateProjects: false,
+			},
+			out: &workspaceRequest{
+				Workspace: Workspace{
+					Name:                        "John's ws",
+					DefaultHourlyRate:           50,
+					OnlyAdminsMayCreateProjects: false,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockServer := newMockServerToAssertRequestBody(t, new(workspaceRequest), tt.out)
+			defer mockServer.Close()
+			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			workspaceID := 3134975
+			_, _ = client.UpdateWorkspace(context.Background(), workspaceID, tt.in)
+		})
+	}
+}
