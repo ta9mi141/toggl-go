@@ -40,10 +40,6 @@ type workspaceResponse struct {
 	Workspace Workspace `json:"data"`
 }
 
-type workspaceRequest struct {
-	Workspace Workspace `json:"workspace"`
-}
-
 // GetWorkspaces gets all the workspaces where the token owner belongs to.
 func (c *Client) GetWorkspaces(ctx context.Context) ([]*Workspace, error) {
 	var workspaces []*Workspace

@@ -1,14 +1,12 @@
 package toggl
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"path"
-	"reflect"
 	"testing"
 )
 
@@ -43,20 +41,15 @@ func newMockServer(t *testing.T, apiSpecificPath string, statusCode int, testdat
 	return mockServer
 }
 
-func newMockServerToAssertRequestBody(t *testing.T, newRequestBody, expectedRequestBody interface{}) *httptest.Server {
+func newMockServerToAssertRequestBody(t *testing.T, expectedRequestBody string) *httptest.Server {
 	// The caller should call Close to shut down the server.
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		rawRequestBody, err := ioutil.ReadAll(r.Body)
 		if err != nil {
 			t.Fatal(err.Error())
 		}
-		if err := json.Unmarshal(rawRequestBody, newRequestBody); err != nil {
-			t.Helper()
-			t.Errorf("%s\nnewRequestBody: %+#v\nrawRequestBody: %+#v\n", err.Error(), newRequestBody, rawRequestBody)
-		}
-		actualRequestBody := newRequestBody // Rename for readability
-		if !reflect.DeepEqual(actualRequestBody, expectedRequestBody) {
-			t.Helper()
+		actualRequestBody := string(rawRequestBody)
+		if actualRequestBody != expectedRequestBody {
 			errorf(t, actualRequestBody, expectedRequestBody)
 		}
 	}))
