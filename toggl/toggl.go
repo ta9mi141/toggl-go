@@ -7,6 +7,7 @@ https://github.com/toggl/toggl_api_docs/blob/master/toggl_api.md
 package toggl
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"io"
@@ -84,11 +85,26 @@ func (c *Client) httpGet(ctx context.Context, apiSpecificPath string, respBody i
 	return c.do(req, respBody)
 }
 
+func (c *Client) httpPut(ctx context.Context, apiSpecificPath string, reqBody, respBody interface{}) error {
+	req, err := c.newRequest(ctx, http.MethodPut, apiSpecificPath, reqBody)
+	if err != nil {
+		return errors.Wrap(err, "")
+	}
+	return c.do(req, respBody)
+}
+
 func (c *Client) newRequest(ctx context.Context, httpMethod, apiSpecificPath string, reqBody interface{}) (*http.Request, error) {
 	url := *c.baseURL
 	url.Path = path.Join(url.Path, apiSpecificPath)
 
 	requestBody := io.Reader(nil)
+	if httpMethod == http.MethodPut {
+		b, err := json.Marshal(reqBody)
+		if err != nil {
+			return nil, errors.Wrap(err, "")
+		}
+		requestBody = bytes.NewReader(b)
+	}
 
 	req, err := http.NewRequestWithContext(ctx, httpMethod, url.String(), requestBody)
 	if err != nil {
@@ -96,6 +112,7 @@ func (c *Client) newRequest(ctx context.Context, httpMethod, apiSpecificPath str
 	}
 
 	req.SetBasicAuth(c.apiToken, basicAuthPassword)
+	req.Header.Set("Content-Type", "application/json")
 
 	return req, nil
 }

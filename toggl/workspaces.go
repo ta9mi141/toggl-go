@@ -36,6 +36,10 @@ type Workspace struct {
 	IcalURL                     *string    `json:"ical_url,omitempty"`
 }
 
+type workspaceRequest struct {
+	Workspace Workspace `json:"workspace"`
+}
+
 type workspaceResponse struct {
 	Workspace Workspace `json:"data"`
 }
@@ -71,5 +75,12 @@ func (c *Client) GetWorkspaceUsers(ctx context.Context, id int) ([]*User, error)
 
 // UpdateWorkspace updates the workspace.
 func (c *Client) UpdateWorkspace(ctx context.Context, id int, workspace *Workspace) (*Workspace, error) {
-	return nil, nil
+	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(id))
+	request := &workspaceRequest{Workspace: *workspace}
+	response := new(workspaceResponse)
+
+	if err := c.httpPut(ctx, apiSpecificPath, request, response); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return &response.Workspace, nil
 }
