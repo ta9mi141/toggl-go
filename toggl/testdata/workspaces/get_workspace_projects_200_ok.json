@@ -1,0 +1,30 @@
+[
+  {
+    "id": 123456789,
+    "wid": 4567890,
+    "name": "Project1",
+    "billable": false,
+    "is_private": true,
+    "active": true,
+    "template": false,
+    "at": "2013-08-13T05:37:08+00:00",
+    "created_at": "2013-08-10T04:56:07+00:00",
+    "color": "13",
+    "auto_estimates": false,
+    "hex_color": "#d92b2b"
+  },
+  {
+    "id": 234567890,
+    "wid": 4567890,
+    "name": "Project2",
+    "billable": false,
+    "is_private": false,
+    "active": true,
+    "template": false,
+    "at": "2015-11-26T07:57:08+00:00",
+    "created_at": "2015-10-24T04:46:43+00:00",
+    "color": "6",
+    "auto_estimates": false,
+    "hex_color": "#06a893"
+  }
+]
