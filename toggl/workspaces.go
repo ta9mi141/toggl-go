@@ -75,7 +75,12 @@ func (c *Client) GetWorkspaceUsers(ctx context.Context, id int) ([]*User, error)
 
 // GetWorkspaceProjects gets the workspace projects.
 func (c *Client) GetWorkspaceProjects(ctx context.Context, id int) ([]*Project, error) {
-	return nil, nil
+	var projects []*Project
+	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(id), "projects")
+	if err := c.httpGet(ctx, apiSpecificPath, &projects); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return projects, nil
 }
 
 // UpdateWorkspace updates the workspace.
