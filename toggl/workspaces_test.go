@@ -411,6 +411,142 @@ func TestGetWorkspaceUsers(t *testing.T) {
 	}
 }
 
+func TestGetWorkspaceProjects(t *testing.T) {
+	tests := []struct {
+		name         string
+		statusCode   int
+		testdataFile string
+		in           struct {
+			id int
+		}
+		out struct {
+			projects []*Project
+			err      error
+		}
+	}{
+		{
+			name:         "200 OK",
+			statusCode:   http.StatusOK,
+			testdataFile: "testdata/workspaces/get_workspace_projects_200_ok.json",
+			in: struct {
+				id int
+			}{
+				id: 777,
+			},
+			out: struct {
+				projects []*Project
+				err      error
+			}{
+				projects: []*Project{
+					{
+						ID:            Int(123456789),
+						WID:           Int(4567890),
+						Name:          String("Project1"),
+						Billable:      Bool(false),
+						IsPrivate:     Bool(true),
+						Active:        Bool(true),
+						Template:      Bool(false),
+						At:            Time(time.Date(2013, time.August, 13, 5, 37, 8, 0, time.FixedZone("", 0))),
+						CreatedAt:     Time(time.Date(2013, time.August, 10, 4, 56, 7, 0, time.FixedZone("", 0))),
+						Color:         String("13"),
+						AutoEstimates: Bool(false),
+						HexColor:      String("#d92b2b"),
+					},
+					{
+						ID:            Int(234567890),
+						WID:           Int(4567890),
+						Name:          String("Project2"),
+						Billable:      Bool(false),
+						IsPrivate:     Bool(false),
+						Active:        Bool(true),
+						Template:      Bool(false),
+						At:            Time(time.Date(2015, time.November, 26, 7, 57, 8, 0, time.FixedZone("", 0))),
+						CreatedAt:     Time(time.Date(2015, time.October, 24, 4, 46, 43, 0, time.FixedZone("", 0))),
+						Color:         String("6"),
+						AutoEstimates: Bool(false),
+						HexColor:      String("#06a893"),
+					},
+				},
+				err: nil,
+			},
+		},
+		{
+			name:         "400 Bad Request",
+			statusCode:   http.StatusBadRequest,
+			testdataFile: "testdata/workspaces/get_workspace_projects_400_bad_request.txt",
+			in: struct {
+				id int
+			}{
+				id: 777,
+			},
+			out: struct {
+				projects []*Project
+				err      error
+			}{
+				projects: nil,
+				err: &errorResponse{
+					statusCode: 400,
+					message:    "Missing or invalid workspace_id\n",
+					header: http.Header{
+						"Content-Length": []string{"32"},
+						"Content-Type":   []string{"text/plain; charset=utf-8"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
+			name:         "403 Forbidden",
+			statusCode:   http.StatusForbidden,
+			testdataFile: "testdata/workspaces/get_workspace_projects_403_forbidden.json",
+			in: struct {
+				id int
+			}{
+				id: 777,
+			},
+			out: struct {
+				projects []*Project
+				err      error
+			}{
+				projects: nil,
+				err: &errorResponse{
+					statusCode: 403,
+					message:    "",
+					header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(tt.in.id), "projects")
+			mockServer := newMockServer(t, apiSpecificPath, tt.statusCode, tt.testdataFile)
+			defer mockServer.Close()
+
+			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			projects, err := client.GetWorkspaceProjects(context.Background(), tt.in.id)
+
+			if !reflect.DeepEqual(projects, tt.out.projects) {
+				errorf(t, projects, tt.out.projects)
+			}
+
+			errorResp := new(errorResponse)
+			if errors.As(err, &errorResp) {
+				if !reflect.DeepEqual(errorResp, tt.out.err) {
+					errorf(t, errorResp, tt.out.err)
+				}
+			} else {
+				if !reflect.DeepEqual(err, tt.out.err) {
+					errorf(t, err, tt.out.err)
+				}
+			}
+		})
+	}
+}
+
 func TestUpdateWorkspace(t *testing.T) {
 	tests := []struct {
 		name         string

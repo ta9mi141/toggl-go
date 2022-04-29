@@ -73,6 +73,11 @@ func (c *Client) GetWorkspaceUsers(ctx context.Context, id int) ([]*User, error)
 	return users, nil
 }
 
+// GetWorkspaceProjects gets the workspace projects.
+func (c *Client) GetWorkspaceProjects(ctx context.Context, id int) ([]*Project, error) {
+	return nil, nil
+}
+
 // UpdateWorkspace updates the workspace.
 func (c *Client) UpdateWorkspace(ctx context.Context, id int, workspace *Workspace) (*Workspace, error) {
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(id))
