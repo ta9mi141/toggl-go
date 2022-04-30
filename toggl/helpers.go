@@ -41,6 +41,16 @@ func newMockServer(t *testing.T, apiSpecificPath string, statusCode int, testdat
 	return mockServer
 }
 
+func newMockServerToAssertRequestParameters(t *testing.T, expectedRequestParameters string) *httptest.Server {
+	// The caller should call Close to shut down the server.
+	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		actualRequestParameters := r.URL.Query().Encode()
+		if actualRequestParameters != expectedRequestParameters {
+			errorf(t, actualRequestParameters, expectedRequestParameters)
+		}
+	}))
+}
+
 func newMockServerToAssertRequestBody(t *testing.T, expectedRequestBody string) *httptest.Server {
 	// The caller should call Close to shut down the server.
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

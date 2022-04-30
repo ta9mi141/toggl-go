@@ -547,6 +547,39 @@ func TestGetWorkspaceProjects(t *testing.T) {
 	}
 }
 
+func TestGetworkspaceProjectsRequestParameters(t *testing.T) {
+	tests := []struct {
+		name string
+		in   []GetWorkspaceProjectsParameter
+		out  string
+	}{
+		{
+			name: "active=false",
+			in:   []GetWorkspaceProjectsParameter{Active("false")},
+			out:  "active=false",
+		},
+		{
+			name: "active=true&actual_hours=true",
+			in:   []GetWorkspaceProjectsParameter{Active("true"), ActualHours(true)},
+			out:  "active=true&actual_hours=true",
+		},
+		{
+			name: "active=both&actual_hours=true&only_templates=false",
+			in:   []GetWorkspaceProjectsParameter{Active("both"), ActualHours(true), OnlyTemplates(false)},
+			out:  "active=both&actual_hours=true&only_templates=false",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockServer := newMockServerToAssertRequestParameters(t, tt.out)
+			defer mockServer.Close()
+			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			workspaceID := 3134975
+			_, _ = client.GetWorkspaceProjects(context.Background(), workspaceID, tt.in...)
+		})
+	}
+}
+
 func TestUpdateWorkspace(t *testing.T) {
 	tests := []struct {
 		name         string

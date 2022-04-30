@@ -73,8 +73,38 @@ func (c *Client) GetWorkspaceUsers(ctx context.Context, id int) ([]*User, error)
 	return users, nil
 }
 
+// GetWorkspaceProjectsParameter is the additional parameter of GetWorkspaceProjects.
+type GetWorkspaceProjectsParameter requestParameter
+
+// Active determines whether the request filters projects by their state.
+func Active(active string) GetWorkspaceProjectsParameter {
+	return activeParameter(active)
+}
+
+type activeParameter string
+
+func (p activeParameter) apply() {}
+
+// ActualHours determines whether the request gets the completed hours per project.
+func ActualHours(actualHours bool) GetWorkspaceProjectsParameter {
+	return actualHoursParameter(actualHours)
+}
+
+type actualHoursParameter bool
+
+func (p actualHoursParameter) apply() {}
+
+// OnlyTemplates determines whether the request gets only project templates.
+func OnlyTemplates(onlyTemplates bool) GetWorkspaceProjectsParameter {
+	return onlyTemplatesParameter(onlyTemplates)
+}
+
+type onlyTemplatesParameter bool
+
+func (p onlyTemplatesParameter) apply() {}
+
 // GetWorkspaceProjects gets the workspace projects.
-func (c *Client) GetWorkspaceProjects(ctx context.Context, id int) ([]*Project, error) {
+func (c *Client) GetWorkspaceProjects(ctx context.Context, id int, params ...GetWorkspaceProjectsParameter) ([]*Project, error) {
 	var projects []*Project
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(id), "projects")
 	if err := c.httpGet(ctx, apiSpecificPath, &projects); err != nil {

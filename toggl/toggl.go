@@ -77,6 +77,11 @@ func (a apiTokenOption) apply(c *Client) {
 	c.apiToken = string(a)
 }
 
+// requestParameter is the additional parameter of HTTP GET request.
+type requestParameter interface {
+	apply()
+}
+
 func (c *Client) httpGet(ctx context.Context, apiSpecificPath string, respBody interface{}) error {
 	req, err := c.newRequest(ctx, http.MethodGet, apiSpecificPath, nil)
 	if err != nil {
