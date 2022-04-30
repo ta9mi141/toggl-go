@@ -2,6 +2,7 @@ package toggl
 
 import (
 	"context"
+	"net/url"
 	"path"
 	"strconv"
 	"time"
@@ -73,41 +74,44 @@ func (c *Client) GetWorkspaceUsers(ctx context.Context, id int) ([]*User, error)
 	return users, nil
 }
 
-// GetWorkspaceProjectsParameter is the additional parameter of GetWorkspaceProjects.
-type GetWorkspaceProjectsParameter requestParameter
-
 // Active determines whether the request filters projects by their state.
-func Active(active string) GetWorkspaceProjectsParameter {
+func Active(active string) requestParameter {
 	return activeParameter(active)
 }
 
 type activeParameter string
 
-func (p activeParameter) apply() {}
+func (p activeParameter) apply(values url.Values) {
+	values.Add("active", string(p))
+}
 
 // ActualHours determines whether the request gets the completed hours per project.
-func ActualHours(actualHours bool) GetWorkspaceProjectsParameter {
+func ActualHours(actualHours bool) requestParameter {
 	return actualHoursParameter(actualHours)
 }
 
 type actualHoursParameter bool
 
-func (p actualHoursParameter) apply() {}
+func (p actualHoursParameter) apply(values url.Values) {
+	values.Add("actual_hours", strconv.FormatBool(bool(p)))
+}
 
 // OnlyTemplates determines whether the request gets only project templates.
-func OnlyTemplates(onlyTemplates bool) GetWorkspaceProjectsParameter {
+func OnlyTemplates(onlyTemplates bool) requestParameter {
 	return onlyTemplatesParameter(onlyTemplates)
 }
 
 type onlyTemplatesParameter bool
 
-func (p onlyTemplatesParameter) apply() {}
+func (p onlyTemplatesParameter) apply(values url.Values) {
+	values.Add("only_templates", strconv.FormatBool(bool(p)))
+}
 
 // GetWorkspaceProjects gets the workspace projects.
-func (c *Client) GetWorkspaceProjects(ctx context.Context, id int, params ...GetWorkspaceProjectsParameter) ([]*Project, error) {
+func (c *Client) GetWorkspaceProjects(ctx context.Context, id int, params ...requestParameter) ([]*Project, error) {
 	var projects []*Project
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(id), "projects")
-	if err := c.httpGet(ctx, apiSpecificPath, &projects); err != nil {
+	if err := c.httpGet(ctx, apiSpecificPath, &projects, params...); err != nil {
 		return nil, errors.Wrap(err, "")
 	}
 	return projects, nil

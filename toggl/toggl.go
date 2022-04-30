@@ -79,14 +79,21 @@ func (a apiTokenOption) apply(c *Client) {
 
 // requestParameter is the additional parameter of HTTP GET request.
 type requestParameter interface {
-	apply()
+	apply(values url.Values)
 }
 
-func (c *Client) httpGet(ctx context.Context, apiSpecificPath string, respBody interface{}) error {
+func (c *Client) httpGet(ctx context.Context, apiSpecificPath string, respBody interface{}, params ...requestParameter) error {
 	req, err := c.newRequest(ctx, http.MethodGet, apiSpecificPath, nil)
 	if err != nil {
 		return errors.Wrap(err, "")
 	}
+
+	values := req.URL.Query()
+	for _, param := range params {
+		param.apply(values)
+	}
+	req.URL.RawQuery = values.Encode()
+
 	return c.do(req, respBody)
 }
 

@@ -550,22 +550,22 @@ func TestGetWorkspaceProjects(t *testing.T) {
 func TestGetworkspaceProjectsRequestParameters(t *testing.T) {
 	tests := []struct {
 		name string
-		in   []GetWorkspaceProjectsParameter
+		in   []requestParameter
 		out  string
 	}{
 		{
 			name: "active=false",
-			in:   []GetWorkspaceProjectsParameter{Active("false")},
+			in:   []requestParameter{Active("false")},
 			out:  "active=false",
 		},
 		{
 			name: "active=true&actual_hours=true",
-			in:   []GetWorkspaceProjectsParameter{Active("true"), ActualHours(true)},
+			in:   []requestParameter{Active("true"), ActualHours(true)},
 			out:  "active=true&actual_hours=true",
 		},
 		{
 			name: "active=both&actual_hours=true&only_templates=false",
-			in:   []GetWorkspaceProjectsParameter{Active("both"), ActualHours(true), OnlyTemplates(false)},
+			in:   []requestParameter{Active("both"), ActualHours(true), OnlyTemplates(false)},
 			out:  "active=both&actual_hours=true&only_templates=false",
 		},
 	}
