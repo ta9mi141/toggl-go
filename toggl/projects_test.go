@@ -75,7 +75,7 @@ func TestGetProject(t *testing.T) {
 					message:    "\"Invalid project_id\"\n",
 					header: http.Header{
 						"Content-Length": []string{"21"},
-						"Content-Type":   []string{"text/plain; charset=utf-8"},
+						"Content-Type":   []string{"application/json; charset=utf-8"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
 				},
@@ -100,7 +100,7 @@ func TestGetProject(t *testing.T) {
 					message:    "\"\"\n",
 					header: http.Header{
 						"Content-Length": []string{"3"},
-						"Content-Type":   []string{"text/plain; charset=utf-8"},
+						"Content-Type":   []string{"application/json; charset=utf-8"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
 				},

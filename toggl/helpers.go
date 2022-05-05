@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"path"
+	"path/filepath"
 	"testing"
 )
 
@@ -32,6 +33,14 @@ func newMockServer(t *testing.T, apiSpecificPath string, statusCode int, testdat
 	mux := http.NewServeMux()
 	pattern := path.Join("/", apiSpecificPath) // mockServer returns 404 page not found if pattern does not start with "/".
 	mux.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
+		// Set Content-Type to emulate behavior of Toggl API.
+		// Since changing the header map after a call to WriteHeader has no effect,
+		// Content-Type must be set before a call to WriteHeader.
+		switch filepath.Ext(testdataFile) {
+		case ".json":
+			w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		}
+
 		w.WriteHeader(statusCode)
 		fmt.Fprint(w, string(testdata))
 	})

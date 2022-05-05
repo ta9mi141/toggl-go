@@ -75,7 +75,7 @@ func TestGetWorkspaces(t *testing.T) {
 		{
 			name:         "403 Forbidden",
 			statusCode:   http.StatusForbidden,
-			testdataFile: "testdata/workspaces/get_workspaces_403_forbidden.json",
+			testdataFile: "testdata/workspaces/get_workspaces_403_forbidden",
 			out: struct {
 				workspaces []*Workspace
 				err        error
@@ -170,7 +170,7 @@ func TestGetWorkspace(t *testing.T) {
 		{
 			name:         "403 Forbidden",
 			statusCode:   http.StatusForbidden,
-			testdataFile: "testdata/workspaces/get_workspace_403_forbidden.json",
+			testdataFile: "testdata/workspaces/get_workspace_403_forbidden",
 			in: struct {
 				id int
 			}{
@@ -207,10 +207,10 @@ func TestGetWorkspace(t *testing.T) {
 				workspace: nil,
 				err: &errorResponse{
 					statusCode: 404,
-					message:    "null\n",
+					message:    "\"\"\n",
 					header: http.Header{
-						"Content-Length": []string{"5"},
-						"Content-Type":   []string{"text/plain; charset=utf-8"},
+						"Content-Length": []string{"3"},
+						"Content-Type":   []string{"application/json; charset=utf-8"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
 				},
@@ -337,7 +337,7 @@ func TestGetWorkspaceUsers(t *testing.T) {
 		{
 			name:         "400 Bad Request",
 			statusCode:   http.StatusBadRequest,
-			testdataFile: "testdata/workspaces/get_workspace_users_400_bad_request.txt",
+			testdataFile: "testdata/workspaces/get_workspace_users_400_bad_request.json",
 			in: struct {
 				id int
 			}{
@@ -350,10 +350,10 @@ func TestGetWorkspaceUsers(t *testing.T) {
 				users: nil,
 				err: &errorResponse{
 					statusCode: 400,
-					message:    "Missing or invalid workspace_id\n",
+					message:    "\"Missing or invalid workspace_id\"\n",
 					header: http.Header{
-						"Content-Length": []string{"32"},
-						"Content-Type":   []string{"text/plain; charset=utf-8"},
+						"Content-Length": []string{"34"},
+						"Content-Type":   []string{"application/json; charset=utf-8"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
 				},
@@ -362,7 +362,7 @@ func TestGetWorkspaceUsers(t *testing.T) {
 		{
 			name:         "403 Forbidden",
 			statusCode:   http.StatusForbidden,
-			testdataFile: "testdata/workspaces/get_workspace_users_403_forbidden.json",
+			testdataFile: "testdata/workspaces/get_workspace_users_403_forbidden",
 			in: struct {
 				id int
 			}{
@@ -473,7 +473,7 @@ func TestGetWorkspaceProjects(t *testing.T) {
 		{
 			name:         "400 Bad Request",
 			statusCode:   http.StatusBadRequest,
-			testdataFile: "testdata/workspaces/get_workspace_projects_400_bad_request.txt",
+			testdataFile: "testdata/workspaces/get_workspace_projects_400_bad_request.json",
 			in: struct {
 				id int
 			}{
@@ -486,10 +486,10 @@ func TestGetWorkspaceProjects(t *testing.T) {
 				projects: nil,
 				err: &errorResponse{
 					statusCode: 400,
-					message:    "Missing or invalid workspace_id\n",
+					message:    "\"Missing or invalid workspace_id\"\n",
 					header: http.Header{
-						"Content-Length": []string{"32"},
-						"Content-Type":   []string{"text/plain; charset=utf-8"},
+						"Content-Length": []string{"34"},
+						"Content-Type":   []string{"application/json; charset=utf-8"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
 				},
@@ -498,7 +498,7 @@ func TestGetWorkspaceProjects(t *testing.T) {
 		{
 			name:         "403 Forbidden",
 			statusCode:   http.StatusForbidden,
-			testdataFile: "testdata/workspaces/get_workspace_projects_403_forbidden.json",
+			testdataFile: "testdata/workspaces/get_workspace_projects_403_forbidden",
 			in: struct {
 				id int
 			}{
@@ -636,7 +636,7 @@ func TestUpdateWorkspace(t *testing.T) {
 		{
 			name:         "400 Bad Request",
 			statusCode:   http.StatusBadRequest,
-			testdataFile: "testdata/workspaces/update_400_bad_request.txt",
+			testdataFile: "testdata/workspaces/update_400_bad_request.json",
 			in: struct {
 				id        int
 				workspace *Workspace
@@ -656,7 +656,7 @@ func TestUpdateWorkspace(t *testing.T) {
 					message:    "workspace missing from json structure\n",
 					header: http.Header{
 						"Content-Length": []string{"38"},
-						"Content-Type":   []string{"text/plain; charset=utf-8"},
+						"Content-Type":   []string{"application/json; charset=utf-8"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
 				},
@@ -665,7 +665,7 @@ func TestUpdateWorkspace(t *testing.T) {
 		{
 			name:         "403 Forbidden",
 			statusCode:   http.StatusForbidden,
-			testdataFile: "testdata/workspaces/update_403_forbidden.json",
+			testdataFile: "testdata/workspaces/update_403_forbidden",
 			in: struct {
 				id        int
 				workspace *Workspace
