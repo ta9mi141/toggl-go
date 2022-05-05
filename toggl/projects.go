@@ -2,7 +2,15 @@ package toggl
 
 import (
 	"context"
+	"path"
+	"strconv"
 	"time"
+
+	"github.com/pkg/errors"
+)
+
+const (
+	projectsPath string = "api/v8/projects"
 )
 
 type Project struct {
@@ -22,11 +30,16 @@ type Project struct {
 	HexColor      *string    `json:"hex_color,omitempty"`
 }
 
-const (
-	projectsPath string = "api/v8/projects"
-)
+type projectResponse struct {
+	Project Project `json:"data"`
+}
 
 // GetProject gets the project.
 func (c *Client) GetProject(ctx context.Context, id int) (*Project, error) {
-	return nil, nil
+	response := new(projectResponse)
+	apiSpecificPath := path.Join(projectsPath, strconv.Itoa(id))
+	if err := c.httpGet(ctx, apiSpecificPath, response); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return &response.Project, nil
 }
