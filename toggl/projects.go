@@ -17,7 +17,7 @@ type Project struct {
 	ID            *int       `json:"id,omitempty"`
 	WID           *int       `json:"wid,omitempty"`
 	CID           *int       `json:"cid,omitempty"`
-	Name          *string    `json:"Name,omitempty"`
+	Name          *string    `json:"name,omitempty"`
 	Billable      *bool      `json:"billable,omitempty"`
 	IsPrivate     *bool      `json:"is_private,omitempty"`
 	Active        *bool      `json:"active,omitempty"`
@@ -30,13 +30,23 @@ type Project struct {
 	HexColor      *string    `json:"hex_color,omitempty"`
 }
 
+type projectRequest struct {
+	Project Project `json:"project"`
+}
+
 type projectResponse struct {
 	Project Project `json:"data"`
 }
 
 // CreateProject creates a project.
 func (c *Client) CreateProject(ctx context.Context, project *Project) (*Project, error) {
-	return nil, nil
+	request := &projectRequest{Project: *project}
+	response := new(projectResponse)
+
+	if err := c.httpPost(ctx, projectsPath, request, response); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return &response.Project, nil
 }
 
 // GetProject gets the project.

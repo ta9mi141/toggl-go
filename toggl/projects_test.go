@@ -75,9 +75,9 @@ func TestCreateProject(t *testing.T) {
 				project: nil,
 				err: &errorResponse{
 					statusCode: 400,
-					message:    "\"Invalid project_id\"\n",
+					message:    "\"Project can't be blank\"\n",
 					header: http.Header{
-						"Content-Length": []string{"21"},
+						"Content-Length": []string{"25"},
 						"Content-Type":   []string{"application/json; charset=utf-8"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
