@@ -34,6 +34,11 @@ type projectResponse struct {
 	Project Project `json:"data"`
 }
 
+// CreateProject creates a project.
+func (c *Client) CreateProject(ctx context.Context, project *Project) (*Project, error) {
+	return nil, nil
+}
+
 // GetProject gets the project.
 func (c *Client) GetProject(ctx context.Context, id int) (*Project, error) {
 	response := new(projectResponse)
