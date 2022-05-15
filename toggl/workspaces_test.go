@@ -643,7 +643,7 @@ func TestUpdateWorkspace(t *testing.T) {
 			}{
 				id: 3134975,
 				workspace: &Workspace{
-					Name: String("John's ws"),
+					Name: String(""),
 				},
 			},
 			out: struct {
@@ -653,9 +653,9 @@ func TestUpdateWorkspace(t *testing.T) {
 				workspace: nil,
 				err: &errorResponse{
 					statusCode: 400,
-					message:    "workspace missing from json structure\n",
+					message:    "\"name must not be empty\"\n",
 					header: http.Header{
-						"Content-Length": []string{"38"},
+						"Content-Length": []string{"25"},
 						"Content-Type":   []string{"application/json; charset=utf-8"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
