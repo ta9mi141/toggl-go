@@ -300,3 +300,179 @@ func TestGetProject(t *testing.T) {
 		})
 	}
 }
+
+func TestUpdateProject(t *testing.T) {
+	tests := []struct {
+		name         string
+		statusCode   int
+		testdataFile string
+		in           struct {
+			id      int
+			project *Project
+		}
+		out struct {
+			project *Project
+			err     error
+		}
+	}{
+		{
+			name:         "200 OK",
+			statusCode:   http.StatusOK,
+			testdataFile: "testdata/projects/update_200_ok.json",
+			in: struct {
+				id      int
+				project *Project
+			}{
+				id: 123456789,
+				project: &Project{
+					WID:  Int(1234567),
+					Name: String("Changed the name"),
+				},
+			},
+			out: struct {
+				project *Project
+				err     error
+			}{
+				project: &Project{
+					ID:            Int(123456789),
+					WID:           Int(1234567),
+					Name:          String("Changed the name"),
+					Billable:      Bool(false),
+					IsPrivate:     Bool(true),
+					Active:        Bool(true),
+					Template:      Bool(false),
+					At:            Time(time.Date(2021, time.April, 13, 1, 23, 45, 0, time.FixedZone("", 0))),
+					CreatedAt:     Time(time.Date(2021, time.March, 13, 1, 23, 45, 0, time.FixedZone("", 0))),
+					Color:         String("2"),
+					AutoEstimates: Bool(false),
+					HexColor:      String("#d94182"),
+				},
+				err: nil,
+			},
+		},
+		{
+			name:         "400 Bad Request",
+			statusCode:   http.StatusBadRequest,
+			testdataFile: "testdata/projects/update_400_bad_request.json",
+			in: struct {
+				id      int
+				project *Project
+			}{
+				id:      123456789,
+				project: &Project{},
+			},
+			out: struct {
+				project *Project
+				err     error
+			}{
+				project: nil,
+				err: &errorResponse{
+					statusCode: 400,
+					message:    "\"Project name must be present\"\n",
+					header: http.Header{
+						"Content-Length": []string{"31"},
+						"Content-Type":   []string{"application/json; charset=utf-8"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
+			name:         "404 Not Found",
+			statusCode:   http.StatusNotFound,
+			testdataFile: "testdata/projects/update_404_not_found.json",
+			in: struct {
+				id      int
+				project *Project
+			}{
+				id: 123456789,
+				project: &Project{
+					Name: String("Changed the name"),
+					WID:  Int(1234567),
+				},
+			},
+			out: struct {
+				project *Project
+				err     error
+			}{
+				project: nil,
+				err: &errorResponse{
+					statusCode: 404,
+					message:    "",
+					header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockServer := newMockServer(t, projectsPath, tt.statusCode, tt.testdataFile)
+			defer mockServer.Close()
+
+			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			project, err := client.UpdateProject(context.Background(), tt.in.id, tt.in.project)
+
+			if !reflect.DeepEqual(project, tt.out.project) {
+				errorf(t, project, tt.out.project)
+			}
+
+			errorResp := new(errorResponse)
+			if errors.As(err, &errorResp) {
+				if !reflect.DeepEqual(errorResp, tt.out.err) {
+					errorf(t, errorResp, tt.out.err)
+				}
+			} else {
+				if !reflect.DeepEqual(err, tt.out.err) {
+					errorf(t, err, tt.out.err)
+				}
+			}
+		})
+	}
+}
+
+func TestUpdateProjectRequestBody(t *testing.T) {
+	tests := []struct {
+		name string
+		in   *Project
+		out  string
+	}{
+		{
+			name: "int and string",
+			in: &Project{
+				WID:  Int(2345678),
+				Name: String("Changed the name"),
+			},
+			out: "{\"project\":{\"wid\":2345678,\"name\":\"Changed the name\"}}",
+		},
+		{
+			name: "int and string and bool (true)",
+			in: &Project{
+				WID:       Int(2345678),
+				Name:      String("Changed the name"),
+				IsPrivate: Bool(true),
+			},
+			out: "{\"project\":{\"wid\":2345678,\"name\":\"Changed the name\",\"is_private\":true}}",
+		},
+		{
+			name: "int and string and bool (false)",
+			in: &Project{
+				WID:       Int(2345678),
+				Name:      String("Changed the name"),
+				IsPrivate: Bool(false),
+			},
+			out: "{\"project\":{\"wid\":2345678,\"name\":\"Changed the name\",\"is_private\":false}}",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockServer := newMockServerToAssertRequestBody(t, tt.out)
+			defer mockServer.Close()
+			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			projectID := 123456789
+			_, _ = client.UpdateProject(context.Background(), projectID, tt.in)
+		})
+	}
+}

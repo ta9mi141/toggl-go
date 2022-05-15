@@ -58,3 +58,8 @@ func (c *Client) GetProject(ctx context.Context, id int) (*Project, error) {
 	}
 	return &response.Project, nil
 }
+
+// UpdateProject updates the project.
+func (c *Client) UpdateProject(ctx context.Context, id int, project *Project) (*Project, error) {
+	return nil, nil
+}
