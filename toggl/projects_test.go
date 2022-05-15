@@ -342,7 +342,7 @@ func TestUpdateProject(t *testing.T) {
 					Active:        Bool(true),
 					Template:      Bool(false),
 					At:            Time(time.Date(2021, time.April, 13, 1, 23, 45, 0, time.FixedZone("", 0))),
-					CreatedAt:     Time(time.Date(2021, time.March, 13, 1, 23, 45, 0, time.FixedZone("", 0))),
+					CreatedAt:     Time(time.Date(2021, time.March, 31, 1, 23, 45, 0, time.FixedZone("", 0))),
 					Color:         String("2"),
 					AutoEstimates: Bool(false),
 					HexColor:      String("#d94182"),
@@ -398,9 +398,10 @@ func TestUpdateProject(t *testing.T) {
 				project: nil,
 				err: &errorResponse{
 					statusCode: 404,
-					message:    "",
+					message:    "\"\"\n",
 					header: http.Header{
-						"Content-Length": []string{"0"},
+						"Content-Type":   []string{"application/json; charset=utf-8"},
+						"Content-Length": []string{"3"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
 				},
@@ -409,7 +410,8 @@ func TestUpdateProject(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockServer := newMockServer(t, projectsPath, tt.statusCode, tt.testdataFile)
+			apiSpecificPath := path.Join(projectsPath, strconv.Itoa(tt.in.id))
+			mockServer := newMockServer(t, apiSpecificPath, tt.statusCode, tt.testdataFile)
 			defer mockServer.Close()
 
 			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))

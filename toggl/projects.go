@@ -61,5 +61,12 @@ func (c *Client) GetProject(ctx context.Context, id int) (*Project, error) {
 
 // UpdateProject updates the project.
 func (c *Client) UpdateProject(ctx context.Context, id int, project *Project) (*Project, error) {
-	return nil, nil
+	apiSpecificPath := path.Join(projectsPath, strconv.Itoa(id))
+	request := &projectRequest{Project: *project}
+	response := new(projectResponse)
+
+	if err := c.httpPut(ctx, apiSpecificPath, request, response); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return &response.Project, nil
 }
