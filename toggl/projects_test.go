@@ -63,10 +63,7 @@ func TestCreateProject(t *testing.T) {
 			in: struct {
 				project *Project
 			}{
-				project: &Project{
-					Name: String("An awesome project"),
-					WID:  Int(2345678),
-				},
+				project: &Project{},
 			},
 			out: struct {
 				project *Project
@@ -75,9 +72,9 @@ func TestCreateProject(t *testing.T) {
 				project: nil,
 				err: &errorResponse{
 					statusCode: 400,
-					message:    "\"Project can't be blank\"\n",
+					message:    "\"Project name must be present\"\n",
 					header: http.Header{
-						"Content-Length": []string{"25"},
+						"Content-Length": []string{"31"},
 						"Content-Type":   []string{"application/json; charset=utf-8"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
