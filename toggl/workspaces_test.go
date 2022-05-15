@@ -13,18 +13,25 @@ import (
 
 func TestGetWorkspaces(t *testing.T) {
 	tests := []struct {
-		name         string
-		statusCode   int
-		testdataFile string
-		out          struct {
+		name string
+		in   struct {
+			statusCode   int
+			testdataFile string
+		}
+		out struct {
 			workspaces []*Workspace
 			err        error
 		}
 	}{
 		{
-			name:         "200 OK",
-			statusCode:   http.StatusOK,
-			testdataFile: "testdata/workspaces/get_workspaces_200_ok.json",
+			name: "200 OK",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusOK,
+				testdataFile: "testdata/workspaces/get_workspaces_200_ok.json",
+			},
 			out: struct {
 				workspaces []*Workspace
 				err        error
@@ -73,9 +80,14 @@ func TestGetWorkspaces(t *testing.T) {
 			},
 		},
 		{
-			name:         "403 Forbidden",
-			statusCode:   http.StatusForbidden,
-			testdataFile: "testdata/workspaces/get_workspaces_403_forbidden",
+			name: "403 Forbidden",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusForbidden,
+				testdataFile: "testdata/workspaces/get_workspaces_403_forbidden",
+			},
 			out: struct {
 				workspaces []*Workspace
 				err        error
@@ -94,7 +106,7 @@ func TestGetWorkspaces(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockServer := newMockServer(t, workspacesPath, tt.statusCode, tt.testdataFile)
+			mockServer := newMockServer(t, workspacesPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
 			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
@@ -120,11 +132,10 @@ func TestGetWorkspaces(t *testing.T) {
 
 func TestGetWorkspace(t *testing.T) {
 	tests := []struct {
-		name         string
-		statusCode   int
-		testdataFile string
-		in           struct {
-			id int
+		name string
+		in   struct {
+			statusCode   int
+			testdataFile string
 		}
 		out struct {
 			workspace *Workspace
@@ -132,13 +143,13 @@ func TestGetWorkspace(t *testing.T) {
 		}
 	}{
 		{
-			name:         "200 OK",
-			statusCode:   http.StatusOK,
-			testdataFile: "testdata/workspaces/get_workspace_200_ok.json",
+			name: "200 OK",
 			in: struct {
-				id int
+				statusCode   int
+				testdataFile string
 			}{
-				id: 3134975,
+				statusCode:   http.StatusOK,
+				testdataFile: "testdata/workspaces/get_workspace_200_ok.json",
 			},
 			out: struct {
 				workspace *Workspace
@@ -168,13 +179,13 @@ func TestGetWorkspace(t *testing.T) {
 			},
 		},
 		{
-			name:         "403 Forbidden",
-			statusCode:   http.StatusForbidden,
-			testdataFile: "testdata/workspaces/get_workspace_403_forbidden",
+			name: "403 Forbidden",
 			in: struct {
-				id int
+				statusCode   int
+				testdataFile string
 			}{
-				id: 3134975,
+				statusCode:   http.StatusForbidden,
+				testdataFile: "testdata/workspaces/get_workspace_403_forbidden",
 			},
 			out: struct {
 				workspace *Workspace
@@ -192,13 +203,13 @@ func TestGetWorkspace(t *testing.T) {
 			},
 		},
 		{
-			name:         "404 Not Found",
-			statusCode:   http.StatusNotFound,
-			testdataFile: "testdata/workspaces/get_workspace_404_not_found.json",
+			name: "404 Not Found",
 			in: struct {
-				id int
+				statusCode   int
+				testdataFile string
 			}{
-				id: 1234567,
+				statusCode:   http.StatusNotFound,
+				testdataFile: "testdata/workspaces/get_workspace_404_not_found.json",
 			},
 			out: struct {
 				workspace *Workspace
@@ -219,12 +230,13 @@ func TestGetWorkspace(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(tt.in.id))
-			mockServer := newMockServer(t, apiSpecificPath, tt.statusCode, tt.testdataFile)
+			workspaceID := 3134975
+			apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID))
+			mockServer := newMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
 			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
-			workspace, err := client.GetWorkspace(context.Background(), tt.in.id)
+			workspace, err := client.GetWorkspace(context.Background(), workspaceID)
 
 			if !reflect.DeepEqual(workspace, tt.out.workspace) {
 				errorf(t, workspace, tt.out.workspace)
@@ -246,11 +258,10 @@ func TestGetWorkspace(t *testing.T) {
 
 func TestGetWorkspaceUsers(t *testing.T) {
 	tests := []struct {
-		name         string
-		statusCode   int
-		testdataFile string
-		in           struct {
-			id int
+		name string
+		in   struct {
+			statusCode   int
+			testdataFile string
 		}
 		out struct {
 			users []*User
@@ -258,13 +269,13 @@ func TestGetWorkspaceUsers(t *testing.T) {
 		}
 	}{
 		{
-			name:         "200 OK",
-			statusCode:   http.StatusOK,
-			testdataFile: "testdata/workspaces/get_workspace_users_200_ok.json",
+			name: "200 OK",
 			in: struct {
-				id int
+				statusCode   int
+				testdataFile string
 			}{
-				id: 777,
+				statusCode:   http.StatusOK,
+				testdataFile: "testdata/workspaces/get_workspace_users_200_ok.json",
 			},
 			out: struct {
 				users []*User
@@ -335,13 +346,13 @@ func TestGetWorkspaceUsers(t *testing.T) {
 			},
 		},
 		{
-			name:         "400 Bad Request",
-			statusCode:   http.StatusBadRequest,
-			testdataFile: "testdata/workspaces/get_workspace_users_400_bad_request.json",
+			name: "400 Bad Request",
 			in: struct {
-				id int
+				statusCode   int
+				testdataFile string
 			}{
-				id: 777,
+				statusCode:   http.StatusBadRequest,
+				testdataFile: "testdata/workspaces/get_workspace_users_400_bad_request.json",
 			},
 			out: struct {
 				users []*User
@@ -360,13 +371,13 @@ func TestGetWorkspaceUsers(t *testing.T) {
 			},
 		},
 		{
-			name:         "403 Forbidden",
-			statusCode:   http.StatusForbidden,
-			testdataFile: "testdata/workspaces/get_workspace_users_403_forbidden",
+			name: "403 Forbidden",
 			in: struct {
-				id int
+				statusCode   int
+				testdataFile string
 			}{
-				id: 777,
+				statusCode:   http.StatusForbidden,
+				testdataFile: "testdata/workspaces/get_workspace_users_403_forbidden",
 			},
 			out: struct {
 				users []*User
@@ -386,12 +397,13 @@ func TestGetWorkspaceUsers(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(tt.in.id), "users")
-			mockServer := newMockServer(t, apiSpecificPath, tt.statusCode, tt.testdataFile)
+			workspaceID := 777
+			apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "users")
+			mockServer := newMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
 			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
-			users, err := client.GetWorkspaceUsers(context.Background(), tt.in.id)
+			users, err := client.GetWorkspaceUsers(context.Background(), workspaceID)
 
 			if !reflect.DeepEqual(users, tt.out.users) {
 				errorf(t, users, tt.out.users)
@@ -413,11 +425,10 @@ func TestGetWorkspaceUsers(t *testing.T) {
 
 func TestGetWorkspaceProjects(t *testing.T) {
 	tests := []struct {
-		name         string
-		statusCode   int
-		testdataFile string
-		in           struct {
-			id int
+		name string
+		in   struct {
+			statusCode   int
+			testdataFile string
 		}
 		out struct {
 			projects []*Project
@@ -425,13 +436,13 @@ func TestGetWorkspaceProjects(t *testing.T) {
 		}
 	}{
 		{
-			name:         "200 OK",
-			statusCode:   http.StatusOK,
-			testdataFile: "testdata/workspaces/get_workspace_projects_200_ok.json",
+			name: "200 OK",
 			in: struct {
-				id int
+				statusCode   int
+				testdataFile string
 			}{
-				id: 777,
+				statusCode:   http.StatusOK,
+				testdataFile: "testdata/workspaces/get_workspace_projects_200_ok.json",
 			},
 			out: struct {
 				projects []*Project
@@ -471,13 +482,13 @@ func TestGetWorkspaceProjects(t *testing.T) {
 			},
 		},
 		{
-			name:         "400 Bad Request",
-			statusCode:   http.StatusBadRequest,
-			testdataFile: "testdata/workspaces/get_workspace_projects_400_bad_request.json",
+			name: "400 Bad Request",
 			in: struct {
-				id int
+				statusCode   int
+				testdataFile string
 			}{
-				id: 777,
+				statusCode:   http.StatusBadRequest,
+				testdataFile: "testdata/workspaces/get_workspace_projects_400_bad_request.json",
 			},
 			out: struct {
 				projects []*Project
@@ -496,13 +507,13 @@ func TestGetWorkspaceProjects(t *testing.T) {
 			},
 		},
 		{
-			name:         "403 Forbidden",
-			statusCode:   http.StatusForbidden,
-			testdataFile: "testdata/workspaces/get_workspace_projects_403_forbidden",
+			name: "403 Forbidden",
 			in: struct {
-				id int
+				statusCode   int
+				testdataFile string
 			}{
-				id: 777,
+				statusCode:   http.StatusForbidden,
+				testdataFile: "testdata/workspaces/get_workspace_projects_403_forbidden",
 			},
 			out: struct {
 				projects []*Project
@@ -522,12 +533,13 @@ func TestGetWorkspaceProjects(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(tt.in.id), "projects")
-			mockServer := newMockServer(t, apiSpecificPath, tt.statusCode, tt.testdataFile)
+			workspaceID := 4567890
+			apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "projects")
+			mockServer := newMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
 			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
-			projects, err := client.GetWorkspaceProjects(context.Background(), tt.in.id)
+			projects, err := client.GetWorkspaceProjects(context.Background(), workspaceID)
 
 			if !reflect.DeepEqual(projects, tt.out.projects) {
 				errorf(t, projects, tt.out.projects)
@@ -582,12 +594,10 @@ func TestGetworkspaceProjectsRequestParameters(t *testing.T) {
 
 func TestUpdateWorkspace(t *testing.T) {
 	tests := []struct {
-		name         string
-		statusCode   int
-		testdataFile string
-		in           struct {
-			id        int
-			workspace *Workspace
+		name string
+		in   struct {
+			statusCode   int
+			testdataFile string
 		}
 		out struct {
 			workspace *Workspace
@@ -595,17 +605,13 @@ func TestUpdateWorkspace(t *testing.T) {
 		}
 	}{
 		{
-			name:         "200 OK",
-			statusCode:   http.StatusOK,
-			testdataFile: "testdata/workspaces/update_200_ok.json",
+			name: "200 OK",
 			in: struct {
-				id        int
-				workspace *Workspace
+				statusCode   int
+				testdataFile string
 			}{
-				id: 3134975,
-				workspace: &Workspace{
-					Name: String("John's ws"),
-				},
+				statusCode:   http.StatusOK,
+				testdataFile: "testdata/workspaces/update_200_ok.json",
 			},
 			out: struct {
 				workspace *Workspace
@@ -634,17 +640,13 @@ func TestUpdateWorkspace(t *testing.T) {
 			},
 		},
 		{
-			name:         "400 Bad Request",
-			statusCode:   http.StatusBadRequest,
-			testdataFile: "testdata/workspaces/update_400_bad_request.json",
+			name: "400 Bad Request",
 			in: struct {
-				id        int
-				workspace *Workspace
+				statusCode   int
+				testdataFile string
 			}{
-				id: 3134975,
-				workspace: &Workspace{
-					Name: String(""),
-				},
+				statusCode:   http.StatusBadRequest,
+				testdataFile: "testdata/workspaces/update_400_bad_request.json",
 			},
 			out: struct {
 				workspace *Workspace
@@ -663,17 +665,13 @@ func TestUpdateWorkspace(t *testing.T) {
 			},
 		},
 		{
-			name:         "403 Forbidden",
-			statusCode:   http.StatusForbidden,
-			testdataFile: "testdata/workspaces/update_403_forbidden",
+			name: "403 Forbidden",
 			in: struct {
-				id        int
-				workspace *Workspace
+				statusCode   int
+				testdataFile string
 			}{
-				id: 3134975,
-				workspace: &Workspace{
-					Name: String("John's ws"),
-				},
+				statusCode:   http.StatusForbidden,
+				testdataFile: "testdata/workspaces/update_403_forbidden",
 			},
 			out: struct {
 				workspace *Workspace
@@ -693,12 +691,16 @@ func TestUpdateWorkspace(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(tt.in.id))
-			mockServer := newMockServer(t, apiSpecificPath, tt.statusCode, tt.testdataFile)
+			workspaceID := 3134975
+			apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID))
+			mockServer := newMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
 			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
-			workspace, err := client.UpdateWorkspace(context.Background(), tt.in.id, tt.in.workspace)
+			workspace := &Workspace{
+				Name: String("John's ws"),
+			}
+			workspace, err := client.UpdateWorkspace(context.Background(), workspaceID, workspace)
 
 			if !reflect.DeepEqual(workspace, tt.out.workspace) {
 				errorf(t, workspace, tt.out.workspace)

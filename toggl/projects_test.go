@@ -13,11 +13,10 @@ import (
 
 func TestCreateProject(t *testing.T) {
 	tests := []struct {
-		name         string
-		statusCode   int
-		testdataFile string
-		in           struct {
-			project *Project
+		name string
+		in   struct {
+			statusCode   int
+			testdataFile string
 		}
 		out struct {
 			project *Project
@@ -25,16 +24,13 @@ func TestCreateProject(t *testing.T) {
 		}
 	}{
 		{
-			name:         "200 OK",
-			statusCode:   http.StatusOK,
-			testdataFile: "testdata/projects/create_200_ok.json",
+			name: "200 OK",
 			in: struct {
-				project *Project
+				statusCode   int
+				testdataFile string
 			}{
-				project: &Project{
-					WID:  Int(2345678),
-					Name: String("An awesome project"),
-				},
+				statusCode:   http.StatusOK,
+				testdataFile: "testdata/projects/create_200_ok.json",
 			},
 			out: struct {
 				project *Project
@@ -57,13 +53,13 @@ func TestCreateProject(t *testing.T) {
 			},
 		},
 		{
-			name:         "400 Bad Request",
-			statusCode:   http.StatusBadRequest,
-			testdataFile: "testdata/projects/create_400_bad_request.json",
+			name: "400 Bad Request",
 			in: struct {
-				project *Project
+				statusCode   int
+				testdataFile string
 			}{
-				project: &Project{},
+				statusCode:   http.StatusBadRequest,
+				testdataFile: "testdata/projects/create_400_bad_request.json",
 			},
 			out: struct {
 				project *Project
@@ -82,16 +78,13 @@ func TestCreateProject(t *testing.T) {
 			},
 		},
 		{
-			name:         "403 Forbidden",
-			statusCode:   http.StatusForbidden,
-			testdataFile: "testdata/projects/create_403_forbidden",
+			name: "403 Forbidden",
 			in: struct {
-				project *Project
+				statusCode   int
+				testdataFile string
 			}{
-				project: &Project{
-					Name: String("An awesome project"),
-					WID:  Int(2345678),
-				},
+				statusCode:   http.StatusForbidden,
+				testdataFile: "testdata/projects/create_403_forbidden",
 			},
 			out: struct {
 				project *Project
@@ -111,11 +104,15 @@ func TestCreateProject(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockServer := newMockServer(t, projectsPath, tt.statusCode, tt.testdataFile)
+			mockServer := newMockServer(t, projectsPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
 			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
-			project, err := client.CreateProject(context.Background(), tt.in.project)
+			project := &Project{
+				WID:  Int(2345678),
+				Name: String("An awesome project"),
+			}
+			project, err := client.CreateProject(context.Background(), project)
 
 			if !reflect.DeepEqual(project, tt.out.project) {
 				errorf(t, project, tt.out.project)
@@ -180,11 +177,10 @@ func TestCreateProjectRequestBody(t *testing.T) {
 
 func TestGetProject(t *testing.T) {
 	tests := []struct {
-		name         string
-		statusCode   int
-		testdataFile string
-		in           struct {
-			id int
+		name string
+		in   struct {
+			statusCode   int
+			testdataFile string
 		}
 		out struct {
 			project *Project
@@ -192,13 +188,13 @@ func TestGetProject(t *testing.T) {
 		}
 	}{
 		{
-			name:         "200 OK",
-			statusCode:   http.StatusOK,
-			testdataFile: "testdata/projects/get_200_ok.json",
+			name: "200 OK",
 			in: struct {
-				id int
+				statusCode   int
+				testdataFile string
 			}{
-				id: 123456789,
+				statusCode:   http.StatusOK,
+				testdataFile: "testdata/projects/get_200_ok.json",
 			},
 			out: struct {
 				project *Project
@@ -224,13 +220,13 @@ func TestGetProject(t *testing.T) {
 			},
 		},
 		{
-			name:         "400 Bad Request",
-			statusCode:   http.StatusBadRequest,
-			testdataFile: "testdata/projects/get_400_bad_request.json",
+			name: "400 Bad Request",
 			in: struct {
-				id int
+				statusCode   int
+				testdataFile string
 			}{
-				id: 123456789,
+				statusCode:   http.StatusBadRequest,
+				testdataFile: "testdata/projects/get_400_bad_request.json",
 			},
 			out: struct {
 				project *Project
@@ -249,13 +245,13 @@ func TestGetProject(t *testing.T) {
 			},
 		},
 		{
-			name:         "404 Not Found",
-			statusCode:   http.StatusNotFound,
-			testdataFile: "testdata/projects/get_404_not_found.json",
+			name: "404 Not Found",
 			in: struct {
-				id int
+				statusCode   int
+				testdataFile string
 			}{
-				id: 123456789,
+				statusCode:   http.StatusNotFound,
+				testdataFile: "testdata/projects/get_404_not_found.json",
 			},
 			out: struct {
 				project *Project
@@ -276,15 +272,16 @@ func TestGetProject(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			apiSpecificPath := path.Join(projectsPath, strconv.Itoa(tt.in.id))
-			mockServer := newMockServer(t, apiSpecificPath, tt.statusCode, tt.testdataFile)
+			projectID := 123456789
+			apiSpecificPath := path.Join(projectsPath, strconv.Itoa(projectID))
+			mockServer := newMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
 			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
-			workspaces, err := client.GetProject(context.Background(), tt.in.id)
+			project, err := client.GetProject(context.Background(), projectID)
 
-			if !reflect.DeepEqual(workspaces, tt.out.project) {
-				errorf(t, workspaces, tt.out.project)
+			if !reflect.DeepEqual(project, tt.out.project) {
+				errorf(t, project, tt.out.project)
 			}
 
 			errorResp := new(errorResponse)
@@ -303,12 +300,10 @@ func TestGetProject(t *testing.T) {
 
 func TestUpdateProject(t *testing.T) {
 	tests := []struct {
-		name         string
-		statusCode   int
-		testdataFile string
-		in           struct {
-			id      int
-			project *Project
+		name string
+		in   struct {
+			statusCode   int
+			testdataFile string
 		}
 		out struct {
 			project *Project
@@ -316,18 +311,13 @@ func TestUpdateProject(t *testing.T) {
 		}
 	}{
 		{
-			name:         "200 OK",
-			statusCode:   http.StatusOK,
-			testdataFile: "testdata/projects/update_200_ok.json",
+			name: "200 OK",
 			in: struct {
-				id      int
-				project *Project
+				statusCode   int
+				testdataFile string
 			}{
-				id: 123456789,
-				project: &Project{
-					WID:  Int(1234567),
-					Name: String("Changed the name"),
-				},
+				statusCode:   http.StatusOK,
+				testdataFile: "testdata/projects/update_200_ok.json",
 			},
 			out: struct {
 				project *Project
@@ -351,15 +341,13 @@ func TestUpdateProject(t *testing.T) {
 			},
 		},
 		{
-			name:         "400 Bad Request",
-			statusCode:   http.StatusBadRequest,
-			testdataFile: "testdata/projects/update_400_bad_request.json",
+			name: "400 Bad Request",
 			in: struct {
-				id      int
-				project *Project
+				statusCode   int
+				testdataFile string
 			}{
-				id:      123456789,
-				project: &Project{},
+				statusCode:   http.StatusBadRequest,
+				testdataFile: "testdata/projects/update_400_bad_request.json",
 			},
 			out: struct {
 				project *Project
@@ -378,18 +366,13 @@ func TestUpdateProject(t *testing.T) {
 			},
 		},
 		{
-			name:         "404 Not Found",
-			statusCode:   http.StatusNotFound,
-			testdataFile: "testdata/projects/update_404_not_found.json",
+			name: "404 Not Found",
 			in: struct {
-				id      int
-				project *Project
+				statusCode   int
+				testdataFile string
 			}{
-				id: 123456789,
-				project: &Project{
-					Name: String("Changed the name"),
-					WID:  Int(1234567),
-				},
+				statusCode:   http.StatusNotFound,
+				testdataFile: "testdata/projects/update_404_not_found.json",
 			},
 			out: struct {
 				project *Project
@@ -410,12 +393,17 @@ func TestUpdateProject(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			apiSpecificPath := path.Join(projectsPath, strconv.Itoa(tt.in.id))
-			mockServer := newMockServer(t, apiSpecificPath, tt.statusCode, tt.testdataFile)
+			projectID := 123456789
+			apiSpecificPath := path.Join(projectsPath, strconv.Itoa(projectID))
+			mockServer := newMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
 			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
-			project, err := client.UpdateProject(context.Background(), tt.in.id, tt.in.project)
+			project := &Project{
+				WID:  Int(1234567),
+				Name: String("Changed the name"),
+			}
+			project, err := client.UpdateProject(context.Background(), projectID, project)
 
 			if !reflect.DeepEqual(project, tt.out.project) {
 				errorf(t, project, tt.out.project)
