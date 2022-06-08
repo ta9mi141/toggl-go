@@ -70,3 +70,8 @@ func (c *Client) UpdateProject(ctx context.Context, id int, project *Project) (*
 	}
 	return &response.Project, nil
 }
+
+// DeleteProject deletes the project.
+func (c *Client) DeleteProject(ctx context.Context, id int) error {
+	return nil
+}

@@ -466,3 +466,85 @@ func TestUpdateProjectRequestBody(t *testing.T) {
 		})
 	}
 }
+
+func TestDeleteProject(t *testing.T) {
+	tests := []struct {
+		name string
+		in   struct {
+			statusCode   int
+			testdataFile string
+		}
+		out error
+	}{
+		{
+			name: "200 OK",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusOK,
+				testdataFile: "testdata/projects/delete_200_ok.json",
+			},
+			out: nil,
+		},
+		{
+			name: "400 Bad Request",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusBadRequest,
+				testdataFile: "testdata/projects/delete_400_bad_request.json",
+			},
+			out: &errorResponse{
+				statusCode: 400,
+				message:    "\"project_id must be a positive integer\"\n",
+				header: http.Header{
+					"Content-Length": []string{"40"},
+					"Content-Type":   []string{"application/json; charset=utf-8"},
+					"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+				},
+			},
+		},
+		{
+			name: "403 Forbidden",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusForbidden,
+				testdataFile: "testdata/projects/delete_403_forbidden",
+			},
+			out: &errorResponse{
+				statusCode: 403,
+				message:    "",
+				header: http.Header{
+					"Content-Length": []string{"0"},
+					"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			projectID := 123456789
+			apiSpecificPath := path.Join(projectsPath, strconv.Itoa(projectID))
+			mockServer := newMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
+			defer mockServer.Close()
+
+			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			err := client.DeleteProject(context.Background(), projectID)
+
+			errorResp := new(errorResponse)
+			if errors.As(err, &errorResp) {
+				if !reflect.DeepEqual(errorResp, tt.out) {
+					errorf(t, errorResp, tt.out)
+				}
+			} else {
+				if !reflect.DeepEqual(err, tt.out) {
+					errorf(t, err, tt.out)
+				}
+			}
+		})
+	}
+}
