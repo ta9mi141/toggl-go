@@ -113,6 +113,14 @@ func (c *Client) httpPut(ctx context.Context, apiSpecificPath string, reqBody, r
 	return c.do(req, respBody)
 }
 
+func (c *Client) httpDelete(ctx context.Context, apiSpecificPath string) error {
+	req, err := c.newRequest(ctx, http.MethodDelete, apiSpecificPath, nil)
+	if err != nil {
+		return errors.Wrap(err, "")
+	}
+	return c.do(req, nil)
+}
+
 func (c *Client) newRequest(ctx context.Context, httpMethod, apiSpecificPath string, reqBody interface{}) (*http.Request, error) {
 	url := *c.baseURL
 	url.Path = path.Join(url.Path, apiSpecificPath)
@@ -149,9 +157,12 @@ func (c *Client) do(req *http.Request, respBody interface{}) error {
 		return errors.Wrap(err, "")
 	}
 
-	err = decodeJSON(resp, respBody)
-	if err != nil {
-		return errors.Wrap(err, "")
+	switch req.Method {
+	case http.MethodGet, http.MethodPost, http.MethodPut:
+		err = decodeJSON(resp, respBody)
+		if err != nil {
+			return errors.Wrap(err, "")
+		}
 	}
 
 	return nil

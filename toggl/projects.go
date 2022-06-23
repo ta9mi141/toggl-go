@@ -73,5 +73,10 @@ func (c *Client) UpdateProject(ctx context.Context, id int, project *Project) (*
 
 // DeleteProject deletes the project.
 func (c *Client) DeleteProject(ctx context.Context, id int) error {
+	apiSpecificPath := path.Join(projectsPath, strconv.Itoa(id))
+
+	if err := c.httpDelete(ctx, apiSpecificPath); err != nil {
+		return errors.Wrap(err, "")
+	}
 	return nil
 }
