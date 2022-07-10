@@ -3,6 +3,8 @@ package track
 import (
 	"context"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 const (
@@ -33,5 +35,9 @@ type Me struct {
 
 // GetMe returns details for the current user.
 func (c *Client) GetMe(ctx context.Context) (*Me, error) {
-	return nil, nil
+	me := new(Me)
+	if err := c.httpGet(ctx, mePath, me); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return me, nil
 }
