@@ -1,11 +1,11 @@
 toggl-go
 ====
 
-The unofficial Go client for [Toggl API](https://github.com/toggl/toggl_api_docs)
+The unofficial Go client for [Toggl Track](https://developers.track.toggl.com/)
 
 ## GoDoc
 
-* https://pkg.go.dev/github.com/ta9mi141/toggl-go/toggl
+* https://pkg.go.dev/github.com/ta9mi141/toggl-go/track
 
 ## Author
 
