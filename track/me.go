@@ -56,5 +56,9 @@ type PutMeRequestBody struct {
 
 // PutMe updates details for the current user.
 func (c *Client) PutMe(ctx context.Context, reqBody *PutMeRequestBody) (*Me, error) {
-	return nil, nil
+	me := new(Me)
+	if err := c.httpPut(ctx, mePath, reqBody, me); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return me, nil
 }

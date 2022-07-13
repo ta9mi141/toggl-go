@@ -7,8 +7,10 @@ https://developers.track.toggl.com/docs/
 package track
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -83,11 +85,29 @@ func (c *Client) httpGet(ctx context.Context, apiSpecificPath string, respBody i
 	return c.do(req, respBody)
 }
 
+func (c *Client) httpPut(ctx context.Context, apiSpecificPath string, reqBody, respBody interface{}) error {
+	req, err := c.newRequest(ctx, http.MethodPut, apiSpecificPath, reqBody)
+	if err != nil {
+		return errors.Wrap(err, "")
+	}
+	return c.do(req, respBody)
+}
+
 func (c *Client) newRequest(ctx context.Context, httpMethod, apiSpecificPath string, reqBody interface{}) (*http.Request, error) {
 	url := *c.baseURL
 	url.Path = path.Join(url.Path, apiSpecificPath)
 
-	req, err := http.NewRequestWithContext(ctx, httpMethod, url.String(), nil)
+	requestBody := io.Reader(nil)
+	switch httpMethod {
+	case http.MethodPut:
+		b, err := json.Marshal(reqBody)
+		if err != nil {
+			return nil, errors.Wrap(err, "")
+		}
+		requestBody = bytes.NewReader(b)
+	}
+
+	req, err := http.NewRequestWithContext(ctx, httpMethod, url.String(), requestBody)
 	if err != nil {
 		return nil, errors.Wrap(err, "")
 	}
@@ -110,7 +130,7 @@ func (c *Client) do(req *http.Request, respBody interface{}) error {
 	}
 
 	switch req.Method {
-	case http.MethodGet:
+	case http.MethodGet, http.MethodPut:
 		err = decodeJSON(resp, respBody)
 		if err != nil {
 			return errors.Wrap(err, "")

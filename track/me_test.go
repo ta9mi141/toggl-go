@@ -161,7 +161,7 @@ func TestPutMe(t *testing.T) {
 					Fullname:           String("Example Toggl"),
 					Timezone:           String("Asia/Tokyo"),
 					DefaultWorkspaceID: Int(1234567),
-					BeginningOfWeek:    Int(1),
+					BeginningOfWeek:    Int(0),
 					ImageURL:           String("https://assets.track.toggl.com/images/profile.png"),
 					CreatedAt:          Time(time.Date(2012, time.March, 4, 1, 23, 45, 210809000, time.UTC)),
 					UpdatedAt:          Time(time.Date(2012, time.May, 6, 2, 34, 56, 346231000, time.UTC)),
@@ -190,6 +190,7 @@ func TestPutMe(t *testing.T) {
 					message:    "\"Invalid beginning_of_week\"\n",
 					header: http.Header{
 						"Content-Length": []string{"28"},
+						"Content-Type":   []string{"application/json; charset=utf-8"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
 				},
@@ -294,11 +295,11 @@ func TestPutMeRequestBody(t *testing.T) {
 		{
 			name: "int and string",
 			in: &PutMeRequestBody{
-				DefaultWorkspaceID: Int(1234567),
 				CurrentPassword:    String("vulnerable password"),
+				DefaultWorkspaceID: Int(1234567),
 				Password:           String("secure password"),
 			},
-			out: "{\"default_workspace_id\":1234567,\"current_password\":\"vulnerable password\",\"password\":\"secure password\"}",
+			out: "{\"current_password\":\"vulnerable password\",\"default_workspace_id\":1234567,\"password\":\"secure password\"}",
 		},
 	}
 	for _, tt := range tests {
