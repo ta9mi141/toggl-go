@@ -50,6 +50,20 @@ func newMockServer(t *testing.T, apiSpecificPath string, statusCode int, testdat
 	return mockServer
 }
 
+func newMockServerToAssertRequestBody(t *testing.T, expectedRequestBody string) *httptest.Server {
+	// The caller should call Close to shut down the server.
+	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		rawRequestBody, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			t.Fatal(err.Error())
+		}
+		actualRequestBody := string(rawRequestBody)
+		if actualRequestBody != expectedRequestBody {
+			errorf(t, actualRequestBody, expectedRequestBody)
+		}
+	}))
+}
+
 // withBaseURL makes client testable by configurable URL.
 func withBaseURL(baseURL string) Option {
 	return baseURLOption(baseURL)

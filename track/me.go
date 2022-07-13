@@ -41,3 +41,20 @@ func (c *Client) GetMe(ctx context.Context) (*Me, error) {
 	}
 	return me, nil
 }
+
+// PutMeRequestBody represents a request body of PutMe.
+type PutMeRequestBody struct {
+	BeginningOfWeek    *int    `json:"beginning_of_week,omitempty"`
+	CountryID          *int    `json:"country_id,omitempty"`
+	CurrentPassword    *string `json:"current_password,omitempty"`
+	DefaultWorkspaceID *int    `json:"default_workspace_id,omitempty"`
+	Email              *string `json:"email,omitempty"`
+	Fullname           *string `json:"fullname,omitempty"`
+	Password           *string `json:"password,omitempty"`
+	Timezone           *string `json:"timezone,omitempty"`
+}
+
+// PutMe updates details for the current user.
+func (c *Client) PutMe(ctx context.Context, reqBody *PutMeRequestBody) (*Me, error) {
+	return nil, nil
+}
