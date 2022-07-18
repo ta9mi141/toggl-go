@@ -11,7 +11,7 @@ const (
 	mePath string = "api/v9/me"
 )
 
-// Me represents properties of user.
+// Me represents properties of an user.
 // Some properties not listed in the documentation are also included.
 type Me struct {
 	ID                 *int       `json:"id,omitempty"`
@@ -61,4 +61,9 @@ func (c *Client) PutMe(ctx context.Context, reqBody *PutMeRequestBody) (*Me, err
 		return nil, errors.Wrap(err, "")
 	}
 	return me, nil
+}
+
+// GetMyOrganizations gets all organizations a given user is part of.
+func (c *Client) GetMyOrganizations(ctx context.Context) ([]*Organization, error) {
+	return nil, nil
 }
