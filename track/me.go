@@ -2,6 +2,7 @@ package track
 
 import (
 	"context"
+	"path"
 	"time"
 
 	"github.com/pkg/errors"
@@ -65,5 +66,10 @@ func (c *Client) PutMe(ctx context.Context, reqBody *PutMeRequestBody) (*Me, err
 
 // GetMyOrganizations gets all organizations a given user is part of.
 func (c *Client) GetMyOrganizations(ctx context.Context) ([]*Organization, error) {
-	return nil, nil
+	var organizations []*Organization
+	apiSpecificPath := path.Join(mePath, "organizations")
+	if err := c.httpGet(ctx, apiSpecificPath, &organizations); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return organizations, nil
 }
