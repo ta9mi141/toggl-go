@@ -64,6 +64,17 @@ func newMockServerToAssertRequestBody(t *testing.T, expectedRequestBody string) 
 	}))
 }
 
+func newMockServerToAssertQueries(t *testing.T, expectedQueries string) *httptest.Server {
+	// The caller should call Close to shut down the server.
+	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		actualQueries := r.URL.Query().Encode()
+		if actualQueries != expectedQueries {
+			errorf(t, actualQueries, expectedQueries)
+		}
+	}))
+
+}
+
 // withBaseURL makes client testable by configurable URL.
 func withBaseURL(baseURL string) Option {
 	return baseURLOption(baseURL)

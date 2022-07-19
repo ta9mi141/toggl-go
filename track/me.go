@@ -73,3 +73,13 @@ func (c *Client) GetMyOrganizations(ctx context.Context) ([]*Organization, error
 	}
 	return organizations, nil
 }
+
+// GetProjectsQueries represents the additional parameters of GetProjects.
+type GetProjectsQueries struct {
+	IncludeArchived *string `json:"include_archived,omitempty"`
+}
+
+// GetProjects gets projects.
+func (c *Client) GetProjects(ctx context.Context, queries *GetProjectsQueries) ([]*Project, error) {
+	return nil, nil
+}
