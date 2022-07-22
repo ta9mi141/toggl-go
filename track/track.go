@@ -16,6 +16,7 @@ import (
 	"net/url"
 	"path"
 
+	"github.com/google/go-querystring/query"
 	"github.com/pkg/errors"
 )
 
@@ -76,8 +77,8 @@ func (a apiTokenOption) apply(c *Client) {
 	c.apiToken = string(a)
 }
 
-func (c *Client) httpGet(ctx context.Context, apiSpecificPath string, respBody interface{}) error {
-	req, err := c.newRequest(ctx, http.MethodGet, apiSpecificPath, nil)
+func (c *Client) httpGet(ctx context.Context, apiSpecificPath string, queries, respBody interface{}) error {
+	req, err := c.newRequest(ctx, http.MethodGet, apiSpecificPath, queries)
 	if err != nil {
 		return errors.Wrap(err, "")
 	}
@@ -90,21 +91,28 @@ func (c *Client) httpPut(ctx context.Context, apiSpecificPath string, reqBody, r
 	if err != nil {
 		return errors.Wrap(err, "")
 	}
+
 	return c.do(req, respBody)
 }
 
-func (c *Client) newRequest(ctx context.Context, httpMethod, apiSpecificPath string, reqBody interface{}) (*http.Request, error) {
+func (c *Client) newRequest(ctx context.Context, httpMethod, apiSpecificPath string, input interface{}) (*http.Request, error) {
 	url := *c.baseURL
 	url.Path = path.Join(url.Path, apiSpecificPath)
 
 	requestBody := io.Reader(nil)
 	switch httpMethod {
 	case http.MethodPut:
-		b, err := json.Marshal(reqBody)
+		b, err := json.Marshal(input)
 		if err != nil {
 			return nil, errors.Wrap(err, "")
 		}
 		requestBody = bytes.NewReader(b)
+	case http.MethodGet:
+		values, err := query.Values(input)
+		if err != nil {
+			return nil, errors.Wrap(err, "")
+		}
+		url.RawQuery = values.Encode()
 	}
 
 	req, err := http.NewRequestWithContext(ctx, httpMethod, url.String(), requestBody)

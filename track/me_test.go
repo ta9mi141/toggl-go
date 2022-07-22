@@ -668,7 +668,7 @@ func TestGetProjectsQueries(t *testing.T) {
 		{
 			name: "GetProjectsQueries is empty",
 			in:   &GetProjectsQueries{},
-			out:  "include_archived=",
+			out:  "",
 		},
 	}
 	for _, tt := range tests {

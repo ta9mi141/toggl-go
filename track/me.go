@@ -37,7 +37,7 @@ type Me struct {
 // GetMe returns details for the current user.
 func (c *Client) GetMe(ctx context.Context) (*Me, error) {
 	me := new(Me)
-	if err := c.httpGet(ctx, mePath, me); err != nil {
+	if err := c.httpGet(ctx, mePath, nil, me); err != nil {
 		return nil, errors.Wrap(err, "")
 	}
 	return me, nil
@@ -68,7 +68,7 @@ func (c *Client) PutMe(ctx context.Context, reqBody *PutMeRequestBody) (*Me, err
 func (c *Client) GetMyOrganizations(ctx context.Context) ([]*Organization, error) {
 	var organizations []*Organization
 	apiSpecificPath := path.Join(mePath, "organizations")
-	if err := c.httpGet(ctx, apiSpecificPath, &organizations); err != nil {
+	if err := c.httpGet(ctx, apiSpecificPath, nil, &organizations); err != nil {
 		return nil, errors.Wrap(err, "")
 	}
 	return organizations, nil
@@ -76,10 +76,15 @@ func (c *Client) GetMyOrganizations(ctx context.Context) ([]*Organization, error
 
 // GetProjectsQueries represents the additional parameters of GetProjects.
 type GetProjectsQueries struct {
-	IncludeArchived *string `json:"include_archived,omitempty"`
+	IncludeArchived *string `url:"include_archived,omitempty"`
 }
 
 // GetProjects gets projects.
 func (c *Client) GetProjects(ctx context.Context, queries *GetProjectsQueries) ([]*Project, error) {
-	return nil, nil
+	var projects []*Project
+	apiSpecificPath := path.Join(mePath, "projects")
+	if err := c.httpGet(ctx, apiSpecificPath, queries, &projects); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return projects, nil
 }
