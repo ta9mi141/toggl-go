@@ -31,8 +31,8 @@ type TimeEntry struct {
 	TID             *int       `json:"tid,omitempty"`
 }
 
-// GetTimeEntriesQueries represents the additional parameters of GetTimeEntries.
-type GetTimeEntriesQueries struct {
+// GetTimeEntriesQuery represents the additional parameters of GetTimeEntries.
+type GetTimeEntriesQuery struct {
 	Before    *string `url:"before,omitempty"`
 	Since     *int    `url:"since,omitempty"`
 	StartDate *string `url:"start_date,omitempty"`
@@ -40,10 +40,10 @@ type GetTimeEntriesQueries struct {
 }
 
 // GetTimeEntries returns latest time entries.
-func (c *Client) GetTimeEntries(ctx context.Context, queries *GetTimeEntriesQueries) ([]*TimeEntry, error) {
+func (c *Client) GetTimeEntries(ctx context.Context, query *GetTimeEntriesQuery) ([]*TimeEntry, error) {
 	var timeEntries []*TimeEntry
 	apiSpecificPath := path.Join(mePath, "time_entries")
-	if err := c.httpGet(ctx, apiSpecificPath, queries, &timeEntries); err != nil {
+	if err := c.httpGet(ctx, apiSpecificPath, query, &timeEntries); err != nil {
 		return nil, errors.Wrap(err, "")
 	}
 	return timeEntries, nil

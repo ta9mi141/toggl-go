@@ -74,31 +74,31 @@ func (c *Client) GetMyOrganizations(ctx context.Context) ([]*Organization, error
 	return organizations, nil
 }
 
-// GetProjectsQueries represents the additional parameters of GetProjects.
-type GetProjectsQueries struct {
+// GetProjectsQuery represents the additional parameters of GetProjects.
+type GetProjectsQuery struct {
 	IncludeArchived *string `url:"include_archived,omitempty"`
 }
 
 // GetProjects gets projects.
-func (c *Client) GetProjects(ctx context.Context, queries *GetProjectsQueries) ([]*Project, error) {
+func (c *Client) GetProjects(ctx context.Context, query *GetProjectsQuery) ([]*Project, error) {
 	var projects []*Project
 	apiSpecificPath := path.Join(mePath, "projects")
-	if err := c.httpGet(ctx, apiSpecificPath, queries, &projects); err != nil {
+	if err := c.httpGet(ctx, apiSpecificPath, query, &projects); err != nil {
 		return nil, errors.Wrap(err, "")
 	}
 	return projects, nil
 }
 
-// GetProjectsPaginatedQueries represents the additional parameters of GetProjectsPaginated.
-type GetProjectsPaginatedQueries struct {
+// GetProjectsPaginatedQuery represents the additional parameters of GetProjectsPaginated.
+type GetProjectsPaginatedQuery struct {
 	StartProjectID *int `url:"start_project_id,omitempty"`
 }
 
 // GetProjectsPaginated gets paginated projects.
-func (c *Client) GetProjectsPaginated(ctx context.Context, queries *GetProjectsPaginatedQueries) ([]*Project, error) {
+func (c *Client) GetProjectsPaginated(ctx context.Context, query *GetProjectsPaginatedQuery) ([]*Project, error) {
 	var projects []*Project
 	apiSpecificPath := path.Join(mePath, "projects/paginated")
-	if err := c.httpGet(ctx, apiSpecificPath, queries, &projects); err != nil {
+	if err := c.httpGet(ctx, apiSpecificPath, query, &projects); err != nil {
 		return nil, errors.Wrap(err, "")
 	}
 	return projects, nil

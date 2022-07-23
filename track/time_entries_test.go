@@ -181,44 +181,44 @@ func TestGetTimeEntries(t *testing.T) {
 	}
 }
 
-func TestGetTimeEntriesQueries(t *testing.T) {
+func TestGetTimeEntriesQuery(t *testing.T) {
 	tests := []struct {
 		name string
-		in   *GetTimeEntriesQueries
+		in   *GetTimeEntriesQuery
 		out  string
 	}{
 		{
-			name: "GetTimeEntriesQueries is nil",
+			name: "GetTimeEntriesQuery is nil",
 			in:   nil,
 			out:  "",
 		},
 		{
 			name: "before=2022-07-01",
-			in:   &GetTimeEntriesQueries{Before: String("2022-07-01")},
+			in:   &GetTimeEntriesQuery{Before: String("2022-07-01")},
 			out:  "before=2022-07-01",
 		},
 		{
 			name: "since=1656687597",
-			in:   &GetTimeEntriesQueries{Since: Int(1656687597)},
+			in:   &GetTimeEntriesQuery{Since: Int(1656687597)},
 			out:  "since=1656687597",
 		},
 		{
 			name: "end_date=2022-07-07&start_date=2022-07-01",
-			in: &GetTimeEntriesQueries{
+			in: &GetTimeEntriesQuery{
 				StartDate: String("2022-07-01"),
 				EndDate:   String("2022-07-07"),
 			},
 			out: "end_date=2022-07-07&start_date=2022-07-01",
 		},
 		{
-			name: "GetTimeEntriesQueries is empty",
-			in:   &GetTimeEntriesQueries{},
+			name: "GetTimeEntriesQuery is empty",
+			in:   &GetTimeEntriesQuery{},
 			out:  "",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockServer := newMockServerToAssertQueries(t, tt.out)
+			mockServer := newMockServerToAssertQuery(t, tt.out)
 			defer mockServer.Close()
 
 			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))

@@ -77,8 +77,8 @@ func (a apiTokenOption) apply(c *Client) {
 	c.apiToken = string(a)
 }
 
-func (c *Client) httpGet(ctx context.Context, apiSpecificPath string, queries, respBody interface{}) error {
-	req, err := c.newRequest(ctx, http.MethodGet, apiSpecificPath, queries)
+func (c *Client) httpGet(ctx context.Context, apiSpecificPath string, query, respBody interface{}) error {
+	req, err := c.newRequest(ctx, http.MethodGet, apiSpecificPath, query)
 	if err != nil {
 		return errors.Wrap(err, "")
 	}

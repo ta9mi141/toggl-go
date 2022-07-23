@@ -644,36 +644,36 @@ func TestGetProjects(t *testing.T) {
 	}
 }
 
-func TestGetProjectsQueries(t *testing.T) {
+func TestGetProjectsQuery(t *testing.T) {
 	tests := []struct {
 		name string
-		in   *GetProjectsQueries
+		in   *GetProjectsQuery
 		out  string
 	}{
 		{
-			name: "GetProjectsQueries is nil",
+			name: "GetProjectsQuery is nil",
 			in:   nil,
 			out:  "",
 		},
 		{
 			name: "include_archived=true",
-			in:   &GetProjectsQueries{IncludeArchived: String("true")},
+			in:   &GetProjectsQuery{IncludeArchived: String("true")},
 			out:  "include_archived=true",
 		},
 		{
 			name: "include_archived=false",
-			in:   &GetProjectsQueries{IncludeArchived: String("false")},
+			in:   &GetProjectsQuery{IncludeArchived: String("false")},
 			out:  "include_archived=false",
 		},
 		{
-			name: "GetProjectsQueries is empty",
-			in:   &GetProjectsQueries{},
+			name: "GetProjectsQuery is empty",
+			in:   &GetProjectsQuery{},
 			out:  "",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockServer := newMockServerToAssertQueries(t, tt.out)
+			mockServer := newMockServerToAssertQuery(t, tt.out)
 			defer mockServer.Close()
 
 			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
@@ -865,36 +865,36 @@ func TestGetProjectsPaginated(t *testing.T) {
 	}
 }
 
-func TestGetProjectsPaginatedQueries(t *testing.T) {
+func TestGetProjectsPaginatedQuery(t *testing.T) {
 	tests := []struct {
 		name string
-		in   *GetProjectsPaginatedQueries
+		in   *GetProjectsPaginatedQuery
 		out  string
 	}{
 		{
-			name: "GetProjectsPaginatedQueries is nil",
+			name: "GetProjectsPaginatedQuery is nil",
 			in:   nil,
 			out:  "",
 		},
 		{
 			name: "start_project_id=12345",
-			in:   &GetProjectsPaginatedQueries{StartProjectID: Int(12345)},
+			in:   &GetProjectsPaginatedQuery{StartProjectID: Int(12345)},
 			out:  "start_project_id=12345",
 		},
 		{
 			name: "start_project_id=0",
-			in:   &GetProjectsPaginatedQueries{StartProjectID: Int(0)},
+			in:   &GetProjectsPaginatedQuery{StartProjectID: Int(0)},
 			out:  "start_project_id=0",
 		},
 		{
-			name: "GetProjectsPaginatedQueries is empty",
-			in:   &GetProjectsPaginatedQueries{},
+			name: "GetProjectsPaginatedQuery is empty",
+			in:   &GetProjectsPaginatedQuery{},
 			out:  "",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockServer := newMockServerToAssertQueries(t, tt.out)
+			mockServer := newMockServerToAssertQuery(t, tt.out)
 			defer mockServer.Close()
 
 			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
