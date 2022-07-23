@@ -2,7 +2,7 @@ package track
 
 import "time"
 
-// Project represents properties of a project.
+// Project represents the properties of a project.
 type Project struct {
 	ID                  *int                 `json:"id,omitempty"`
 	WorkspaceID         *int                 `json:"workspace_id,omitempty"`

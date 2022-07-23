@@ -2,7 +2,7 @@ package track
 
 import "time"
 
-// Organization represents properties of an organization.
+// Organization represents the properties of an organization.
 type Organization struct {
 	ID                      *int       `json:"id,omitempty"`
 	Name                    *string    `json:"name,omitempty"`
