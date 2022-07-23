@@ -88,3 +88,13 @@ func (c *Client) GetProjects(ctx context.Context, queries *GetProjectsQueries) (
 	}
 	return projects, nil
 }
+
+// GetProjectsPaginatedQueries represents the additional parameters of GetProjectsPaginated.
+type GetProjectsPaginatedQueries struct {
+	StartProjectID *int `url:"start_project_id,omitempty"`
+}
+
+// GetProjectsPaginated gets paginated projects.
+func (c *Client) GetProjectsPaginated(ctx context.Context, queries *GetProjectsPaginatedQueries) ([]*Project, error) {
+	return nil, nil
+}

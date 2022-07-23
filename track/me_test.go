@@ -681,3 +681,224 @@ func TestGetProjectsQueries(t *testing.T) {
 		})
 	}
 }
+
+func TestGetProjectsPaginated(t *testing.T) {
+	tests := []struct {
+		name string
+		in   struct {
+			statusCode   int
+			testdataFile string
+		}
+		out struct {
+			projects []*Project
+			err      error
+		}
+	}{
+		{
+			name: "200 OK",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusOK,
+				testdataFile: "testdata/me/get_projects_paginated_200_ok.json",
+			},
+			out: struct {
+				projects []*Project
+				err      error
+			}{
+				projects: []*Project{
+					{
+						ID:                  Int(123456789),
+						WorkspaceID:         Int(1234567),
+						ClientID:            nil,
+						Name:                String("Project1"),
+						IsPrivate:           Bool(true),
+						Active:              Bool(true),
+						At:                  Time(time.Date(2013, time.March, 4, 5, 6, 7, 0, time.FixedZone("", 0))),
+						CreatedAt:           Time(time.Date(2012, time.March, 4, 5, 6, 7, 0, time.FixedZone("", 0))),
+						ServerDeletedAt:     nil,
+						Color:               String("#e36a00"),
+						Billable:            nil,
+						Template:            nil,
+						AutoEstimates:       nil,
+						EstimatedHours:      nil,
+						Rate:                nil,
+						RateLastUpdated:     nil,
+						Currency:            nil,
+						Recurring:           Bool(false),
+						RecurringParameters: nil,
+						CurrentPeriod:       nil,
+						FixedFee:            nil,
+						ActualHours:         Int(0),
+						WID:                 Int(1234567),
+						CID:                 nil,
+					},
+					{
+						ID:                  Int(987654321),
+						WorkspaceID:         Int(9876543),
+						ClientID:            nil,
+						Name:                String("Project2"),
+						IsPrivate:           Bool(true),
+						Active:              Bool(true),
+						At:                  Time(time.Date(2021, time.January, 23, 4, 56, 7, 0, time.FixedZone("", 0))),
+						CreatedAt:           Time(time.Date(2020, time.January, 23, 4, 56, 7, 0, time.FixedZone("", 0))),
+						ServerDeletedAt:     nil,
+						Color:               String("#c9806b"),
+						Billable:            nil,
+						Template:            nil,
+						AutoEstimates:       nil,
+						EstimatedHours:      nil,
+						Rate:                nil,
+						RateLastUpdated:     nil,
+						Currency:            nil,
+						Recurring:           Bool(false),
+						RecurringParameters: nil,
+						CurrentPeriod:       nil,
+						FixedFee:            nil,
+						ActualHours:         Int(0),
+						WID:                 Int(9876543),
+						CID:                 nil,
+					},
+				},
+				err: nil,
+			},
+		},
+		{
+			name: "400 Bad Request",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusBadRequest,
+				testdataFile: "testdata/me/get_projects_paginated_400_bad_request.json",
+			},
+			out: struct {
+				projects []*Project
+				err      error
+			}{
+				projects: nil,
+				err: &errorResponse{
+					statusCode: 400,
+					message:    "\"Invalid start_project_id\"\n",
+					header: http.Header{
+						"Content-Length": []string{"27"},
+						"Content-Type":   []string{"application/json; charset=utf-8"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
+			name: "403 Forbidden",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusForbidden,
+				testdataFile: "testdata/me/get_projects_paginated_403_forbidden",
+			},
+			out: struct {
+				projects []*Project
+				err      error
+			}{
+				projects: nil,
+				err: &errorResponse{
+					statusCode: 403,
+					message:    "",
+					header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
+			name: "500 Internal Server Error",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusInternalServerError,
+				testdataFile: "testdata/me/get_projects_paginated_500_internal_server_error",
+			},
+			out: struct {
+				projects []*Project
+				err      error
+			}{
+				projects: nil,
+				err: &errorResponse{
+					statusCode: 500,
+					message:    "",
+					header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiSpecificPath := path.Join(mePath, "projects/paginated")
+			mockServer := newMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
+			defer mockServer.Close()
+
+			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			projects, err := client.GetProjectsPaginated(context.Background(), nil)
+
+			if !reflect.DeepEqual(projects, tt.out.projects) {
+				errorf(t, projects, tt.out.projects)
+			}
+
+			errorResp := new(errorResponse)
+			if errors.As(err, &errorResp) {
+				if !reflect.DeepEqual(errorResp, tt.out.err) {
+					errorf(t, errorResp, tt.out.err)
+				}
+			} else {
+				if !reflect.DeepEqual(err, tt.out.err) {
+					errorf(t, err, tt.out.err)
+				}
+			}
+		})
+	}
+}
+
+func TestGetProjectsPaginatedQueries(t *testing.T) {
+	tests := []struct {
+		name string
+		in   *GetProjectsPaginatedQueries
+		out  string
+	}{
+		{
+			name: "GetProjectsPaginatedQueries is nil",
+			in:   nil,
+			out:  "",
+		},
+		{
+			name: "start_project_id=12345",
+			in:   &GetProjectsPaginatedQueries{StartProjectID: Int(12345)},
+			out:  "start_project_id=12345",
+		},
+		{
+			name: "start_project_id=0",
+			in:   &GetProjectsPaginatedQueries{StartProjectID: Int(0)},
+			out:  "start_project_id=0",
+		},
+		{
+			name: "GetProjectsPaginatedQueries is empty",
+			in:   &GetProjectsPaginatedQueries{},
+			out:  "",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockServer := newMockServerToAssertQueries(t, tt.out)
+			defer mockServer.Close()
+
+			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			_, _ = client.GetProjectsPaginated(context.Background(), tt.in)
+		})
+	}
+}
