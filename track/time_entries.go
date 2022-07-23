@@ -2,7 +2,10 @@ package track
 
 import (
 	"context"
+	"path"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 // TimeEntry represents the properties of a time entry.
@@ -38,5 +41,10 @@ type GetTimeEntriesQueries struct {
 
 // GetTimeEntries returns latest time entries.
 func (c *Client) GetTimeEntries(ctx context.Context, queries *GetTimeEntriesQueries) ([]*TimeEntry, error) {
-	return nil, nil
+	var timeEntries []*TimeEntry
+	apiSpecificPath := path.Join(mePath, "time_entries")
+	if err := c.httpGet(ctx, apiSpecificPath, queries, &timeEntries); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return timeEntries, nil
 }

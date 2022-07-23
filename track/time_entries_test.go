@@ -203,12 +203,12 @@ func TestGetTimeEntriesQueries(t *testing.T) {
 			out:  "since=1656687597",
 		},
 		{
-			name: "start_date=2022-07-01&end_date=2022-07-07",
+			name: "end_date=2022-07-07&start_date=2022-07-01",
 			in: &GetTimeEntriesQueries{
 				StartDate: String("2022-07-01"),
 				EndDate:   String("2022-07-07"),
 			},
-			out: "start_date=2022-07-01&end_date=2022-07-07",
+			out: "end_date=2022-07-07&start_date=2022-07-01",
 		},
 		{
 			name: "GetTimeEntriesQueries is empty",
