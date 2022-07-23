@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1234567890,
+    "workspace_id": 1234567,
+    "project_id": 123456789,
+    "task_id": null,
+    "billable": false,
+    "start": "2012-03-04T05:06:20+00:00",
+    "stop": "2012-03-04T05:06:23Z",
+    "duration": 3,
+    "description": "test time entry",
+    "tags": [
+      "billed"
+    ],
+    "tag_ids": [
+      1234567
+    ],
+    "duronly": false,
+    "at": "2022-03-04T05:06:07+00:00",
+    "server_deleted_at": null,
+    "user_id": 9876543,
+    "uid": 9876543,
+    "wid": 1234567,
+    "pid": 123456789
+  },
+  {
+    "id": 2345678901,
+    "workspace_id": 1234567,
+    "project_id": 234567890,
+    "task_id": null,
+    "billable": false,
+    "start": "2022-01-02T03:47:41+00:00",
+    "stop": "2022-01-02T03:48:01Z",
+    "duration": 20,
+    "description": "test time entry",
+    "tags": [
+      "billed",
+      "toggl-go"
+    ],
+    "tag_ids": [
+      1234567,
+      2345678
+    ],
+    "duronly": false,
+    "at": "2022-03-04T05:06:07+00:00",
+    "server_deleted_at": null,
+    "user_id": 9876543,
+    "uid": 9876543,
+    "wid": 1234567,
+    "pid": 234567890
+  }
+]
