@@ -96,5 +96,10 @@ type GetProjectsPaginatedQueries struct {
 
 // GetProjectsPaginated gets paginated projects.
 func (c *Client) GetProjectsPaginated(ctx context.Context, queries *GetProjectsPaginatedQueries) ([]*Project, error) {
-	return nil, nil
+	var projects []*Project
+	apiSpecificPath := path.Join(mePath, "projects/paginated")
+	if err := c.httpGet(ctx, apiSpecificPath, queries, &projects); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return projects, nil
 }
