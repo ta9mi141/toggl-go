@@ -51,5 +51,10 @@ func (c *Client) GetTimeEntries(ctx context.Context, query *GetTimeEntriesQuery)
 
 // GetCurrentTimeEntry loads running time entry for user ID.
 func (c *Client) GetCurrentTimeEntry(ctx context.Context) (*TimeEntry, error) {
-	return nil, nil
+	var timeEntry *TimeEntry
+	apiSpecificPath := path.Join(mePath, "time_entries/current")
+	if err := c.httpGet(ctx, apiSpecificPath, nil, &timeEntry); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return timeEntry, nil
 }
