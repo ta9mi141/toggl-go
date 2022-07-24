@@ -1,0 +1,24 @@
+{
+  "id": 1234567890,
+  "workspace_id": 1234567,
+  "project_id": 123456789,
+  "task_id": null,
+  "billable": false,
+  "start": "2020-01-23T04:56:31+00:00",
+  "stop": null,
+  "duration": -1579722991,
+  "description": "running time entry",
+  "tags": [
+    "toggl-go"
+  ],
+  "tag_ids": [
+    1234567
+  ],
+  "duronly": false,
+  "at": "2020-01-23T04:56:34+00:00",
+  "server_deleted_at": null,
+  "user_id": 1234567,
+  "uid": 1234567,
+  "wid": 1234567,
+  "pid": 123456789
+}
