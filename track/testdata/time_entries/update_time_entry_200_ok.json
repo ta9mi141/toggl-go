@@ -1,0 +1,24 @@
+{
+  "id": 1234567890,
+  "workspace_id": 1324567,
+  "project_id": 234567890,
+  "task_id": null,
+  "billable": false,
+  "start": "2022-07-06T05:43:31Z",
+  "stop": "2022-07-06T05:44:37Z",
+  "duration": 66,
+  "description": "updated time entry",
+  "tags": [
+    "toggl-go"
+  ],
+  "tag_ids": [
+    3456789
+  ],
+  "duronly": false,
+  "at": "2022-07-07T12:34:56+00:00",
+  "server_deleted_at": null,
+  "user_id": 1234567,
+  "uid": 1234567,
+  "wid": 1324567,
+  "pid": 234567890
+}
