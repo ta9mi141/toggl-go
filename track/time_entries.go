@@ -93,3 +93,32 @@ func (c *Client) CreateTimeEntry(ctx context.Context, workspaceID int, reqBody *
 	}
 	return timeEntry, nil
 }
+
+// UpdateTimeEntryRequestBody represents a request body of UpdateTimeEntry.
+type UpdateTimeEntryRequestBody struct {
+	Billable     *bool      `json:"billable,omitempty"`
+	CreatedWith  *string    `json:"created_with,omitempty"`
+	Description  *string    `json:"description,omitempty"`
+	Duration     *int       `json:"duration,omitempty"`
+	Duronly      *bool      `json:"duronly,omitempty"`
+	PID          *int       `json:"pid,omitempty"`
+	PostedFields []*string  `json:"postedFields,omitempty"`
+	ProjectID    *int       `json:"project_id,omitempty"`
+	Start        *time.Time `json:"start,omitempty"`
+	StartDate    *string    `json:"start_date,omitempty"`
+	Stop         *time.Time `json:"stop,omitempty"`
+	TagAction    *string    `json:"tag_action,omitempty"`
+	TagIDs       []*int     `json:"tag_ids,omitempty"`
+	Tags         []*string  `json:"tags,omitempty"`
+	TaskID       *int       `json:"task_id,omitempty"`
+	TID          *int       `json:"tid,omitempty"`
+	UID          *int       `json:"uid,omitempty"`
+	UserID       *int       `json:"user_id,omitempty"`
+	WID          *int       `json:"wid,omitempty"`
+	WorkspaceID  *int       `json:"workspace_id,omitempty"`
+}
+
+// UpdateTimeEntry updates a workspace time entry.
+func (c *Client) UpdateTimeEntry(ctx context.Context, workspaceID, timeEntryID int, reqBody *UpdateTimeEntryRequestBody) (*TimeEntry, error) {
+	return nil, nil
+}
