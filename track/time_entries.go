@@ -3,6 +3,7 @@ package track
 import (
 	"context"
 	"path"
+	"strconv"
 	"time"
 
 	"github.com/pkg/errors"
@@ -85,5 +86,10 @@ type CreateTimeEntryRequestBody struct {
 
 // CreateTimeEntry creates a new workspace time entry.
 func (c *Client) CreateTimeEntry(ctx context.Context, workspaceID int, reqBody *CreateTimeEntryRequestBody) (*TimeEntry, error) {
-	return nil, nil
+	var timeEntry *TimeEntry
+	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "time_entries")
+	if err := c.httpPost(ctx, apiSpecificPath, reqBody, &timeEntry); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return timeEntry, nil
 }

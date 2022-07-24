@@ -86,6 +86,15 @@ func (c *Client) httpGet(ctx context.Context, apiSpecificPath string, query, res
 	return c.do(req, respBody)
 }
 
+func (c *Client) httpPost(ctx context.Context, apiSpecificPath string, reqBody, respBody interface{}) error {
+	req, err := c.newRequest(ctx, http.MethodPost, apiSpecificPath, reqBody)
+	if err != nil {
+		return errors.Wrap(err, "")
+	}
+
+	return c.do(req, respBody)
+}
+
 func (c *Client) httpPut(ctx context.Context, apiSpecificPath string, reqBody, respBody interface{}) error {
 	req, err := c.newRequest(ctx, http.MethodPut, apiSpecificPath, reqBody)
 	if err != nil {
@@ -101,7 +110,7 @@ func (c *Client) newRequest(ctx context.Context, httpMethod, apiSpecificPath str
 
 	requestBody := io.Reader(nil)
 	switch httpMethod {
-	case http.MethodPut:
+	case http.MethodPost, http.MethodPut:
 		b, err := json.Marshal(input)
 		if err != nil {
 			return nil, errors.Wrap(err, "")
@@ -138,7 +147,7 @@ func (c *Client) do(req *http.Request, respBody interface{}) error {
 	}
 
 	switch req.Method {
-	case http.MethodGet, http.MethodPut:
+	case http.MethodGet, http.MethodPost, http.MethodPut:
 		err = decodeJSON(resp, respBody)
 		if err != nil {
 			return errors.Wrap(err, "")

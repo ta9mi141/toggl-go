@@ -535,7 +535,7 @@ func TestCreateTimeEntryRequestBody(t *testing.T) {
 				Description: String("created manually"),
 				ProjectID:   Int(123456789),
 			},
-			out: "{\"workspace_id\": 1234567, \"start\": \"2022-07-06T05:04:03Z\", \"duration\": 300, \"created_with\": \"toggl-go\", \"description\": \"created manually\", \"project_id\": 123456789}",
+			out: "{\"created_with\":\"toggl-go\",\"description\":\"created manually\",\"duration\":300,\"project_id\":123456789,\"start\":\"2022-07-06T05:04:03Z\",\"workspace_id\":1234567}",
 		},
 		{
 			name: "int, string, time, and bool",
@@ -548,7 +548,7 @@ func TestCreateTimeEntryRequestBody(t *testing.T) {
 				ProjectID:   Int(123456789),
 				Billable:    Bool(false),
 			},
-			out: "{\"workspace_id\": 1234567, \"start\": \"2022-07-06T05:04:03Z\", \"duration\": 300, \"created_with\": \"toggl-go\", \"description\": \"created manually\", \"project_id\": 123456789, \"billable\": false}",
+			out: "{\"billable\":false,\"created_with\":\"toggl-go\",\"description\":\"created manually\",\"duration\":300,\"project_id\":123456789,\"start\":\"2022-07-06T05:04:03Z\",\"workspace_id\":1234567}",
 		},
 		{
 			name: "int, string, time, and slice of string",
@@ -561,7 +561,7 @@ func TestCreateTimeEntryRequestBody(t *testing.T) {
 				ProjectID:   Int(123456789),
 				Tags:        []*string{String("tag1"), String("tag2")},
 			},
-			out: "{\"workspace_id\": 1234567, \"start\": \"2022-07-06T05:04:03Z\", \"duration\": 300, \"created_with\": \"toggl-go\", \"description\": \"created manually\", \"project_id\": 123456789, \"tags\": [\"tag1\", \"tag2\"]}",
+			out: "{\"created_with\":\"toggl-go\",\"description\":\"created manually\",\"duration\":300,\"project_id\":123456789,\"start\":\"2022-07-06T05:04:03Z\",\"tags\":[\"tag1\",\"tag2\"],\"workspace_id\":1234567}",
 		},
 		{
 			name: "int, string, time, and slice of int",
@@ -574,7 +574,7 @@ func TestCreateTimeEntryRequestBody(t *testing.T) {
 				ProjectID:   Int(123456789),
 				TagIDs:      []*int{Int(1234567), Int(9876543)},
 			},
-			out: "{\"workspace_id\": 1234567, \"start\": \"2022-07-06T05:04:03Z\", \"duration\": 300, \"created_with\": \"toggl-go\", \"description\": \"created manually\", \"project_id\": 123456789, \"tag_ids\": [1234567, 9876543]}",
+			out: "{\"created_with\":\"toggl-go\",\"description\":\"created manually\",\"duration\":300,\"project_id\":123456789,\"start\":\"2022-07-06T05:04:03Z\",\"tag_ids\":[1234567,9876543],\"workspace_id\":1234567}",
 		},
 	}
 	for _, tt := range tests {
