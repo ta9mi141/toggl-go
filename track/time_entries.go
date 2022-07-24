@@ -49,7 +49,7 @@ func (c *Client) GetTimeEntries(ctx context.Context, query *GetTimeEntriesQuery)
 	return timeEntries, nil
 }
 
-// GetCurrentTimeEntry loads running time entry for user ID.
+// GetCurrentTimeEntry loads running time entry for user id.
 func (c *Client) GetCurrentTimeEntry(ctx context.Context) (*TimeEntry, error) {
 	var timeEntry *TimeEntry
 	apiSpecificPath := path.Join(mePath, "time_entries/current")
@@ -57,4 +57,33 @@ func (c *Client) GetCurrentTimeEntry(ctx context.Context) (*TimeEntry, error) {
 		return nil, errors.Wrap(err, "")
 	}
 	return timeEntry, nil
+}
+
+// CreateTimeEntryRequestBody represents a request body of CreateTimeEntry.
+type CreateTimeEntryRequestBody struct {
+	Billable     *bool      `json:"billable,omitempty"`
+	CreatedWith  *string    `json:"created_with,omitempty"`
+	Description  *string    `json:"description,omitempty"`
+	Duration     *int       `json:"duration,omitempty"`
+	Duronly      *bool      `json:"duronly,omitempty"`
+	PID          *int       `json:"pid,omitempty"`
+	PostedFields []*string  `json:"postedFields,omitempty"`
+	ProjectID    *int       `json:"project_id,omitempty"`
+	Start        *time.Time `json:"start,omitempty"`
+	StartDate    *string    `json:"start_date,omitempty"`
+	Stop         *time.Time `json:"stop,omitempty"`
+	TagAction    *string    `json:"tag_action,omitempty"`
+	TagIDs       []*int     `json:"tag_ids,omitempty"`
+	Tags         []*string  `json:"tags,omitempty"`
+	TaskID       *int       `json:"task_id,omitempty"`
+	TID          *int       `json:"tid,omitempty"`
+	UID          *int       `json:"uid,omitempty"`
+	UserID       *int       `json:"user_id,omitempty"`
+	WID          *int       `json:"wid,omitempty"`
+	WorkspaceID  *int       `json:"workspace_id,omitempty"`
+}
+
+// CreateTimeEntry creates a new workspace time entry.
+func (c *Client) CreateTimeEntry(ctx context.Context, workspaceID int, reqBody *CreateTimeEntryRequestBody) (*TimeEntry, error) {
+	return nil, nil
 }

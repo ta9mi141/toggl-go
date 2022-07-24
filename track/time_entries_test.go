@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"path"
 	"reflect"
+	"strconv"
 	"testing"
 	"time"
 )
@@ -364,6 +365,225 @@ func TestGetCurrentTimeEntry(t *testing.T) {
 					errorf(t, err, tt.out.err)
 				}
 			}
+		})
+	}
+}
+
+func TestCreateTimeEntry(t *testing.T) {
+	tests := []struct {
+		name string
+		in   struct {
+			statusCode   int
+			testdataFile string
+		}
+		out struct {
+			timeEntry *TimeEntry
+			err       error
+		}
+	}{
+		{
+			name: "200 OK",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusOK,
+				testdataFile: "testdata/time_entries/create_time_entry_200_ok.json",
+			},
+			out: struct {
+				timeEntry *TimeEntry
+				err       error
+			}{
+				timeEntry: &TimeEntry{
+					ID:              Int(1234567890),
+					WorkspaceID:     Int(1234567),
+					ProjectID:       Int(123456789),
+					TaskID:          nil,
+					Billable:        Bool(false),
+					Start:           Time(time.Date(2021, time.July, 6, 5, 4, 3, 0, time.UTC)),
+					Stop:            Time(time.Date(2021, time.July, 6, 5, 9, 3, 0, time.UTC)),
+					Duration:        Int(300),
+					Description:     String("created manually"),
+					Tags:            nil,
+					TagIDs:          nil,
+					Duronly:         Bool(false),
+					At:              Time(time.Date(2022, time.July, 6, 5, 4, 3, 0, time.FixedZone("", 0))),
+					ServerDeletedAt: nil,
+					UserID:          Int(1234567),
+					UID:             Int(1234567),
+					WID:             Int(1234567),
+					PID:             Int(123456789),
+				},
+				err: nil,
+			},
+		},
+		{
+			name: "400 Bad Request",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusBadRequest,
+				testdataFile: "testdata/time_entries/create_time_entry_400_bad_request.json",
+			},
+			out: struct {
+				timeEntry *TimeEntry
+				err       error
+			}{
+				timeEntry: nil,
+				err: &errorResponse{
+					statusCode: 400,
+					message:    "\"JSON is not valid\"\n",
+					header: http.Header{
+						"Content-Length": []string{"20"},
+						"Content-Type":   []string{"application/json; charset=utf-8"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
+			name: "403 Forbidden",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusForbidden,
+				testdataFile: "testdata/time_entries/create_time_entry_403_forbidden",
+			},
+			out: struct {
+				timeEntry *TimeEntry
+				err       error
+			}{
+				timeEntry: nil,
+				err: &errorResponse{
+					statusCode: 403,
+					message:    "",
+					header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
+			name: "500 Internal Server Error",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusInternalServerError,
+				testdataFile: "testdata/time_entries/create_time_entry_500_internal_server_error",
+			},
+			out: struct {
+				timeEntry *TimeEntry
+				err       error
+			}{
+				timeEntry: nil,
+				err: &errorResponse{
+					statusCode: 500,
+					message:    "",
+					header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			workspaceID := 1234567
+			apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "time_entries")
+			mockServer := newMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
+			defer mockServer.Close()
+
+			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			timeEntry, err := client.CreateTimeEntry(context.Background(), workspaceID, &CreateTimeEntryRequestBody{})
+
+			if !reflect.DeepEqual(timeEntry, tt.out.timeEntry) {
+				errorf(t, timeEntry, tt.out.timeEntry)
+			}
+
+			errorResp := new(errorResponse)
+			if errors.As(err, &errorResp) {
+				if !reflect.DeepEqual(errorResp, tt.out.err) {
+					errorf(t, errorResp, tt.out.err)
+				}
+			} else {
+				if !reflect.DeepEqual(err, tt.out.err) {
+					errorf(t, err, tt.out.err)
+				}
+			}
+		})
+	}
+}
+
+func TestCreateTimeEntryRequestBody(t *testing.T) {
+	tests := []struct {
+		name string
+		in   *CreateTimeEntryRequestBody
+		out  string
+	}{
+		{
+			name: "int, string, and time",
+			in: &CreateTimeEntryRequestBody{
+				WorkspaceID: Int(1234567),
+				Start:       Time(time.Date(2022, time.July, 6, 5, 4, 3, 0, time.UTC)),
+				Duration:    Int(300),
+				CreatedWith: String("toggl-go"),
+				Description: String("created manually"),
+				ProjectID:   Int(123456789),
+			},
+			out: "{\"workspace_id\": 1234567, \"start\": \"2022-07-06T05:04:03Z\", \"duration\": 300, \"created_with\": \"toggl-go\", \"description\": \"created manually\", \"project_id\": 123456789}",
+		},
+		{
+			name: "int, string, time, and bool",
+			in: &CreateTimeEntryRequestBody{
+				WorkspaceID: Int(1234567),
+				Start:       Time(time.Date(2022, time.July, 6, 5, 4, 3, 0, time.UTC)),
+				Duration:    Int(300),
+				CreatedWith: String("toggl-go"),
+				Description: String("created manually"),
+				ProjectID:   Int(123456789),
+				Billable:    Bool(false),
+			},
+			out: "{\"workspace_id\": 1234567, \"start\": \"2022-07-06T05:04:03Z\", \"duration\": 300, \"created_with\": \"toggl-go\", \"description\": \"created manually\", \"project_id\": 123456789, \"billable\": false}",
+		},
+		{
+			name: "int, string, time, and slice of string",
+			in: &CreateTimeEntryRequestBody{
+				WorkspaceID: Int(1234567),
+				Start:       Time(time.Date(2022, time.July, 6, 5, 4, 3, 0, time.UTC)),
+				Duration:    Int(300),
+				CreatedWith: String("toggl-go"),
+				Description: String("created manually"),
+				ProjectID:   Int(123456789),
+				Tags:        []*string{String("tag1"), String("tag2")},
+			},
+			out: "{\"workspace_id\": 1234567, \"start\": \"2022-07-06T05:04:03Z\", \"duration\": 300, \"created_with\": \"toggl-go\", \"description\": \"created manually\", \"project_id\": 123456789, \"tags\": [\"tag1\", \"tag2\"]}",
+		},
+		{
+			name: "int, string, time, and slice of int",
+			in: &CreateTimeEntryRequestBody{
+				WorkspaceID: Int(1234567),
+				Start:       Time(time.Date(2022, time.July, 6, 5, 4, 3, 0, time.UTC)),
+				Duration:    Int(300),
+				CreatedWith: String("toggl-go"),
+				Description: String("created manually"),
+				ProjectID:   Int(123456789),
+				TagIDs:      []*int{Int(1234567), Int(9876543)},
+			},
+			out: "{\"workspace_id\": 1234567, \"start\": \"2022-07-06T05:04:03Z\", \"duration\": 300, \"created_with\": \"toggl-go\", \"description\": \"created manually\", \"project_id\": 123456789, \"tag_ids\": [1234567, 9876543]}",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockServer := newMockServerToAssertRequestBody(t, tt.out)
+			defer mockServer.Close()
+			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			workspaceID := 12334567
+			_, _ = client.CreateTimeEntry(context.Background(), workspaceID, tt.in)
 		})
 	}
 }
