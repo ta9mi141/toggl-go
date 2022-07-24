@@ -755,7 +755,7 @@ func TestUpdateTimeEntryRequestBody(t *testing.T) {
 				Description: String("updated time entry"),
 				ProjectID:   Int(123456789),
 			},
-			out: "{\"created_with\":\"toggl-go\",\"description\":\"created manually\",\"duration\":300,\"project_id\":123456789,\"start\":\"2022-07-06T05:04:03Z\",\"workspace_id\":1234567}",
+			out: "{\"created_with\":\"toggl-go\",\"description\":\"updated time entry\",\"duration\":300,\"project_id\":123456789,\"start\":\"2022-07-06T05:04:03Z\",\"workspace_id\":1234567}",
 		},
 		{
 			name: "int, string, time, and bool",
@@ -768,7 +768,7 @@ func TestUpdateTimeEntryRequestBody(t *testing.T) {
 				ProjectID:   Int(123456789),
 				Billable:    Bool(false),
 			},
-			out: "{\"billable\":false,\"created_with\":\"toggl-go\",\"description\":\"created manually\",\"duration\":300,\"project_id\":123456789,\"start\":\"2022-07-06T05:04:03Z\",\"workspace_id\":1234567}",
+			out: "{\"billable\":false,\"created_with\":\"toggl-go\",\"description\":\"updated time entry\",\"duration\":300,\"project_id\":123456789,\"start\":\"2022-07-06T05:04:03Z\",\"workspace_id\":1234567}",
 		},
 		{
 			name: "int, string, time, and slice of string",
@@ -781,7 +781,7 @@ func TestUpdateTimeEntryRequestBody(t *testing.T) {
 				ProjectID:   Int(123456789),
 				Tags:        []*string{String("tag1"), String("tag2")},
 			},
-			out: "{\"created_with\":\"toggl-go\",\"description\":\"created manually\",\"duration\":300,\"project_id\":123456789,\"start\":\"2022-07-06T05:04:03Z\",\"tags\":[\"tag1\",\"tag2\"],\"workspace_id\":1234567}",
+			out: "{\"created_with\":\"toggl-go\",\"description\":\"updated time entry\",\"duration\":300,\"project_id\":123456789,\"start\":\"2022-07-06T05:04:03Z\",\"tags\":[\"tag1\",\"tag2\"],\"workspace_id\":1234567}",
 		},
 		{
 			name: "int, string, time, and slice of int",
@@ -794,7 +794,7 @@ func TestUpdateTimeEntryRequestBody(t *testing.T) {
 				ProjectID:   Int(123456789),
 				TagIDs:      []*int{Int(1234567), Int(9876543)},
 			},
-			out: "{\"created_with\":\"toggl-go\",\"description\":\"created manually\",\"duration\":300,\"project_id\":123456789,\"start\":\"2022-07-06T05:04:03Z\",\"tag_ids\":[1234567,9876543],\"workspace_id\":1234567}",
+			out: "{\"created_with\":\"toggl-go\",\"description\":\"updated time entry\",\"duration\":300,\"project_id\":123456789,\"start\":\"2022-07-06T05:04:03Z\",\"tag_ids\":[1234567,9876543],\"workspace_id\":1234567}",
 		},
 	}
 	for _, tt := range tests {

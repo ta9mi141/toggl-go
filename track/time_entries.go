@@ -120,5 +120,10 @@ type UpdateTimeEntryRequestBody struct {
 
 // UpdateTimeEntry updates a workspace time entry.
 func (c *Client) UpdateTimeEntry(ctx context.Context, workspaceID, timeEntryID int, reqBody *UpdateTimeEntryRequestBody) (*TimeEntry, error) {
-	return nil, nil
+	var timeEntry *TimeEntry
+	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "time_entries", strconv.Itoa(timeEntryID))
+	if err := c.httpPut(ctx, apiSpecificPath, reqBody, &timeEntry); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return timeEntry, nil
 }
