@@ -36,8 +36,8 @@ type Me struct {
 
 // GetMe returns details for the current user.
 func (c *Client) GetMe(ctx context.Context) (*Me, error) {
-	me := new(Me)
-	if err := c.httpGet(ctx, mePath, nil, me); err != nil {
+	var me *Me
+	if err := c.httpGet(ctx, mePath, nil, &me); err != nil {
 		return nil, errors.Wrap(err, "")
 	}
 	return me, nil
@@ -57,8 +57,8 @@ type UpdateMeRequestBody struct {
 
 // UpdateMe updates details for the current user.
 func (c *Client) UpdateMe(ctx context.Context, reqBody *UpdateMeRequestBody) (*Me, error) {
-	me := new(Me)
-	if err := c.httpPut(ctx, mePath, reqBody, me); err != nil {
+	var me *Me
+	if err := c.httpPut(ctx, mePath, reqBody, &me); err != nil {
 		return nil, errors.Wrap(err, "")
 	}
 	return me, nil
