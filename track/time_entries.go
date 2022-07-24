@@ -130,5 +130,9 @@ func (c *Client) UpdateTimeEntry(ctx context.Context, workspaceID, timeEntryID i
 
 // DeleteTimeEntry deletes a workspace time entry.
 func (c *Client) DeleteTimeEntry(ctx context.Context, workspaceID, timeEntryID int) error {
+	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "time_entries", strconv.Itoa(timeEntryID))
+	if err := c.httpDelete(ctx, apiSpecificPath); err != nil {
+		return errors.Wrap(err, "")
+	}
 	return nil
 }

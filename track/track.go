@@ -104,6 +104,15 @@ func (c *Client) httpPut(ctx context.Context, apiSpecificPath string, reqBody, r
 	return c.do(req, respBody)
 }
 
+func (c *Client) httpDelete(ctx context.Context, apiSpecificPath string) error {
+	req, err := c.newRequest(ctx, http.MethodDelete, apiSpecificPath, nil)
+	if err != nil {
+		return errors.Wrap(err, "")
+	}
+
+	return c.do(req, nil)
+}
+
 func (c *Client) newRequest(ctx context.Context, httpMethod, apiSpecificPath string, input interface{}) (*http.Request, error) {
 	url := *c.baseURL
 	url.Path = path.Join(url.Path, apiSpecificPath)
