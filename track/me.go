@@ -43,8 +43,8 @@ func (c *Client) GetMe(ctx context.Context) (*Me, error) {
 	return me, nil
 }
 
-// PutMeRequestBody represents a request body of PutMe.
-type PutMeRequestBody struct {
+// UpdateMeRequestBody represents a request body of UpdateMe.
+type UpdateMeRequestBody struct {
 	BeginningOfWeek    *int    `json:"beginning_of_week,omitempty"`
 	CountryID          *int    `json:"country_id,omitempty"`
 	CurrentPassword    *string `json:"current_password,omitempty"`
@@ -55,8 +55,8 @@ type PutMeRequestBody struct {
 	Timezone           *string `json:"timezone,omitempty"`
 }
 
-// PutMe updates details for the current user.
-func (c *Client) PutMe(ctx context.Context, reqBody *PutMeRequestBody) (*Me, error) {
+// UpdateMe updates details for the current user.
+func (c *Client) UpdateMe(ctx context.Context, reqBody *UpdateMeRequestBody) (*Me, error) {
 	me := new(Me)
 	if err := c.httpPut(ctx, mePath, reqBody, me); err != nil {
 		return nil, errors.Wrap(err, "")

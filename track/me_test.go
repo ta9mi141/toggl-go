@@ -129,7 +129,7 @@ func TestGetMe(t *testing.T) {
 	}
 }
 
-func TestPutMe(t *testing.T) {
+func TestUpdateMe(t *testing.T) {
 	tests := []struct {
 		name string
 		in   struct {
@@ -148,7 +148,7 @@ func TestPutMe(t *testing.T) {
 				testdataFile string
 			}{
 				statusCode:   http.StatusOK,
-				testdataFile: "testdata/me/put_me_200_ok.json",
+				testdataFile: "testdata/me/update_me_200_ok.json",
 			},
 			out: struct {
 				me  *Me
@@ -178,7 +178,7 @@ func TestPutMe(t *testing.T) {
 				testdataFile string
 			}{
 				statusCode:   http.StatusBadRequest,
-				testdataFile: "testdata/me/put_me_400_bad_request.json",
+				testdataFile: "testdata/me/update_me_400_bad_request.json",
 			},
 			out: struct {
 				me  *Me
@@ -203,7 +203,7 @@ func TestPutMe(t *testing.T) {
 				testdataFile string
 			}{
 				statusCode:   http.StatusForbidden,
-				testdataFile: "testdata/me/put_me_403_forbidden",
+				testdataFile: "testdata/me/update_me_403_forbidden",
 			},
 			out: struct {
 				me  *Me
@@ -227,7 +227,7 @@ func TestPutMe(t *testing.T) {
 				testdataFile string
 			}{
 				statusCode:   http.StatusInternalServerError,
-				testdataFile: "testdata/me/put_me_500_internal_server_error",
+				testdataFile: "testdata/me/update_me_500_internal_server_error",
 			},
 			out: struct {
 				me  *Me
@@ -251,7 +251,7 @@ func TestPutMe(t *testing.T) {
 			defer mockServer.Close()
 
 			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
-			me, err := client.PutMe(context.Background(), &PutMeRequestBody{})
+			me, err := client.UpdateMe(context.Background(), &UpdateMeRequestBody{})
 
 			if !reflect.DeepEqual(me, tt.out.me) {
 				errorf(t, me, tt.out.me)
@@ -271,29 +271,29 @@ func TestPutMe(t *testing.T) {
 	}
 }
 
-func TestPutMeRequestBody(t *testing.T) {
+func TestUpdateMeRequestBody(t *testing.T) {
 	tests := []struct {
 		name string
-		in   *PutMeRequestBody
+		in   *UpdateMeRequestBody
 		out  string
 	}{
 		{
 			name: "int",
-			in: &PutMeRequestBody{
+			in: &UpdateMeRequestBody{
 				BeginningOfWeek: Int(0),
 			},
 			out: "{\"beginning_of_week\":0}",
 		},
 		{
 			name: "string",
-			in: &PutMeRequestBody{
+			in: &UpdateMeRequestBody{
 				Fullname: String("Awesome Name"),
 			},
 			out: "{\"fullname\":\"Awesome Name\"}",
 		},
 		{
 			name: "int and string",
-			in: &PutMeRequestBody{
+			in: &UpdateMeRequestBody{
 				CurrentPassword:    String("vulnerable password"),
 				DefaultWorkspaceID: Int(1234567),
 				Password:           String("secure password"),
@@ -306,7 +306,7 @@ func TestPutMeRequestBody(t *testing.T) {
 			mockServer := newMockServerToAssertRequestBody(t, tt.out)
 			defer mockServer.Close()
 			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
-			_, _ = client.PutMe(context.Background(), tt.in)
+			_, _ = client.UpdateMe(context.Background(), tt.in)
 		})
 	}
 }
