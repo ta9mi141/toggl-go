@@ -1,0 +1,20 @@
+{
+  "id": 1234567890,
+  "workspace_id": 1234567,
+  "project_id": 123456789,
+  "task_id": null,
+  "billable": false,
+  "start": "2021-07-06T05:04:03Z",
+  "stop": "2021-07-06T05:09:03Z",
+  "duration": 300,
+  "description": "created manually",
+  "tags": null,
+  "tag_ids": null,
+  "duronly": false,
+  "at": "2022-07-06T05:04:03+00:00",
+  "server_deleted_at": null,
+  "user_id": 1234567,
+  "uid": 1234567,
+  "wid": 1234567,
+  "pid": 123456789
+}
