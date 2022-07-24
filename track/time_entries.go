@@ -39,7 +39,7 @@ type GetTimeEntriesQuery struct {
 	EndDate   *string `url:"end_date,omitempty"`
 }
 
-// GetTimeEntries returns latest time entries.
+// GetTimeEntries lists latest time entries.
 func (c *Client) GetTimeEntries(ctx context.Context, query *GetTimeEntriesQuery) ([]*TimeEntry, error) {
 	var timeEntries []*TimeEntry
 	apiSpecificPath := path.Join(mePath, "time_entries")
@@ -47,4 +47,9 @@ func (c *Client) GetTimeEntries(ctx context.Context, query *GetTimeEntriesQuery)
 		return nil, errors.Wrap(err, "")
 	}
 	return timeEntries, nil
+}
+
+// GetCurrentTimeEntry loads running time entry for user ID.
+func (c *Client) GetCurrentTimeEntry(ctx context.Context) (*TimeEntry, error) {
+	return nil, nil
 }

@@ -226,3 +226,144 @@ func TestGetTimeEntriesQuery(t *testing.T) {
 		})
 	}
 }
+
+func TestGetCurrentTimeEntry(t *testing.T) {
+	tests := []struct {
+		name string
+		in   struct {
+			statusCode   int
+			testdataFile string
+		}
+		out struct {
+			timeEntry *TimeEntry
+			err       error
+		}
+	}{
+		{
+			name: "200 OK",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusOK,
+				testdataFile: "testdata/time_entries/get_current_time_entry_200_ok.json",
+			},
+			out: struct {
+				timeEntry *TimeEntry
+				err       error
+			}{
+				timeEntry: &TimeEntry{
+					ID:              Int(1234567890),
+					WorkspaceID:     Int(1234567),
+					ProjectID:       Int(123456789),
+					TaskID:          nil,
+					Billable:        Bool(false),
+					Start:           Time(time.Date(2020, time.January, 23, 4, 56, 31, 0, time.FixedZone("", 0))),
+					Stop:            nil,
+					Duration:        Int(-1579722991),
+					Description:     String("running time entry"),
+					Tags:            []*string{String("toggl-go")},
+					TagIDs:          []*int{Int(1234567)},
+					Duronly:         Bool(false),
+					At:              Time(time.Date(2020, time.January, 23, 4, 56, 34, 0, time.FixedZone("", 0))),
+					ServerDeletedAt: nil,
+					UserID:          Int(1234567),
+					UID:             Int(1234567),
+					WID:             Int(1234567),
+					PID:             Int(123456789),
+				},
+				err: nil,
+			},
+		},
+		{
+			name: "200 OK (null)",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusOK,
+				testdataFile: "testdata/time_entries/get_current_time_entry_200_ok_null.json",
+			},
+			out: struct {
+				timeEntry *TimeEntry
+				err       error
+			}{
+				timeEntry: nil,
+				err:       nil,
+			},
+		},
+		{
+			name: "403 Forbidden",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusForbidden,
+				testdataFile: "testdata/time_entries/get_current_time_entry_403_forbidden",
+			},
+			out: struct {
+				timeEntry *TimeEntry
+				err       error
+			}{
+				timeEntry: nil,
+				err: &errorResponse{
+					statusCode: 403,
+					message:    "",
+					header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
+			name: "500 Internal Server Error",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusInternalServerError,
+				testdataFile: "testdata/time_entries/get_current_time_entry_500_internal_server_error",
+			},
+			out: struct {
+				timeEntry *TimeEntry
+				err       error
+			}{
+				timeEntry: nil,
+				err: &errorResponse{
+					statusCode: 500,
+					message:    "",
+					header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiSpecificPath := path.Join(mePath, "time_entries/current")
+			mockServer := newMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
+			defer mockServer.Close()
+
+			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			timeEntry, err := client.GetCurrentTimeEntry(context.Background())
+
+			if !reflect.DeepEqual(timeEntry, tt.out.timeEntry) {
+				errorf(t, timeEntry, tt.out.timeEntry)
+			}
+
+			errorResp := new(errorResponse)
+			if errors.As(err, &errorResp) {
+				if !reflect.DeepEqual(errorResp, tt.out.err) {
+					errorf(t, errorResp, tt.out.err)
+				}
+			} else {
+				if !reflect.DeepEqual(err, tt.out.err) {
+					errorf(t, err, tt.out.err)
+				}
+			}
+		})
+	}
+}
