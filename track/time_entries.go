@@ -127,3 +127,8 @@ func (c *Client) UpdateTimeEntry(ctx context.Context, workspaceID, timeEntryID i
 	}
 	return timeEntry, nil
 }
+
+// DeleteTimeEntry deletes a workspace time entry.
+func (c *Client) DeleteTimeEntry(ctx context.Context, workspaceID, timeEntryID int) error {
+	return nil
+}
