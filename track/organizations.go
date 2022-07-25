@@ -1,6 +1,13 @@
 package track
 
-import "time"
+import (
+	"context"
+	"time"
+)
+
+const (
+	organizationsPath string = "api/v9/organizations"
+)
 
 // Organization represents the properties of an organization.
 type Organization struct {
@@ -15,6 +22,7 @@ type Organization struct {
 	UserCount               *int       `json:"user_count,omitempty"`
 	TrialInfo               *TrialInfo `json:"trial_info,omitempty"`
 	IsChargify              *bool      `json:"is_chargify,omitempty"`
+	IsUnified               *bool      `json:"is_unified,omitempty"`
 	MaxWorkspaces           *int       `json:"max_workspaces,omitempty"`
 	Admin                   *bool      `json:"admin,omitempty"`
 	Owner                   *bool      `json:"owner,omitempty"`
@@ -26,4 +34,9 @@ type TrialInfo struct {
 	TrialEndDate      *string `json:"trial_end_date,omitempty"`
 	NextPaymentDate   *string `json:"next_payment_date,omitempty"`
 	LastPricingPlanID *int    `json:"last_pricing_plan_id,omitempty"`
+}
+
+// GetOrganization returns organization name and current pricing plan.
+func (c *Client) GetOrganization(ctx context.Context, organizationID int) (*Organization, error) {
+	return nil, nil
 }
