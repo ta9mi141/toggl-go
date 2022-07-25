@@ -2,7 +2,11 @@ package track
 
 import (
 	"context"
+	"path"
+	"strconv"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 const (
@@ -38,5 +42,10 @@ type TrialInfo struct {
 
 // GetOrganization returns organization name and current pricing plan.
 func (c *Client) GetOrganization(ctx context.Context, organizationID int) (*Organization, error) {
-	return nil, nil
+	var organization *Organization
+	apiSpecificPath := path.Join(organizationsPath, strconv.Itoa(organizationID))
+	if err := c.httpGet(ctx, apiSpecificPath, nil, &organization); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return organization, nil
 }
