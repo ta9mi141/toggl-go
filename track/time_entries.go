@@ -24,7 +24,7 @@ type TimeEntry struct {
 	TagIDs          []*int     `json:"tag_ids,omitempty"`
 	Duronly         *bool      `json:"duronly,omitempty"`
 	At              *time.Time `json:"at,omitempty"`
-	ServerDeletedAt *string    `json:"server_deleted_at,omitempty"`
+	ServerDeletedAt *time.Time `json:"server_deleted_at,omitempty"`
 	UserID          *int       `json:"user_id,omitempty"`
 	UID             *int       `json:"uid,omitempty"`
 	WID             *int       `json:"wid,omitempty"`

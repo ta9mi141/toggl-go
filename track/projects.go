@@ -12,7 +12,7 @@ type Project struct {
 	Active              *bool                `json:"active,omitempty"`
 	At                  *time.Time           `json:"at,omitempty"`
 	CreatedAt           *time.Time           `json:"created_at,omitempty"`
-	ServerDeletedAt     *string              `json:"server_deleted_at,omitempty"`
+	ServerDeletedAt     *time.Time           `json:"server_deleted_at,omitempty"`
 	Color               *string              `json:"color,omitempty"`
 	Billable            *bool                `json:"billable,omitempty"`
 	Template            *bool                `json:"template,omitempty"`

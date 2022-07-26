@@ -22,7 +22,7 @@ type Organization struct {
 	At                      *time.Time `json:"at,omitempty"`
 	ServerDeletedAt         *time.Time `json:"server_deleted_at,omitempty"`
 	IsMultiWorkspaceEnabled *bool      `json:"is_multi_workspace_enabled,omitempty"`
-	SuspendedAt             *string    `json:"suspended_at,omitempty"`
+	SuspendedAt             *time.Time `json:"suspended_at,omitempty"`
 	UserCount               *int       `json:"user_count,omitempty"`
 	TrialInfo               *TrialInfo `json:"trial_info,omitempty"`
 	IsChargify              *bool      `json:"is_chargify,omitempty"`
