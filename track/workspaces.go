@@ -2,7 +2,11 @@ package track
 
 import (
 	"context"
+	"path"
+	"strconv"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 const (
@@ -83,5 +87,10 @@ type TeConstraints struct {
 
 // GetWorkspace gets information of single workspace.
 func (c *Client) GetWorkspace(ctx context.Context, workspaceID int) (*Workspace, error) {
-	return nil, nil
+	var workspace *Workspace
+	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID))
+	if err := c.httpGet(ctx, apiSpecificPath, nil, &workspace); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return workspace, nil
 }
