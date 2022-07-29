@@ -49,3 +49,56 @@ func (c *Client) GetOrganization(ctx context.Context, organizationID int) (*Orga
 	}
 	return organization, nil
 }
+
+// OrganizationUser represents the properties of a user in an organization.
+type OrganizationUser struct {
+	ID             *int        `json:"id,omitempty"`
+	Name           *string     `json:"name,omitempty"`
+	Email          *string     `json:"email,omitempty"`
+	UserID         *int        `json:"user_id,omitempty"`
+	AvatarURL      *string     `json:"avatar_url,omitempty"`
+	Admin          *bool       `json:"admin,omitempty"`
+	Owner          *bool       `json:"owner,omitempty"`
+	Joined         *bool       `json:"joined,omitempty"`
+	InvitationCode *string     `json:"invitation_code,omitempty"`
+	Inactive       *bool       `json:"inactive,omitempty"`
+	CanEditEmail   *bool       `json:"can_edit_email,omitempty"`
+	Workspaces     *workspaces `json:"workspaces,omitempty"`
+	Groups         *groups     `json:"groups,omitempty"`
+}
+
+type workspaces struct {
+	Items []*workspace `json:"items,omitempty"`
+}
+
+type workspace struct {
+	Admin       *bool   `json:"admin,omitempty"`
+	Name        *string `json:"name,omitempty"`
+	WorkspaceID *int    `json:"workspace_id,omitempty"`
+}
+
+type groups struct {
+	Items []*group `json:"items,omitempty"`
+}
+
+type group struct {
+	GroupID *int    `json:"group_id,omitempty"`
+	Name    *string `json:"name,omitempty"`
+}
+
+// GetOrganizationUsersQuery represents the additional parameters of GetOrganizationUsers.
+type GetOrganizationUsersQuery struct {
+	Filter       *string `url:"filter,omitempty"`
+	ActiveStatus *string `url:"active_status,omitempty"`
+	OnlyAdmins   *string `url:"only_admins,omitempty"`
+	Groups       *string `url:"groups,omitempty"`
+	Workspaces   *string `url:"workspaces,omitempty"`
+	Page         *int    `url:"page,omitempty"`
+	PerPage      *int    `url:"per_page,omitempty"`
+	SortDir      *string `url:"sort_dir,omitempty"`
+}
+
+// GetOrganizationUsers returns list of users in an organization.
+func (c *Client) GetOrganizationUsers(ctx context.Context, organizationID int, query *GetOrganizationUsersQuery) ([]*OrganizationUser, error) {
+	return nil, nil
+}

@@ -32,10 +32,10 @@ type Project struct {
 }
 
 type recurringParameters struct {
-	Items []*item `json:"items,omitempty"`
+	Items []*recurringParameter `json:"items,omitempty"`
 }
 
-type item struct {
+type recurringParameter struct {
 	CustomPeriod       *int    `json:"custom_period,omitempty"`
 	EstimatedSeconds   *int    `json:"estimated_seconds,omitempty"`
 	ParameterStartDate *string `json:"parameter_start_date,omitempty"`
