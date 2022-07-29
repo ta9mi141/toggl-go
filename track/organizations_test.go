@@ -202,13 +202,13 @@ func TestGetOrganizationUsers(t *testing.T) {
 						InvitationCode: nil,
 						Inactive:       Bool(false),
 						CanEditEmail:   Bool(false),
-						Workspaces: &workspaces{Items: []*workspace{
+						Workspaces: []*workspace{
 							{
 								WorkspaceID: Int(3456789),
 								Admin:       Bool(true),
 								Name:        String("Workspace1"),
 							},
-						}},
+						},
 					},
 				},
 				err: nil,

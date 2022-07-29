@@ -51,34 +51,27 @@ func (c *Client) GetOrganization(ctx context.Context, organizationID int) (*Orga
 }
 
 // OrganizationUser represents the properties of a user in an organization.
+// Some properties differ from those described in the documentation.
 type OrganizationUser struct {
-	ID             *int        `json:"id,omitempty"`
-	Name           *string     `json:"name,omitempty"`
-	Email          *string     `json:"email,omitempty"`
-	UserID         *int        `json:"user_id,omitempty"`
-	AvatarURL      *string     `json:"avatar_url,omitempty"`
-	Admin          *bool       `json:"admin,omitempty"`
-	Owner          *bool       `json:"owner,omitempty"`
-	Joined         *bool       `json:"joined,omitempty"`
-	InvitationCode *string     `json:"invitation_code,omitempty"`
-	Inactive       *bool       `json:"inactive,omitempty"`
-	CanEditEmail   *bool       `json:"can_edit_email,omitempty"`
-	Workspaces     *workspaces `json:"workspaces,omitempty"`
-	Groups         *groups     `json:"groups,omitempty"`
-}
-
-type workspaces struct {
-	Items []*workspace `json:"items,omitempty"`
+	ID             *int         `json:"id,omitempty"`
+	Name           *string      `json:"name,omitempty"`
+	Email          *string      `json:"email,omitempty"`
+	UserID         *int         `json:"user_id,omitempty"`
+	AvatarURL      *string      `json:"avatar_url,omitempty"`
+	Admin          *bool        `json:"admin,omitempty"`
+	Owner          *bool        `json:"owner,omitempty"`
+	Joined         *bool        `json:"joined,omitempty"`
+	InvitationCode *string      `json:"invitation_code,omitempty"`
+	Inactive       *bool        `json:"inactive,omitempty"`
+	CanEditEmail   *bool        `json:"can_edit_email,omitempty"`
+	Workspaces     []*workspace `json:"workspaces,omitempty"`
+	Groups         []*group     `json:"groups,omitempty"`
 }
 
 type workspace struct {
 	Admin       *bool   `json:"admin,omitempty"`
 	Name        *string `json:"name,omitempty"`
 	WorkspaceID *int    `json:"workspace_id,omitempty"`
-}
-
-type groups struct {
-	Items []*group `json:"items,omitempty"`
 }
 
 type group struct {
@@ -100,5 +93,10 @@ type GetOrganizationUsersQuery struct {
 
 // GetOrganizationUsers returns list of users in an organization.
 func (c *Client) GetOrganizationUsers(ctx context.Context, organizationID int, query *GetOrganizationUsersQuery) ([]*OrganizationUser, error) {
-	return nil, nil
+	var organizationUsers []*OrganizationUser
+	apiSpecificPath := path.Join(organizationsPath, strconv.Itoa(organizationID), "users")
+	if err := c.httpGet(ctx, apiSpecificPath, query, &organizationUsers); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return organizationUsers, nil
 }
