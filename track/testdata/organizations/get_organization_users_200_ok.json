@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1234567,
+    "name": "Toggl Track",
+    "email": "toggl@example.com",
+    "user_id": 2345678,
+    "avatar_url": "",
+    "admin": true,
+    "owner": true,
+    "joined": true,
+    "invitation_code": null,
+    "inactive": false,
+    "can_edit_email": false,
+    "workspaces": [
+      {
+        "workspace_id": 3456789,
+        "admin": true,
+        "name": "Workspace1"
+      }
+    ],
+    "groups": null
+  }
+]
