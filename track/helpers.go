@@ -2,10 +2,11 @@ package track
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"os"
 	"path"
 	"path/filepath"
 	"testing"
@@ -25,7 +26,7 @@ func errorf(t *testing.T, got, want interface{}) {
 }
 
 func newMockServer(t *testing.T, apiSpecificPath string, statusCode int, testdataFile string) *httptest.Server {
-	testdata, err := ioutil.ReadFile(testdataFile)
+	testdata, err := os.ReadFile(testdataFile)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -53,7 +54,7 @@ func newMockServer(t *testing.T, apiSpecificPath string, statusCode int, testdat
 func newMockServerToAssertRequestBody(t *testing.T, expectedRequestBody string) *httptest.Server {
 	// The caller should call Close to shut down the server.
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		rawRequestBody, err := ioutil.ReadAll(r.Body)
+		rawRequestBody, err := io.ReadAll(r.Body)
 		if err != nil {
 			t.Fatal(err.Error())
 		}

@@ -11,7 +11,6 @@ import (
 	"context"
 	"encoding/json"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"path"
@@ -173,7 +172,7 @@ func checkResponse(resp *http.Response) error {
 	}
 
 	errorResponse := &errorResponse{statusCode: resp.StatusCode, header: resp.Header}
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return errors.Wrap(err, "")
 	}
