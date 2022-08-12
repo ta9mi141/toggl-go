@@ -76,7 +76,7 @@ func (a apiTokenOption) apply(c *Client) {
 	c.apiToken = string(a)
 }
 
-func (c *Client) httpGet(ctx context.Context, apiSpecificPath string, query, respBody interface{}) error {
+func (c *Client) httpGet(ctx context.Context, apiSpecificPath string, query, respBody any) error {
 	req, err := c.newRequest(ctx, http.MethodGet, apiSpecificPath, query)
 	if err != nil {
 		return errors.Wrap(err, "")
@@ -85,7 +85,7 @@ func (c *Client) httpGet(ctx context.Context, apiSpecificPath string, query, res
 	return c.do(req, respBody)
 }
 
-func (c *Client) httpPost(ctx context.Context, apiSpecificPath string, reqBody, respBody interface{}) error {
+func (c *Client) httpPost(ctx context.Context, apiSpecificPath string, reqBody, respBody any) error {
 	req, err := c.newRequest(ctx, http.MethodPost, apiSpecificPath, reqBody)
 	if err != nil {
 		return errors.Wrap(err, "")
@@ -94,7 +94,7 @@ func (c *Client) httpPost(ctx context.Context, apiSpecificPath string, reqBody, 
 	return c.do(req, respBody)
 }
 
-func (c *Client) httpPut(ctx context.Context, apiSpecificPath string, reqBody, respBody interface{}) error {
+func (c *Client) httpPut(ctx context.Context, apiSpecificPath string, reqBody, respBody any) error {
 	req, err := c.newRequest(ctx, http.MethodPut, apiSpecificPath, reqBody)
 	if err != nil {
 		return errors.Wrap(err, "")
@@ -112,7 +112,7 @@ func (c *Client) httpDelete(ctx context.Context, apiSpecificPath string) error {
 	return c.do(req, nil)
 }
 
-func (c *Client) newRequest(ctx context.Context, httpMethod, apiSpecificPath string, input interface{}) (*http.Request, error) {
+func (c *Client) newRequest(ctx context.Context, httpMethod, apiSpecificPath string, input any) (*http.Request, error) {
 	url := *c.baseURL
 	url.Path = path.Join(url.Path, apiSpecificPath)
 
@@ -143,7 +143,7 @@ func (c *Client) newRequest(ctx context.Context, httpMethod, apiSpecificPath str
 	return req, nil
 }
 
-func (c *Client) do(req *http.Request, respBody interface{}) error {
+func (c *Client) do(req *http.Request, respBody any) error {
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return errors.Wrap(err, "")
@@ -181,7 +181,7 @@ func checkResponse(resp *http.Response) error {
 	return errorResponse
 }
 
-func decodeJSON(resp *http.Response, out interface{}) error {
+func decodeJSON(resp *http.Response, out any) error {
 	defer resp.Body.Close()
 	decoder := json.NewDecoder(resp.Body)
 	return decoder.Decode(out)

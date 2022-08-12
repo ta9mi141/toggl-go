@@ -18,7 +18,7 @@ const (
 
 // It's highly likely that the got and want are compared just before calling errorf,
 // so for the caller, the natural order of the arguments is got, want.
-func errorf(t *testing.T, got, want interface{}) {
+func errorf(t *testing.T, got, want any) {
 	t.Helper()
 	// The order of the arguments in t.Errorf is swapped
 	// because it's easier to read the error message when want is before got.
