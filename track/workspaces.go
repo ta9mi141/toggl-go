@@ -94,3 +94,35 @@ func (c *Client) GetWorkspace(ctx context.Context, workspaceID int) (*Workspace,
 	}
 	return workspace, nil
 }
+
+// WorkspaceUser represents the properties of a user who belong to a workspace.
+type WorkspaceUser struct {
+	ID                *int       `json:"id,omitempty"`
+	UserID            *int       `json:"user_id,omitempty"`
+	WorkspaceID       *int       `json:"workspace_id,omitempty"`
+	Admin             *bool      `json:"admin,omitempty"`
+	OrganizationAdmin *bool      `json:"organization_admin,omitempty"`
+	WorkspaceAdmin    *bool      `json:"workspace_admin,omitempty"`
+	Active            *bool      `json:"active,omitempty"`
+	Email             *string    `json:"email,omitempty"`
+	Timezone          *string    `json:"timezone,omitempty"`
+	Inactive          *bool      `json:"inactive,omitempty"`
+	At                *time.Time `json:"at,omitempty"`
+	Name              *string    `json:"name,omitempty"`
+	Rate              *int       `json:"rate,omitempty"`
+	RateLastUpdated   *string    `json:"rate_last_updated,omitempty"`
+	LabourCost        *int       `json:"labour_cost,omitempty"`
+	InviteURL         *string    `json:"invite_url,omitempty"`
+	InvitationCode    *string    `json:"invitation_code,omitempty"`
+	AvatarFileName    *string    `json:"avatar_file_name,omitempty"`
+	GroupIDs          *groupIDs  `json:"group_ids,omitempty"`
+	IsDirect          *bool      `json:"is_direct,omitempty"`
+}
+
+type groupIDs struct {
+}
+
+// GetWorkspaceUsers returns any users who belong to the workspace directly or through at least one group.
+func (c *Client) GetWorkspaceUsers(ctx context.Context, organizationID, workspaceID int) ([]*WorkspaceUser, error) {
+	return nil, nil
+}
