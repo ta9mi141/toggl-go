@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1234567,
+    "user_id": 2345678,
+    "workspace_id": 3456789,
+    "admin": true,
+    "organization_admin": true,
+    "workspace_admin": true,
+    "active": true,
+    "email": "example@toggl.com",
+    "timezone": "Asia/Tokyo",
+    "inactive": false,
+    "at": "2020-01-23T04:56:07+00:00",
+    "name": "Toggl Track",
+    "rate": null,
+    "rate_last_updated": null,
+    "labour_cost": null,
+    "invite_url": null,
+    "invitation_code": null,
+    "avatar_file_name": null,
+    "group_ids": null,
+    "is_direct": true
+  }
+]
