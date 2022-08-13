@@ -124,5 +124,10 @@ type groupIDs struct {
 
 // GetWorkspaceUsers returns any users who belong to the workspace directly or through at least one group.
 func (c *Client) GetWorkspaceUsers(ctx context.Context, organizationID, workspaceID int) ([]*WorkspaceUser, error) {
-	return nil, nil
+	var workspaceUsers []*WorkspaceUser
+	apiSpecificPath := path.Join(organizationsPath, strconv.Itoa(organizationID), "workspaces", strconv.Itoa(workspaceID))
+	if err := c.httpGet(ctx, apiSpecificPath, nil, &workspaceUsers); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return workspaceUsers, nil
 }
