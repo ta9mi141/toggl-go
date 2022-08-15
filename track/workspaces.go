@@ -153,5 +153,10 @@ type UpdateWorkspaceRequestBody struct {
 
 // UpdateWorkspace updates a specific workspace.
 func (c *Client) UpdateWorkspace(ctx context.Context, workspaceID int, reqBody *UpdateWorkspaceRequestBody) (*Workspace, error) {
-	return nil, nil
+	var workspace *Workspace
+	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID))
+	if err := c.httpPut(ctx, apiSpecificPath, reqBody, &workspace); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return workspace, nil
 }

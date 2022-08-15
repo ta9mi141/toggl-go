@@ -374,7 +374,7 @@ func TestUpdateWorkspace(t *testing.T) {
 					APIToken:                    Ptr("1234567890abcdefghijklmnopqrstuv"),
 					At:                          Ptr(time.Date(2020, time.January, 2, 3, 4, 5, 0, time.FixedZone("", 0))),
 					LogoURL:                     Ptr("https://assets.toggl.com/images/workspace.jpg"),
-					IcalURL:                     Ptr("/ical/workspace_user/abcdefghijklmnopqrstuvxyz012345"),
+					IcalURL:                     Ptr("/ical/workspace_user/abcdefghijklmnopqrstuvwxyz012345"),
 					IcalEnabled:                 Ptr(true),
 					CsvUpload:                   nil,
 					Subscription:                nil,
@@ -423,9 +423,9 @@ func TestUpdateWorkspace(t *testing.T) {
 				workspace: nil,
 				err: &errorResponse{
 					statusCode: 403,
-					message:    "Incorrect username and/or password\n",
+					message:    "Incorrect username and/or password",
 					header: http.Header{
-						"Content-Length": []string{"35"},
+						"Content-Length": []string{"34"},
 						"Content-Type":   []string{"text/plain; charset=utf-8"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
