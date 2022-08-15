@@ -40,6 +40,8 @@ func newMockServer(t *testing.T, apiSpecificPath string, statusCode int, testdat
 		switch filepath.Ext(testdataFile) {
 		case ".json":
 			w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		case ".txt":
+			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 		}
 
 		w.WriteHeader(statusCode)

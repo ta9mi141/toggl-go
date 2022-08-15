@@ -324,3 +324,200 @@ func TestGetWorkspaceUsers(t *testing.T) {
 		})
 	}
 }
+
+func TestUpdateWorkspace(t *testing.T) {
+	tests := []struct {
+		name string
+		in   struct {
+			statusCode   int
+			testdataFile string
+		}
+		out struct {
+			workspace *Workspace
+			err       error
+		}
+	}{
+		{
+			name: "200 OK",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusOK,
+				testdataFile: "testdata/workspaces/update_workspace_200_ok.json",
+			},
+			out: struct {
+				workspace *Workspace
+				err       error
+			}{
+				workspace: &Workspace{
+					ID:                          Ptr(1234567),
+					OrganizationID:              Ptr(2345678),
+					Name:                        Ptr("Updated Workspace"),
+					Profile:                     Ptr(0),
+					Premium:                     Ptr(false),
+					BusinessWs:                  Ptr(false),
+					Admin:                       Ptr(true),
+					SuspendedAt:                 nil,
+					ServerDeletedAt:             nil,
+					DefaultHourlyRate:           nil,
+					RateLastUpdated:             nil,
+					DefaultCurrency:             Ptr("USD"),
+					OnlyAdminsMayCreateProjects: Ptr(false),
+					OnlyAdminsMayCreateTags:     Ptr(false),
+					OnlyAdminsSeeBillableRates:  Ptr(false),
+					OnlyAdminsSeeTeamDashboard:  Ptr(false),
+					ProjectsBillableByDefault:   Ptr(true),
+					ReportsCollapse:             Ptr(true),
+					Rounding:                    Ptr(1),
+					RoundingMinutes:             Ptr(0),
+					APIToken:                    Ptr("1234567890abcdefghijklmnopqrstuv"),
+					At:                          Ptr(time.Date(2020, time.January, 2, 3, 4, 5, 0, time.FixedZone("", 0))),
+					LogoURL:                     Ptr("https://assets.toggl.com/images/workspace.jpg"),
+					IcalURL:                     Ptr("/ical/workspace_user/abcdefghijklmnopqrstuvxyz012345"),
+					IcalEnabled:                 Ptr(true),
+					CsvUpload:                   nil,
+					Subscription:                nil,
+				},
+				err: nil,
+			},
+		},
+		{
+			name: "400 Bad Request",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusBadRequest,
+				testdataFile: "testdata/workspaces/update_workspace_400_bad_request.json",
+			},
+			out: struct {
+				workspace *Workspace
+				err       error
+			}{
+				workspace: nil,
+				err: &errorResponse{
+					statusCode: 400,
+					message:    "\"JSON is not valid\"\n",
+					header: http.Header{
+						"Content-Length": []string{"20"},
+						"Content-Type":   []string{"application/json; charset=utf-8"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
+			name: "403 Forbidden",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusForbidden,
+				testdataFile: "testdata/workspaces/update_workspace_403_forbidden.txt",
+			},
+			out: struct {
+				workspace *Workspace
+				err       error
+			}{
+				workspace: nil,
+				err: &errorResponse{
+					statusCode: 403,
+					message:    "Incorrect username and/or password\n",
+					header: http.Header{
+						"Content-Length": []string{"35"},
+						"Content-Type":   []string{"text/plain; charset=utf-8"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
+			name: "500 Internal Server Error",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusInternalServerError,
+				testdataFile: "testdata/workspaces/update_workspace_500_internal_server_error",
+			},
+			out: struct {
+				workspace *Workspace
+				err       error
+			}{
+				workspace: nil,
+				err: &errorResponse{
+					statusCode: 500,
+					message:    "",
+					header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			workspaceID := 1234567
+			apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID))
+			mockServer := newMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
+			defer mockServer.Close()
+
+			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			workspace, err := client.UpdateWorkspace(context.Background(), workspaceID, &UpdateWorkspaceRequestBody{})
+
+			if !reflect.DeepEqual(workspace, tt.out.workspace) {
+				errorf(t, workspace, tt.out.workspace)
+			}
+
+			errorResp := new(errorResponse)
+			if errors.As(err, &errorResp) {
+				if !reflect.DeepEqual(errorResp, tt.out.err) {
+					errorf(t, errorResp, tt.out.err)
+				}
+			} else {
+				if !reflect.DeepEqual(err, tt.out.err) {
+					errorf(t, err, tt.out.err)
+				}
+			}
+		})
+	}
+}
+
+func TestUpdateWorkspaceRequestBody(t *testing.T) {
+	tests := []struct {
+		name string
+		in   *UpdateWorkspaceRequestBody
+		out  string
+	}{
+		{
+			name: "int, string, and bool",
+			in: &UpdateWorkspaceRequestBody{
+				InitialPricingPlan:          Ptr(1),
+				Name:                        Ptr("Updated Workspace"),
+				OnlyAdminsMayCreateProjects: Ptr(true),
+			},
+			out: "{\"initial_pricing_plan\":1,\"name\":\"Updated Workspace\",\"only_admins_may_create_projects\":true}",
+		},
+		{
+			name: "int, string, bool, and slice of int",
+			in: &UpdateWorkspaceRequestBody{
+				Admins:                      []*int{Ptr(1234567), Ptr(2345678)},
+				InitialPricingPlan:          Ptr(1),
+				Name:                        Ptr("Updated Workspace"),
+				OnlyAdminsMayCreateProjects: Ptr(true),
+			},
+			out: "{\"admins\":[1234567,2345678],\"initial_pricing_plan\":1,\"name\":\"Updated Workspace\",\"only_admins_may_create_projects\":true}",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockServer := newMockServerToAssertRequestBody(t, tt.out)
+			defer mockServer.Close()
+			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			workspaceID := 1234567
+			_, _ = client.UpdateWorkspace(context.Background(), workspaceID, tt.in)
+		})
+	}
+}

@@ -131,3 +131,27 @@ func (c *Client) GetWorkspaceUsers(ctx context.Context, organizationID, workspac
 	}
 	return workspaceUsers, nil
 }
+
+// UpdateWorkspaceRequestBody represents a request body of UpdateWorkspace.
+type UpdateWorkspaceRequestBody struct {
+	Admins                      []*int  `json:"admins,omitempty"`
+	DefaultCurrency             *string `json:"default_currency,omitempty"`
+	DefaultHourlyRate           *int    `json:"default_hourly_rate,omitempty"`
+	InitialPricingPlan          *int    `json:"initial_pricing_plan,omitempty"`
+	Name                        *string `json:"name,omitempty"`
+	OnlyAdminsMayCreateProjects *bool   `json:"only_admins_may_create_projects,omitempty"`
+	OnlyAdminsMayCreateTags     *bool   `json:"only_admins_may_create_tags,omitempty"`
+	OnlyAdminsSeeBillableRates  *bool   `json:"only_admins_see_billable_rates,omitempty"`
+	OnlyAdminsSeeTeamDashboard  *bool   `json:"only_admins_see_team_dashboard,omitempty"`
+	OrganizationID              *int    `json:"organization_id,omitempty"`
+	ProjectsBillableByDefault   *bool   `json:"projects_billable_by_default,omitempty"`
+	RateChangeMode              *string `json:"rate_change_mode,omitempty"`
+	ReportsCollapse             *bool   `json:"reports_collapse,omitempty"`
+	Rounding                    *int    `json:"rounding,omitempty"`
+	RoundingMinutes             *int    `json:"rounding_minutes,omitempty"`
+}
+
+// UpdateWorkspace updates a specific workspace.
+func (c *Client) UpdateWorkspace(ctx context.Context, workspaceID int, reqBody *UpdateWorkspaceRequestBody) (*Workspace, error) {
+	return nil, nil
+}
