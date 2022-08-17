@@ -8,6 +8,8 @@ import (
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/ta9mi141/toggl-go/track/internal"
 )
 
 func TestGetMe(t *testing.T) {
@@ -105,24 +107,24 @@ func TestGetMe(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockServer := newMockServer(t, mePath, tt.in.statusCode, tt.in.testdataFile)
+			mockServer := internal.NewMockServer(t, mePath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
 			me, err := client.GetMe(context.Background())
 
 			if !reflect.DeepEqual(me, tt.out.me) {
-				errorf(t, me, tt.out.me)
+				internal.Errorf(t, me, tt.out.me)
 			}
 
 			errorResp := new(errorResponse)
 			if errors.As(err, &errorResp) {
 				if !reflect.DeepEqual(errorResp, tt.out.err) {
-					errorf(t, errorResp, tt.out.err)
+					internal.Errorf(t, errorResp, tt.out.err)
 				}
 			} else {
 				if !reflect.DeepEqual(err, tt.out.err) {
-					errorf(t, err, tt.out.err)
+					internal.Errorf(t, err, tt.out.err)
 				}
 			}
 		})
@@ -247,24 +249,24 @@ func TestUpdateMe(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockServer := newMockServer(t, mePath, tt.in.statusCode, tt.in.testdataFile)
+			mockServer := internal.NewMockServer(t, mePath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
 			me, err := client.UpdateMe(context.Background(), &UpdateMeRequestBody{})
 
 			if !reflect.DeepEqual(me, tt.out.me) {
-				errorf(t, me, tt.out.me)
+				internal.Errorf(t, me, tt.out.me)
 			}
 
 			errorResp := new(errorResponse)
 			if errors.As(err, &errorResp) {
 				if !reflect.DeepEqual(errorResp, tt.out.err) {
-					errorf(t, errorResp, tt.out.err)
+					internal.Errorf(t, errorResp, tt.out.err)
 				}
 			} else {
 				if !reflect.DeepEqual(err, tt.out.err) {
-					errorf(t, err, tt.out.err)
+					internal.Errorf(t, err, tt.out.err)
 				}
 			}
 		})
@@ -303,9 +305,9 @@ func TestUpdateMeRequestBody(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockServer := newMockServerToAssertRequestBody(t, tt.out)
+			mockServer := internal.NewMockServerToAssertRequestBody(t, tt.out)
 			defer mockServer.Close()
-			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
 			_, _ = client.UpdateMe(context.Background(), tt.in)
 		})
 	}
@@ -437,24 +439,24 @@ func TestGetMyOrganizations(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			apiSpecificPath := path.Join(mePath, "organizations")
-			mockServer := newMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
+			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
 			organizations, err := client.GetMyOrganizations(context.Background())
 
 			if !reflect.DeepEqual(organizations, tt.out.organizations) {
-				errorf(t, organizations, tt.out.organizations)
+				internal.Errorf(t, organizations, tt.out.organizations)
 			}
 
 			errorResp := new(errorResponse)
 			if errors.As(err, &errorResp) {
 				if !reflect.DeepEqual(errorResp, tt.out.err) {
-					errorf(t, errorResp, tt.out.err)
+					internal.Errorf(t, errorResp, tt.out.err)
 				}
 			} else {
 				if !reflect.DeepEqual(err, tt.out.err) {
-					errorf(t, err, tt.out.err)
+					internal.Errorf(t, err, tt.out.err)
 				}
 			}
 		})
@@ -620,24 +622,24 @@ func TestGetProjects(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			apiSpecificPath := path.Join(mePath, "projects")
-			mockServer := newMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
+			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
 			projects, err := client.GetProjects(context.Background(), nil)
 
 			if !reflect.DeepEqual(projects, tt.out.projects) {
-				errorf(t, projects, tt.out.projects)
+				internal.Errorf(t, projects, tt.out.projects)
 			}
 
 			errorResp := new(errorResponse)
 			if errors.As(err, &errorResp) {
 				if !reflect.DeepEqual(errorResp, tt.out.err) {
-					errorf(t, errorResp, tt.out.err)
+					internal.Errorf(t, errorResp, tt.out.err)
 				}
 			} else {
 				if !reflect.DeepEqual(err, tt.out.err) {
-					errorf(t, err, tt.out.err)
+					internal.Errorf(t, err, tt.out.err)
 				}
 			}
 		})
@@ -673,10 +675,10 @@ func TestGetProjectsQuery(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockServer := newMockServerToAssertQuery(t, tt.out)
+			mockServer := internal.NewMockServerToAssertQuery(t, tt.out)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
 			_, _ = client.GetProjects(context.Background(), tt.in)
 		})
 	}
@@ -841,24 +843,24 @@ func TestGetProjectsPaginated(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			apiSpecificPath := path.Join(mePath, "projects/paginated")
-			mockServer := newMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
+			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
 			projects, err := client.GetProjectsPaginated(context.Background(), nil)
 
 			if !reflect.DeepEqual(projects, tt.out.projects) {
-				errorf(t, projects, tt.out.projects)
+				internal.Errorf(t, projects, tt.out.projects)
 			}
 
 			errorResp := new(errorResponse)
 			if errors.As(err, &errorResp) {
 				if !reflect.DeepEqual(errorResp, tt.out.err) {
-					errorf(t, errorResp, tt.out.err)
+					internal.Errorf(t, errorResp, tt.out.err)
 				}
 			} else {
 				if !reflect.DeepEqual(err, tt.out.err) {
-					errorf(t, err, tt.out.err)
+					internal.Errorf(t, err, tt.out.err)
 				}
 			}
 		})
@@ -894,10 +896,10 @@ func TestGetProjectsPaginatedQuery(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockServer := newMockServerToAssertQuery(t, tt.out)
+			mockServer := internal.NewMockServerToAssertQuery(t, tt.out)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
 			_, _ = client.GetProjectsPaginated(context.Background(), tt.in)
 		})
 	}

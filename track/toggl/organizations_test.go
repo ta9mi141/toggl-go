@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"testing"
 	"time"
+
+	"github.com/ta9mi141/toggl-go/track/internal"
 )
 
 func TestGetOrganization(t *testing.T) {
@@ -140,24 +142,24 @@ func TestGetOrganization(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			organizationID := 1234567
 			apiSpecificPath := path.Join(organizationsPath, strconv.Itoa(organizationID))
-			mockServer := newMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
+			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
 			organization, err := client.GetOrganization(context.Background(), organizationID)
 
 			if !reflect.DeepEqual(organization, tt.out.organization) {
-				errorf(t, organization, tt.out.organization)
+				internal.Errorf(t, organization, tt.out.organization)
 			}
 
 			errorResp := new(errorResponse)
 			if errors.As(err, &errorResp) {
 				if !reflect.DeepEqual(errorResp, tt.out.err) {
-					errorf(t, errorResp, tt.out.err)
+					internal.Errorf(t, errorResp, tt.out.err)
 				}
 			} else {
 				if !reflect.DeepEqual(err, tt.out.err) {
-					errorf(t, err, tt.out.err)
+					internal.Errorf(t, err, tt.out.err)
 				}
 			}
 		})
@@ -292,24 +294,24 @@ func TestGetOrganizationUsers(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			organizationID := 1234567
 			apiSpecificPath := path.Join(organizationsPath, strconv.Itoa(organizationID), "users")
-			mockServer := newMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
+			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
 			organizationUsers, err := client.GetOrganizationUsers(context.Background(), organizationID, &GetOrganizationUsersQuery{})
 
 			if !reflect.DeepEqual(organizationUsers, tt.out.organizationUsers) {
-				errorf(t, organizationUsers, tt.out.organizationUsers)
+				internal.Errorf(t, organizationUsers, tt.out.organizationUsers)
 			}
 
 			errorResp := new(errorResponse)
 			if errors.As(err, &errorResp) {
 				if !reflect.DeepEqual(errorResp, tt.out.err) {
-					errorf(t, errorResp, tt.out.err)
+					internal.Errorf(t, errorResp, tt.out.err)
 				}
 			} else {
 				if !reflect.DeepEqual(err, tt.out.err) {
-					errorf(t, err, tt.out.err)
+					internal.Errorf(t, err, tt.out.err)
 				}
 			}
 		})
@@ -357,11 +359,11 @@ func TestGetOrganizationUsersQuery(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockServer := newMockServerToAssertQuery(t, tt.out)
+			mockServer := internal.NewMockServerToAssertQuery(t, tt.out)
 			defer mockServer.Close()
 
 			organizationID := 1234567
-			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
 			_, _ = client.GetOrganizationUsers(context.Background(), organizationID, tt.in)
 		})
 	}

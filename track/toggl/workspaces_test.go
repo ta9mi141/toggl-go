@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"testing"
 	"time"
+
+	"github.com/ta9mi141/toggl-go/track/internal"
 )
 
 func TestGetWorkspace(t *testing.T) {
@@ -146,24 +148,24 @@ func TestGetWorkspace(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			workspaceID := 1234567
 			apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID))
-			mockServer := newMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
+			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
 			workspace, err := client.GetWorkspace(context.Background(), workspaceID)
 
 			if !reflect.DeepEqual(workspace, tt.out.workspace) {
-				errorf(t, workspace, tt.out.workspace)
+				internal.Errorf(t, workspace, tt.out.workspace)
 			}
 
 			errorResp := new(errorResponse)
 			if errors.As(err, &errorResp) {
 				if !reflect.DeepEqual(errorResp, tt.out.err) {
-					errorf(t, errorResp, tt.out.err)
+					internal.Errorf(t, errorResp, tt.out.err)
 				}
 			} else {
 				if !reflect.DeepEqual(err, tt.out.err) {
-					errorf(t, err, tt.out.err)
+					internal.Errorf(t, err, tt.out.err)
 				}
 			}
 		})
@@ -301,24 +303,24 @@ func TestGetWorkspaceUsers(t *testing.T) {
 			organizationID := 1234567
 			workspaceID := 2345678
 			apiSpecificPath := path.Join(organizationsPath, strconv.Itoa(organizationID), "workspaces", strconv.Itoa(workspaceID))
-			mockServer := newMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
+			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
 			workspaceUsers, err := client.GetWorkspaceUsers(context.Background(), organizationID, workspaceID)
 
 			if !reflect.DeepEqual(workspaceUsers, tt.out.workspaceUsers) {
-				errorf(t, workspaceUsers, tt.out.workspaceUsers)
+				internal.Errorf(t, workspaceUsers, tt.out.workspaceUsers)
 			}
 
 			errorResp := new(errorResponse)
 			if errors.As(err, &errorResp) {
 				if !reflect.DeepEqual(errorResp, tt.out.err) {
-					errorf(t, errorResp, tt.out.err)
+					internal.Errorf(t, errorResp, tt.out.err)
 				}
 			} else {
 				if !reflect.DeepEqual(err, tt.out.err) {
-					errorf(t, err, tt.out.err)
+					internal.Errorf(t, err, tt.out.err)
 				}
 			}
 		})
@@ -461,24 +463,24 @@ func TestUpdateWorkspace(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			workspaceID := 1234567
 			apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID))
-			mockServer := newMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
+			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
 			workspace, err := client.UpdateWorkspace(context.Background(), workspaceID, &UpdateWorkspaceRequestBody{})
 
 			if !reflect.DeepEqual(workspace, tt.out.workspace) {
-				errorf(t, workspace, tt.out.workspace)
+				internal.Errorf(t, workspace, tt.out.workspace)
 			}
 
 			errorResp := new(errorResponse)
 			if errors.As(err, &errorResp) {
 				if !reflect.DeepEqual(errorResp, tt.out.err) {
-					errorf(t, errorResp, tt.out.err)
+					internal.Errorf(t, errorResp, tt.out.err)
 				}
 			} else {
 				if !reflect.DeepEqual(err, tt.out.err) {
-					errorf(t, err, tt.out.err)
+					internal.Errorf(t, err, tt.out.err)
 				}
 			}
 		})
@@ -513,9 +515,9 @@ func TestUpdateWorkspaceRequestBody(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockServer := newMockServerToAssertRequestBody(t, tt.out)
+			mockServer := internal.NewMockServerToAssertRequestBody(t, tt.out)
 			defer mockServer.Close()
-			client := NewClient(WithAPIToken(apiToken), withBaseURL(mockServer.URL))
+			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
 			workspaceID := 1234567
 			_, _ = client.UpdateWorkspace(context.Background(), workspaceID, tt.in)
 		})

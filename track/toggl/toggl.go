@@ -76,6 +76,18 @@ func (a apiTokenOption) apply(c *Client) {
 	c.apiToken = string(a)
 }
 
+// withBaseURL makes client testable by configurable URL.
+func withBaseURL(baseURL string) Option {
+	return baseURLOption(baseURL)
+}
+
+type baseURLOption string
+
+func (b baseURLOption) apply(c *Client) {
+	baseURL, _ := url.Parse(string(b))
+	c.baseURL = baseURL
+}
+
 func (c *Client) httpGet(ctx context.Context, apiSpecificPath string, query, respBody any) error {
 	req, err := c.newRequest(ctx, http.MethodGet, apiSpecificPath, query)
 	if err != nil {
