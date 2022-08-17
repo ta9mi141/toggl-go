@@ -1,4 +1,4 @@
-package track
+package toggl
 
 import "time"
 

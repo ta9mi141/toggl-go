@@ -1,10 +1,10 @@
 /*
-Package track is a library of Toggl Track API for the Go programming language.
+Package toggl is a library of Toggl API v9 for the Go programming language.
 
 See API documentation for more details.
 https://developers.track.toggl.com/docs/
 */
-package track
+package toggl
 
 import (
 	"bytes"
@@ -21,10 +21,10 @@ import (
 
 const (
 	defaultBaseURL    string = "https://api.track.toggl.com/"
-	basicAuthPassword string = "api_token" // Defined in Toggl Track API
+	basicAuthPassword string = "api_token" // Defined in Toggl API v9
 )
 
-// Client is a client for interacting with Toggl Track API.
+// Client is a client for interacting with Toggl API v9.
 type Client struct {
 	baseURL    *url.URL
 	httpClient *http.Client
@@ -32,7 +32,7 @@ type Client struct {
 	apiToken string
 }
 
-// NewClient creates a new Toggl Track API client.
+// NewClient creates a new Toggl API v9 client.
 func NewClient(options ...Option) *Client {
 	baseURL, _ := url.Parse(defaultBaseURL)
 	newClient := &Client{
@@ -47,7 +47,7 @@ func NewClient(options ...Option) *Client {
 	return newClient
 }
 
-// Option is an option for a Toggl Track API client.
+// Option is an option for a Toggl API v9 client.
 type Option interface {
 	apply(*Client)
 }
