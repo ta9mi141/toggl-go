@@ -10,6 +10,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/ta9mi141/toggl-go/track"
 	"github.com/ta9mi141/toggl-go/track/internal"
 )
 
@@ -39,27 +40,27 @@ func TestGetOrganization(t *testing.T) {
 				err          error
 			}{
 				organization: &Organization{
-					ID:                      Ptr(1234567),
-					Name:                    Ptr("test organization"),
-					PricingPlanID:           Ptr(0),
-					CreatedAt:               Ptr(time.Date(2020, time.January, 23, 4, 56, 07, 678184000, time.UTC)),
-					At:                      Ptr(time.Date(2020, time.January, 23, 4, 56, 07, 678184000, time.UTC)),
+					ID:                      track.Ptr(1234567),
+					Name:                    track.Ptr("test organization"),
+					PricingPlanID:           track.Ptr(0),
+					CreatedAt:               track.Ptr(time.Date(2020, time.January, 23, 4, 56, 07, 678184000, time.UTC)),
+					At:                      track.Ptr(time.Date(2020, time.January, 23, 4, 56, 07, 678184000, time.UTC)),
 					ServerDeletedAt:         nil,
-					IsMultiWorkspaceEnabled: Ptr(false),
+					IsMultiWorkspaceEnabled: track.Ptr(false),
 					SuspendedAt:             nil,
-					UserCount:               Ptr(1),
+					UserCount:               track.Ptr(1),
 					TrialInfo: &TrialInfo{
-						Trial:             Ptr(false),
-						TrialAvailable:    Ptr(true),
+						Trial:             track.Ptr(false),
+						TrialAvailable:    track.Ptr(true),
 						TrialEndDate:      nil,
 						NextPaymentDate:   nil,
 						LastPricingPlanID: nil,
 					},
-					IsChargify:    Ptr(false),
-					IsUnified:     Ptr(false),
-					MaxWorkspaces: Ptr(20),
-					Admin:         Ptr(true),
-					Owner:         Ptr(true),
+					IsChargify:    track.Ptr(false),
+					IsUnified:     track.Ptr(false),
+					MaxWorkspaces: track.Ptr(20),
+					Admin:         track.Ptr(true),
+					Owner:         track.Ptr(true),
 				},
 				err: nil,
 			},
@@ -193,22 +194,22 @@ func TestGetOrganizationUsers(t *testing.T) {
 			}{
 				organizationUsers: []*OrganizationUser{
 					{
-						ID:             Ptr(1234567),
-						Name:           Ptr("Toggl Track"),
-						Email:          Ptr("toggl@example.com"),
-						UserID:         Ptr(2345678),
-						AvatarURL:      Ptr(""),
-						Admin:          Ptr(true),
-						Owner:          Ptr(true),
-						Joined:         Ptr(true),
+						ID:             track.Ptr(1234567),
+						Name:           track.Ptr("Toggl Track"),
+						Email:          track.Ptr("toggl@example.com"),
+						UserID:         track.Ptr(2345678),
+						AvatarURL:      track.Ptr(""),
+						Admin:          track.Ptr(true),
+						Owner:          track.Ptr(true),
+						Joined:         track.Ptr(true),
 						InvitationCode: nil,
-						Inactive:       Ptr(false),
-						CanEditEmail:   Ptr(false),
+						Inactive:       track.Ptr(false),
+						CanEditEmail:   track.Ptr(false),
 						Workspaces: []*workspace{
 							{
-								WorkspaceID: Ptr(3456789),
-								Admin:       Ptr(true),
-								Name:        Ptr("Workspace1"),
+								WorkspaceID: track.Ptr(3456789),
+								Admin:       track.Ptr(true),
+								Name:        track.Ptr("Workspace1"),
 							},
 						},
 					},
@@ -331,23 +332,23 @@ func TestGetOrganizationUsersQuery(t *testing.T) {
 		},
 		{
 			name: "filter=toggl",
-			in:   &GetOrganizationUsersQuery{Filter: Ptr("toggl")},
+			in:   &GetOrganizationUsersQuery{Filter: track.Ptr("toggl")},
 			out:  "filter=toggl",
 		},
 		{
 			name: "filter=toggl&only_admins=true",
 			in: &GetOrganizationUsersQuery{
-				Filter:     Ptr("toggl"),
-				OnlyAdmins: Ptr("true"),
+				Filter:     track.Ptr("toggl"),
+				OnlyAdmins: track.Ptr("true"),
 			},
 			out: "filter=toggl&only_admins=true",
 		},
 		{
 			name: "filter=toggl&only_admins=true&page=2",
 			in: &GetOrganizationUsersQuery{
-				Filter:     Ptr("toggl"),
-				OnlyAdmins: Ptr("true"),
-				Page:       Ptr(2),
+				Filter:     track.Ptr("toggl"),
+				OnlyAdmins: track.Ptr("true"),
+				Page:       track.Ptr(2),
 			},
 			out: "filter=toggl&only_admins=true&page=2",
 		},
