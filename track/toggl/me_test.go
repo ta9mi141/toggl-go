@@ -71,10 +71,10 @@ func TestGetMe(t *testing.T) {
 				err error
 			}{
 				me: nil,
-				err: &errorResponse{
-					statusCode: 403,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 403,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -95,10 +95,10 @@ func TestGetMe(t *testing.T) {
 				err error
 			}{
 				me: nil,
-				err: &errorResponse{
-					statusCode: 500,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 500,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -118,7 +118,7 @@ func TestGetMe(t *testing.T) {
 				internal.Errorf(t, me, tt.out.me)
 			}
 
-			errorResp := new(errorResponse)
+			errorResp := new(internal.ErrorResponse)
 			if errors.As(err, &errorResp) {
 				if !reflect.DeepEqual(errorResp, tt.out.err) {
 					internal.Errorf(t, errorResp, tt.out.err)
@@ -188,10 +188,10 @@ func TestUpdateMe(t *testing.T) {
 				err error
 			}{
 				me: nil,
-				err: &errorResponse{
-					statusCode: 400,
-					message:    "\"Invalid beginning_of_week\"\n",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 400,
+					Message:    "\"Invalid beginning_of_week\"\n",
+					Header: http.Header{
 						"Content-Length": []string{"28"},
 						"Content-Type":   []string{"application/json; charset=utf-8"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
@@ -213,10 +213,10 @@ func TestUpdateMe(t *testing.T) {
 				err error
 			}{
 				me: nil,
-				err: &errorResponse{
-					statusCode: 403,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 403,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -237,10 +237,10 @@ func TestUpdateMe(t *testing.T) {
 				err error
 			}{
 				me: nil,
-				err: &errorResponse{
-					statusCode: 500,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 500,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -260,7 +260,7 @@ func TestUpdateMe(t *testing.T) {
 				internal.Errorf(t, me, tt.out.me)
 			}
 
-			errorResp := new(errorResponse)
+			errorResp := new(internal.ErrorResponse)
 			if errors.As(err, &errorResp) {
 				if !reflect.DeepEqual(errorResp, tt.out.err) {
 					internal.Errorf(t, errorResp, tt.out.err)
@@ -402,10 +402,10 @@ func TestGetMyOrganizations(t *testing.T) {
 				err           error
 			}{
 				organizations: nil,
-				err: &errorResponse{
-					statusCode: 403,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 403,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -426,10 +426,10 @@ func TestGetMyOrganizations(t *testing.T) {
 				err           error
 			}{
 				organizations: nil,
-				err: &errorResponse{
-					statusCode: 500,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 500,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -450,7 +450,7 @@ func TestGetMyOrganizations(t *testing.T) {
 				internal.Errorf(t, organizations, tt.out.organizations)
 			}
 
-			errorResp := new(errorResponse)
+			errorResp := new(internal.ErrorResponse)
 			if errors.As(err, &errorResp) {
 				if !reflect.DeepEqual(errorResp, tt.out.err) {
 					internal.Errorf(t, errorResp, tt.out.err)
@@ -560,10 +560,10 @@ func TestGetProjects(t *testing.T) {
 				err      error
 			}{
 				projects: nil,
-				err: &errorResponse{
-					statusCode: 403,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 403,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -584,10 +584,10 @@ func TestGetProjects(t *testing.T) {
 				err      error
 			}{
 				projects: nil,
-				err: &errorResponse{
-					statusCode: 404,
-					message:    "\"Invalid include_archived\"\n",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 404,
+					Message:    "\"Invalid include_archived\"\n",
+					Header: http.Header{
 						"Content-Length": []string{"27"},
 						"Content-Type":   []string{"application/json; charset=utf-8"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
@@ -609,10 +609,10 @@ func TestGetProjects(t *testing.T) {
 				err      error
 			}{
 				projects: nil,
-				err: &errorResponse{
-					statusCode: 500,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 500,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -633,7 +633,7 @@ func TestGetProjects(t *testing.T) {
 				internal.Errorf(t, projects, tt.out.projects)
 			}
 
-			errorResp := new(errorResponse)
+			errorResp := new(internal.ErrorResponse)
 			if errors.As(err, &errorResp) {
 				if !reflect.DeepEqual(errorResp, tt.out.err) {
 					internal.Errorf(t, errorResp, tt.out.err)
@@ -781,10 +781,10 @@ func TestGetProjectsPaginated(t *testing.T) {
 				err      error
 			}{
 				projects: nil,
-				err: &errorResponse{
-					statusCode: 400,
-					message:    "\"Invalid start_project_id\"\n",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 400,
+					Message:    "\"Invalid start_project_id\"\n",
+					Header: http.Header{
 						"Content-Length": []string{"27"},
 						"Content-Type":   []string{"application/json; charset=utf-8"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
@@ -806,10 +806,10 @@ func TestGetProjectsPaginated(t *testing.T) {
 				err      error
 			}{
 				projects: nil,
-				err: &errorResponse{
-					statusCode: 403,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 403,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -830,10 +830,10 @@ func TestGetProjectsPaginated(t *testing.T) {
 				err      error
 			}{
 				projects: nil,
-				err: &errorResponse{
-					statusCode: 500,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 500,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -854,7 +854,7 @@ func TestGetProjectsPaginated(t *testing.T) {
 				internal.Errorf(t, projects, tt.out.projects)
 			}
 
-			errorResp := new(errorResponse)
+			errorResp := new(internal.ErrorResponse)
 			if errors.As(err, &errorResp) {
 				if !reflect.DeepEqual(errorResp, tt.out.err) {
 					internal.Errorf(t, errorResp, tt.out.err)

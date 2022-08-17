@@ -79,10 +79,10 @@ func TestGetOrganization(t *testing.T) {
 				err          error
 			}{
 				organization: nil,
-				err: &errorResponse{
-					statusCode: 400,
-					message:    "\"Missing or invalid organization_id\"\n",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 400,
+					Message:    "\"Missing or invalid organization_id\"\n",
+					Header: http.Header{
 						"Content-Length": []string{"37"},
 						"Content-Type":   []string{"application/json; charset=utf-8"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
@@ -104,10 +104,10 @@ func TestGetOrganization(t *testing.T) {
 				err          error
 			}{
 				organization: nil,
-				err: &errorResponse{
-					statusCode: 403,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 403,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -128,10 +128,10 @@ func TestGetOrganization(t *testing.T) {
 				err          error
 			}{
 				organization: nil,
-				err: &errorResponse{
-					statusCode: 500,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 500,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -153,7 +153,7 @@ func TestGetOrganization(t *testing.T) {
 				internal.Errorf(t, organization, tt.out.organization)
 			}
 
-			errorResp := new(errorResponse)
+			errorResp := new(internal.ErrorResponse)
 			if errors.As(err, &errorResp) {
 				if !reflect.DeepEqual(errorResp, tt.out.err) {
 					internal.Errorf(t, errorResp, tt.out.err)
@@ -231,10 +231,10 @@ func TestGetOrganizationUsers(t *testing.T) {
 				err               error
 			}{
 				organizationUsers: nil,
-				err: &errorResponse{
-					statusCode: 400,
-					message:    "\"Missing or invalid organization_id\"\n",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 400,
+					Message:    "\"Missing or invalid organization_id\"\n",
+					Header: http.Header{
 						"Content-Length": []string{"37"},
 						"Content-Type":   []string{"application/json; charset=utf-8"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
@@ -256,10 +256,10 @@ func TestGetOrganizationUsers(t *testing.T) {
 				err               error
 			}{
 				organizationUsers: nil,
-				err: &errorResponse{
-					statusCode: 403,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 403,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -280,10 +280,10 @@ func TestGetOrganizationUsers(t *testing.T) {
 				err               error
 			}{
 				organizationUsers: nil,
-				err: &errorResponse{
-					statusCode: 500,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 500,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -305,7 +305,7 @@ func TestGetOrganizationUsers(t *testing.T) {
 				internal.Errorf(t, organizationUsers, tt.out.organizationUsers)
 			}
 
-			errorResp := new(errorResponse)
+			errorResp := new(internal.ErrorResponse)
 			if errors.As(err, &errorResp) {
 				if !reflect.DeepEqual(errorResp, tt.out.err) {
 					internal.Errorf(t, errorResp, tt.out.err)

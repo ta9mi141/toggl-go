@@ -98,10 +98,10 @@ func TestGetTimeEntries(t *testing.T) {
 				err         error
 			}{
 				timeEntries: nil,
-				err: &errorResponse{
-					statusCode: 400,
-					message:    "\"Since is expected to be an unix timestamp, integer value\"\n",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 400,
+					Message:    "\"Since is expected to be an unix timestamp, integer value\"\n",
+					Header: http.Header{
 						"Content-Length": []string{"59"},
 						"Content-Type":   []string{"application/json; charset=utf-8"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
@@ -123,10 +123,10 @@ func TestGetTimeEntries(t *testing.T) {
 				err         error
 			}{
 				timeEntries: nil,
-				err: &errorResponse{
-					statusCode: 403,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 403,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -147,10 +147,10 @@ func TestGetTimeEntries(t *testing.T) {
 				err         error
 			}{
 				timeEntries: nil,
-				err: &errorResponse{
-					statusCode: 500,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 500,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -171,7 +171,7 @@ func TestGetTimeEntries(t *testing.T) {
 				internal.Errorf(t, timeEntries, tt.out.timeEntries)
 			}
 
-			errorResp := new(errorResponse)
+			errorResp := new(internal.ErrorResponse)
 			if errors.As(err, &errorResp) {
 				if !reflect.DeepEqual(errorResp, tt.out.err) {
 					internal.Errorf(t, errorResp, tt.out.err)
@@ -310,10 +310,10 @@ func TestGetCurrentTimeEntry(t *testing.T) {
 				err       error
 			}{
 				timeEntry: nil,
-				err: &errorResponse{
-					statusCode: 403,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 403,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -334,10 +334,10 @@ func TestGetCurrentTimeEntry(t *testing.T) {
 				err       error
 			}{
 				timeEntry: nil,
-				err: &errorResponse{
-					statusCode: 500,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 500,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -358,7 +358,7 @@ func TestGetCurrentTimeEntry(t *testing.T) {
 				internal.Errorf(t, timeEntry, tt.out.timeEntry)
 			}
 
-			errorResp := new(errorResponse)
+			errorResp := new(internal.ErrorResponse)
 			if errors.As(err, &errorResp) {
 				if !reflect.DeepEqual(errorResp, tt.out.err) {
 					internal.Errorf(t, errorResp, tt.out.err)
@@ -434,10 +434,10 @@ func TestCreateTimeEntry(t *testing.T) {
 				err       error
 			}{
 				timeEntry: nil,
-				err: &errorResponse{
-					statusCode: 400,
-					message:    "\"JSON is not valid\"\n",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 400,
+					Message:    "\"JSON is not valid\"\n",
+					Header: http.Header{
 						"Content-Length": []string{"20"},
 						"Content-Type":   []string{"application/json; charset=utf-8"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
@@ -459,10 +459,10 @@ func TestCreateTimeEntry(t *testing.T) {
 				err       error
 			}{
 				timeEntry: nil,
-				err: &errorResponse{
-					statusCode: 403,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 403,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -483,10 +483,10 @@ func TestCreateTimeEntry(t *testing.T) {
 				err       error
 			}{
 				timeEntry: nil,
-				err: &errorResponse{
-					statusCode: 500,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 500,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -508,7 +508,7 @@ func TestCreateTimeEntry(t *testing.T) {
 				internal.Errorf(t, timeEntry, tt.out.timeEntry)
 			}
 
-			errorResp := new(errorResponse)
+			errorResp := new(internal.ErrorResponse)
 			if errors.As(err, &errorResp) {
 				if !reflect.DeepEqual(errorResp, tt.out.err) {
 					internal.Errorf(t, errorResp, tt.out.err)
@@ -653,10 +653,10 @@ func TestUpdateTimeEntry(t *testing.T) {
 				err       error
 			}{
 				timeEntry: nil,
-				err: &errorResponse{
-					statusCode: 400,
-					message:    "\"JSON is not valid\"\n",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 400,
+					Message:    "\"JSON is not valid\"\n",
+					Header: http.Header{
 						"Content-Length": []string{"20"},
 						"Content-Type":   []string{"application/json; charset=utf-8"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
@@ -678,10 +678,10 @@ func TestUpdateTimeEntry(t *testing.T) {
 				err       error
 			}{
 				timeEntry: nil,
-				err: &errorResponse{
-					statusCode: 403,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 403,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -702,10 +702,10 @@ func TestUpdateTimeEntry(t *testing.T) {
 				err       error
 			}{
 				timeEntry: nil,
-				err: &errorResponse{
-					statusCode: 500,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 500,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -728,7 +728,7 @@ func TestUpdateTimeEntry(t *testing.T) {
 				internal.Errorf(t, timeEntry, tt.out.timeEntry)
 			}
 
-			errorResp := new(errorResponse)
+			errorResp := new(internal.ErrorResponse)
 			if errors.As(err, &errorResp) {
 				if !reflect.DeepEqual(errorResp, tt.out.err) {
 					internal.Errorf(t, errorResp, tt.out.err)
@@ -850,10 +850,10 @@ func TestDeleteTimeEntry(t *testing.T) {
 			out: struct {
 				err error
 			}{
-				err: &errorResponse{
-					statusCode: 403,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 403,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -872,10 +872,10 @@ func TestDeleteTimeEntry(t *testing.T) {
 			out: struct {
 				err error
 			}{
-				err: &errorResponse{
-					statusCode: 404,
-					message:    "\"Time entry not found\"\n",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 404,
+					Message:    "\"Time entry not found\"\n",
+					Header: http.Header{
 						"Content-Length": []string{"23"},
 						"Content-Type":   []string{"application/json; charset=utf-8"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
@@ -895,10 +895,10 @@ func TestDeleteTimeEntry(t *testing.T) {
 			out: struct {
 				err error
 			}{
-				err: &errorResponse{
-					statusCode: 500,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 500,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -917,7 +917,7 @@ func TestDeleteTimeEntry(t *testing.T) {
 			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
 			err := client.DeleteTimeEntry(context.Background(), workspaceID, timeEntryID)
 
-			errorResp := new(errorResponse)
+			errorResp := new(internal.ErrorResponse)
 			if errors.As(err, &errorResp) {
 				if !reflect.DeepEqual(errorResp, tt.out.err) {
 					internal.Errorf(t, errorResp, tt.out.err)

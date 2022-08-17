@@ -17,6 +17,7 @@ import (
 
 	"github.com/google/go-querystring/query"
 	"github.com/pkg/errors"
+	"github.com/ta9mi141/toggl-go/track/internal"
 )
 
 const (
@@ -161,7 +162,7 @@ func (c *Client) do(req *http.Request, respBody any) error {
 		return errors.Wrap(err, "")
 	}
 
-	err = checkResponse(resp)
+	err = internal.CheckResponse(resp)
 	if err != nil {
 		return errors.Wrap(err, "")
 	}
@@ -175,22 +176,6 @@ func (c *Client) do(req *http.Request, respBody any) error {
 	}
 
 	return nil
-}
-
-func checkResponse(resp *http.Response) error {
-	switch resp.StatusCode {
-	case 200, 201, 204:
-		return nil
-	}
-
-	errorResponse := &errorResponse{statusCode: resp.StatusCode, header: resp.Header}
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return errors.Wrap(err, "")
-	}
-	errorResponse.message = string(body)
-
-	return errorResponse
 }
 
 func decodeJSON(resp *http.Response, out any) error {

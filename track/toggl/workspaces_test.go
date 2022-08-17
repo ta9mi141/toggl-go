@@ -85,10 +85,10 @@ func TestGetWorkspace(t *testing.T) {
 				err       error
 			}{
 				workspace: nil,
-				err: &errorResponse{
-					statusCode: 400,
-					message:    "\"Missing or invalid workspace_id\"\n",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 400,
+					Message:    "\"Missing or invalid workspace_id\"\n",
+					Header: http.Header{
 						"Content-Length": []string{"34"},
 						"Content-Type":   []string{"application/json; charset=utf-8"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
@@ -110,10 +110,10 @@ func TestGetWorkspace(t *testing.T) {
 				err       error
 			}{
 				workspace: nil,
-				err: &errorResponse{
-					statusCode: 403,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 403,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -134,10 +134,10 @@ func TestGetWorkspace(t *testing.T) {
 				err       error
 			}{
 				workspace: nil,
-				err: &errorResponse{
-					statusCode: 500,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 500,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -159,7 +159,7 @@ func TestGetWorkspace(t *testing.T) {
 				internal.Errorf(t, workspace, tt.out.workspace)
 			}
 
-			errorResp := new(errorResponse)
+			errorResp := new(internal.ErrorResponse)
 			if errors.As(err, &errorResp) {
 				if !reflect.DeepEqual(errorResp, tt.out.err) {
 					internal.Errorf(t, errorResp, tt.out.err)
@@ -239,10 +239,10 @@ func TestGetWorkspaceUsers(t *testing.T) {
 				err            error
 			}{
 				workspaceUsers: nil,
-				err: &errorResponse{
-					statusCode: 400,
-					message:    "\"Missing or invalid workspace_id\"\n",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 400,
+					Message:    "\"Missing or invalid workspace_id\"\n",
+					Header: http.Header{
 						"Content-Length": []string{"34"},
 						"Content-Type":   []string{"application/json; charset=utf-8"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
@@ -264,10 +264,10 @@ func TestGetWorkspaceUsers(t *testing.T) {
 				err            error
 			}{
 				workspaceUsers: nil,
-				err: &errorResponse{
-					statusCode: 403,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 403,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -288,10 +288,10 @@ func TestGetWorkspaceUsers(t *testing.T) {
 				err            error
 			}{
 				workspaceUsers: nil,
-				err: &errorResponse{
-					statusCode: 500,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 500,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -314,7 +314,7 @@ func TestGetWorkspaceUsers(t *testing.T) {
 				internal.Errorf(t, workspaceUsers, tt.out.workspaceUsers)
 			}
 
-			errorResp := new(errorResponse)
+			errorResp := new(internal.ErrorResponse)
 			if errors.As(err, &errorResp) {
 				if !reflect.DeepEqual(errorResp, tt.out.err) {
 					internal.Errorf(t, errorResp, tt.out.err)
@@ -399,10 +399,10 @@ func TestUpdateWorkspace(t *testing.T) {
 				err       error
 			}{
 				workspace: nil,
-				err: &errorResponse{
-					statusCode: 400,
-					message:    "\"JSON is not valid\"\n",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 400,
+					Message:    "\"JSON is not valid\"\n",
+					Header: http.Header{
 						"Content-Length": []string{"20"},
 						"Content-Type":   []string{"application/json; charset=utf-8"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
@@ -424,10 +424,10 @@ func TestUpdateWorkspace(t *testing.T) {
 				err       error
 			}{
 				workspace: nil,
-				err: &errorResponse{
-					statusCode: 403,
-					message:    "Incorrect username and/or password",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 403,
+					Message:    "Incorrect username and/or password",
+					Header: http.Header{
 						"Content-Length": []string{"34"},
 						"Content-Type":   []string{"text/plain; charset=utf-8"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
@@ -449,10 +449,10 @@ func TestUpdateWorkspace(t *testing.T) {
 				err       error
 			}{
 				workspace: nil,
-				err: &errorResponse{
-					statusCode: 500,
-					message:    "",
-					header: http.Header{
+				err: &internal.ErrorResponse{
+					StatusCode: 500,
+					Message:    "",
+					Header: http.Header{
 						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
@@ -474,7 +474,7 @@ func TestUpdateWorkspace(t *testing.T) {
 				internal.Errorf(t, workspace, tt.out.workspace)
 			}
 
-			errorResp := new(errorResponse)
+			errorResp := new(internal.ErrorResponse)
 			if errors.As(err, &errorResp) {
 				if !reflect.DeepEqual(errorResp, tt.out.err) {
 					internal.Errorf(t, errorResp, tt.out.err)
