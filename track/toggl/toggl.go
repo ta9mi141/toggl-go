@@ -7,15 +7,11 @@ https://developers.track.toggl.com/docs/
 package toggl
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
-	"io"
 	"net/http"
 	"net/url"
 	"path"
 
-	"github.com/google/go-querystring/query"
 	"github.com/pkg/errors"
 	"github.com/ta9mi141/toggl-go/track/internal"
 )
@@ -89,7 +85,6 @@ func (c *Client) httpGet(ctx context.Context, apiSpecificPath string, query, res
 	if err != nil {
 		return errors.Wrap(err, "")
 	}
-
 	return c.do(req, respBody)
 }
 
@@ -98,7 +93,6 @@ func (c *Client) httpPost(ctx context.Context, apiSpecificPath string, reqBody, 
 	if err != nil {
 		return errors.Wrap(err, "")
 	}
-
 	return c.do(req, respBody)
 }
 
@@ -107,7 +101,6 @@ func (c *Client) httpPut(ctx context.Context, apiSpecificPath string, reqBody, r
 	if err != nil {
 		return errors.Wrap(err, "")
 	}
-
 	return c.do(req, respBody)
 }
 
@@ -116,59 +109,23 @@ func (c *Client) httpDelete(ctx context.Context, apiSpecificPath string) error {
 	if err != nil {
 		return errors.Wrap(err, "")
 	}
-
 	return c.do(req, nil)
 }
 
 func (c *Client) newRequest(ctx context.Context, httpMethod, apiSpecificPath string, input any) (*http.Request, error) {
-	url := *c.baseURL
+	url := c.baseURL
 	url.Path = path.Join(url.Path, apiSpecificPath)
 
-	requestBody := io.Reader(nil)
-	switch httpMethod {
-	case http.MethodPost, http.MethodPut:
-		b, err := json.Marshal(input)
-		if err != nil {
-			return nil, errors.Wrap(err, "")
-		}
-		requestBody = bytes.NewReader(b)
-	case http.MethodGet:
-		values, err := query.Values(input)
-		if err != nil {
-			return nil, errors.Wrap(err, "")
-		}
-		url.RawQuery = values.Encode()
-	}
-
-	req, err := http.NewRequestWithContext(ctx, httpMethod, url.String(), requestBody)
+	req, err := internal.NewRequest(ctx, httpMethod, url, input)
 	if err != nil {
 		return nil, errors.Wrap(err, "")
 	}
 
 	req.SetBasicAuth(c.apiToken, internal.BasicAuthPassword)
-	req.Header.Set("Content-Type", "application/json")
 
 	return req, nil
 }
 
 func (c *Client) do(req *http.Request, respBody any) error {
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return errors.Wrap(err, "")
-	}
-
-	err = internal.CheckResponse(resp)
-	if err != nil {
-		return errors.Wrap(err, "")
-	}
-
-	switch req.Method {
-	case http.MethodGet, http.MethodPost, http.MethodPut:
-		err = internal.DecodeJSON(resp, respBody)
-		if err != nil {
-			return errors.Wrap(err, "")
-		}
-	}
-
-	return nil
+	return internal.Do(c.httpClient, req, respBody)
 }
