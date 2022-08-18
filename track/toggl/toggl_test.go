@@ -12,8 +12,8 @@ import (
 func TestNewClient(t *testing.T) {
 	client := NewClient()
 
-	if client.baseURL.String() != defaultBaseURL {
-		internal.Errorf(t, client.baseURL.String(), defaultBaseURL)
+	if client.baseURL.String() != internal.DefaultBaseURL {
+		internal.Errorf(t, client.baseURL.String(), internal.DefaultBaseURL)
 	}
 	if !reflect.DeepEqual(client.httpClient, http.DefaultClient) {
 		internal.Errorf(t, client.httpClient, http.DefaultClient)

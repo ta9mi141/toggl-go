@@ -8,6 +8,11 @@ import (
 	"github.com/pkg/errors"
 )
 
+const (
+	DefaultBaseURL    string = "https://api.track.toggl.com/"
+	BasicAuthPassword string = "api_token" // Defined in Toggl Track API
+)
+
 func CheckResponse(resp *http.Response) error {
 	switch resp.StatusCode {
 	case 200, 201, 204:

@@ -20,11 +20,6 @@ import (
 	"github.com/ta9mi141/toggl-go/track/internal"
 )
 
-const (
-	defaultBaseURL    string = "https://api.track.toggl.com/"
-	basicAuthPassword string = "api_token" // Defined in Toggl API v9
-)
-
 // Client is a client for interacting with Toggl API v9.
 type Client struct {
 	baseURL    *url.URL
@@ -35,7 +30,7 @@ type Client struct {
 
 // NewClient creates a new Toggl API v9 client.
 func NewClient(options ...Option) *Client {
-	baseURL, _ := url.Parse(defaultBaseURL)
+	baseURL, _ := url.Parse(internal.DefaultBaseURL)
 	newClient := &Client{
 		baseURL:    baseURL,
 		httpClient: http.DefaultClient,
@@ -150,7 +145,7 @@ func (c *Client) newRequest(ctx context.Context, httpMethod, apiSpecificPath str
 		return nil, errors.Wrap(err, "")
 	}
 
-	req.SetBasicAuth(c.apiToken, basicAuthPassword)
+	req.SetBasicAuth(c.apiToken, internal.BasicAuthPassword)
 	req.Header.Set("Content-Type", "application/json")
 
 	return req, nil
