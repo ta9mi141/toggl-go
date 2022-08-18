@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"encoding/json"
 	"io"
 	"net/http"
 
@@ -21,4 +22,10 @@ func CheckResponse(resp *http.Response) error {
 	errorResponse.Message = string(body)
 
 	return errorResponse
+}
+
+func DecodeJSON(resp *http.Response, out any) error {
+	defer resp.Body.Close()
+	decoder := json.NewDecoder(resp.Body)
+	return decoder.Decode(out)
 }

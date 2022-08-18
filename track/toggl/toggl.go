@@ -169,17 +169,11 @@ func (c *Client) do(req *http.Request, respBody any) error {
 
 	switch req.Method {
 	case http.MethodGet, http.MethodPost, http.MethodPut:
-		err = decodeJSON(resp, respBody)
+		err = internal.DecodeJSON(resp, respBody)
 		if err != nil {
 			return errors.Wrap(err, "")
 		}
 	}
 
 	return nil
-}
-
-func decodeJSON(resp *http.Response, out any) error {
-	defer resp.Body.Close()
-	decoder := json.NewDecoder(resp.Body)
-	return decoder.Decode(out)
 }
