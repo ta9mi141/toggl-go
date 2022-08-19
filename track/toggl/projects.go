@@ -87,5 +87,10 @@ type GetWorkspaceProjectQuery struct {
 
 // GetWorkspaceProject gets project for given workspace.
 func (c *Client) GetWorkspaceProject(ctx context.Context, workspaceID, projectID int, query *GetWorkspaceProjectQuery) (*Project, error) {
-	return nil, nil
+	var project *Project
+	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "projects", strconv.Itoa(projectID))
+	if err := c.httpGet(ctx, apiSpecificPath, query, &project); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return project, nil
 }
