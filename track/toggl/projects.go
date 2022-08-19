@@ -2,7 +2,11 @@ package toggl
 
 import (
 	"context"
+	"path"
+	"strconv"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 // Project represents the properties of a project.
@@ -56,17 +60,22 @@ type currentPeriod struct {
 // GetWorkspaceProjectsQuery represents the additional parameters of GetWorkspaceProjects.
 // Currently user_ids, client_ids, and group_ids are not supported.
 type GetWorkspaceProjectsQuery struct {
-	Active        *bool   `json:"active,omitempty"`
-	Since         *int    `json:"since,omitempty"`
-	Billable      *bool   `json:"billable,omitempty"`
-	Name          *string `json:"name,omitempty"`
-	Page          *int    `json:"page,omitempty"`
-	SortField     *string `json:"sort_field,omitempty"`
-	SortOrder     *string `json:"sort_order,omitempty"`
-	OnlyTemplates *bool   `json:"only_templates,omitempty"`
+	Active        *bool   `url:"active,omitempty"`
+	Since         *int    `url:"since,omitempty"`
+	Billable      *bool   `url:"billable,omitempty"`
+	Name          *string `url:"name,omitempty"`
+	Page          *int    `url:"page,omitempty"`
+	SortField     *string `url:"sort_field,omitempty"`
+	SortOrder     *string `url:"sort_order,omitempty"`
+	OnlyTemplates *bool   `url:"only_templates,omitempty"`
 }
 
 // GetWorkspaceProjects gets projects for given workspace.
 func (c *Client) GetWorkspaceProjects(ctx context.Context, workspaceID int, query *GetWorkspaceProjectsQuery) ([]*Project, error) {
-	return nil, nil
+	var projects []*Project
+	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "projects")
+	if err := c.httpGet(ctx, apiSpecificPath, query, &projects); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return projects, nil
 }
