@@ -1,6 +1,9 @@
 package toggl
 
-import "time"
+import (
+	"context"
+	"time"
+)
 
 // Project represents the properties of a project.
 type Project struct {
@@ -29,6 +32,7 @@ type Project struct {
 	WID                 *int                 `json:"wid,omitempty"`
 	CID                 *int                 `json:"cid,omitempty"`
 	ForeignID           *string              `json:"foreign_id,omitempty"`
+	FirstTimeEntry      *string              `json:"first_time_entry,omitempty"`
 }
 
 type recurringParameters struct {
@@ -47,4 +51,22 @@ type recurringParameter struct {
 type currentPeriod struct {
 	StartDate *string `json:"start_date,omitempty"`
 	EndDate   *string `json:"end_date,omitempty"`
+}
+
+// GetWorkspaceProjectsQuery represents the additional parameters of GetWorkspaceProjects.
+// Currently user_ids, client_ids, and group_ids are not supported.
+type GetWorkspaceProjectsQuery struct {
+	Active        *bool   `json:"active,omitempty"`
+	Since         *int    `json:"since,omitempty"`
+	Billable      *bool   `json:"billable,omitempty"`
+	Name          *string `json:"name,omitempty"`
+	Page          *int    `json:"page,omitempty"`
+	SortField     *string `json:"sort_field,omitempty"`
+	SortOrder     *string `json:"sort_order,omitempty"`
+	OnlyTemplates *bool   `json:"only_templates,omitempty"`
+}
+
+// GetWorkspaceProjects gets projects for given workspace.
+func (c *Client) GetWorkspaceProjects(ctx context.Context, workspaceID int, query *GetWorkspaceProjectsQuery) ([]*Project, error) {
+	return nil, nil
 }
