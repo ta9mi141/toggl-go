@@ -79,3 +79,13 @@ func (c *Client) GetWorkspaceProjects(ctx context.Context, workspaceID int, quer
 	}
 	return projects, nil
 }
+
+// GetWorkspaceProjectQuery represents the additional parameters of GetWorkspaceProject.
+type GetWorkspaceProjectQuery struct {
+	WithFirstTimeEntry *bool `url:"with_first_time_entry,omitempty"`
+}
+
+// GetWorkspaceProject gets project for given workspace.
+func (c *Client) GetWorkspaceProject(ctx context.Context, workspaceID, projectID int, query *GetWorkspaceProjectQuery) (*Project, error) {
+	return nil, nil
+}
