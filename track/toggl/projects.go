@@ -121,5 +121,10 @@ type CreateProjectRequestBody struct {
 
 // CreateProject creates project for given workspace.
 func (c *Client) CreateProject(ctx context.Context, workspaceID int, reqBody *CreateProjectRequestBody) (*Project, error) {
-	return nil, nil
+	var project *Project
+	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "projects")
+	if err := c.httpPost(ctx, apiSpecificPath, reqBody, &project); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return project, nil
 }
