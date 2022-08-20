@@ -242,7 +242,7 @@ func TestGetProjectsQuery(t *testing.T) {
 	}
 }
 
-func TestGetWorkspaceProject(t *testing.T) {
+func TestGetProject(t *testing.T) {
 	tests := []struct {
 		name string
 		in   struct {
@@ -261,7 +261,7 @@ func TestGetWorkspaceProject(t *testing.T) {
 				testdataFile string
 			}{
 				statusCode:   http.StatusOK,
-				testdataFile: "testdata/projects/get_workspace_project_200_ok.json",
+				testdataFile: "testdata/projects/get_project_200_ok.json",
 			},
 			out: struct {
 				project *Project
@@ -303,7 +303,7 @@ func TestGetWorkspaceProject(t *testing.T) {
 				testdataFile string
 			}{
 				statusCode:   http.StatusBadRequest,
-				testdataFile: "testdata/projects/get_workspace_project_400_bad_request.json",
+				testdataFile: "testdata/projects/get_project_400_bad_request.json",
 			},
 			out: struct {
 				project *Project
@@ -328,7 +328,7 @@ func TestGetWorkspaceProject(t *testing.T) {
 				testdataFile string
 			}{
 				statusCode:   http.StatusForbidden,
-				testdataFile: "testdata/projects/get_workspace_project_403_forbidden",
+				testdataFile: "testdata/projects/get_project_403_forbidden",
 			},
 			out: struct {
 				project *Project
@@ -352,7 +352,7 @@ func TestGetWorkspaceProject(t *testing.T) {
 				testdataFile string
 			}{
 				statusCode:   http.StatusInternalServerError,
-				testdataFile: "testdata/projects/get_workspace_project_500_internal_server_error",
+				testdataFile: "testdata/projects/get_project_500_internal_server_error",
 			},
 			out: struct {
 				project *Project
@@ -379,7 +379,7 @@ func TestGetWorkspaceProject(t *testing.T) {
 			defer mockServer.Close()
 
 			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			project, err := client.GetWorkspaceProject(context.Background(), workspaceID, projectID, &GetWorkspaceProjectQuery{})
+			project, err := client.GetProject(context.Background(), workspaceID, projectID, &GetProjectQuery{})
 
 			if !reflect.DeepEqual(project, tt.out.project) {
 				internal.Errorf(t, project, tt.out.project)
@@ -399,25 +399,25 @@ func TestGetWorkspaceProject(t *testing.T) {
 	}
 }
 
-func TestGetWorkspaceProjectQuery(t *testing.T) {
+func TestGetProjectQuery(t *testing.T) {
 	tests := []struct {
 		name string
-		in   *GetWorkspaceProjectQuery
+		in   *GetProjectQuery
 		out  string
 	}{
 		{
-			name: "GetWorkspaceProjectQuery is nil",
+			name: "GetProjectQuery is nil",
 			in:   nil,
 			out:  "",
 		},
 		{
 			name: "with_first_time_entry=true",
-			in:   &GetWorkspaceProjectQuery{WithFirstTimeEntry: track.Ptr(true)},
+			in:   &GetProjectQuery{WithFirstTimeEntry: track.Ptr(true)},
 			out:  "with_first_time_entry=true",
 		},
 		{
-			name: "GetWorkspaceProjectQuery is empty",
-			in:   &GetWorkspaceProjectQuery{},
+			name: "GetProjectQuery is empty",
+			in:   &GetProjectQuery{},
 			out:  "",
 		},
 	}
@@ -429,7 +429,7 @@ func TestGetWorkspaceProjectQuery(t *testing.T) {
 			workspaceID := 1234567
 			projectID := 123456789
 			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			_, _ = client.GetWorkspaceProject(context.Background(), workspaceID, projectID, tt.in)
+			_, _ = client.GetProject(context.Background(), workspaceID, projectID, tt.in)
 		})
 	}
 }

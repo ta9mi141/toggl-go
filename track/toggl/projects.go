@@ -80,13 +80,13 @@ func (c *Client) GetProjects(ctx context.Context, workspaceID int, query *GetPro
 	return projects, nil
 }
 
-// GetWorkspaceProjectQuery represents the additional parameters of GetWorkspaceProject.
-type GetWorkspaceProjectQuery struct {
+// GetProjectQuery represents the additional parameters of GetProject.
+type GetProjectQuery struct {
 	WithFirstTimeEntry *bool `url:"with_first_time_entry,omitempty"`
 }
 
-// GetWorkspaceProject gets project for given workspace.
-func (c *Client) GetWorkspaceProject(ctx context.Context, workspaceID, projectID int, query *GetWorkspaceProjectQuery) (*Project, error) {
+// GetProject gets project for given workspace.
+func (c *Client) GetProject(ctx context.Context, workspaceID, projectID int, query *GetProjectQuery) (*Project, error) {
 	var project *Project
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "projects", strconv.Itoa(projectID))
 	if err := c.httpGet(ctx, apiSpecificPath, query, &project); err != nil {
