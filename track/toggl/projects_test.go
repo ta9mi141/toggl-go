@@ -14,7 +14,7 @@ import (
 	"github.com/ta9mi141/toggl-go/track/internal"
 )
 
-func TestGetWorkspaceProjects(t *testing.T) {
+func TestGetProjects(t *testing.T) {
 	tests := []struct {
 		name string
 		in   struct {
@@ -33,7 +33,7 @@ func TestGetWorkspaceProjects(t *testing.T) {
 				testdataFile string
 			}{
 				statusCode:   http.StatusOK,
-				testdataFile: "testdata/projects/get_workspace_projects_200_ok.json",
+				testdataFile: "testdata/projects/get_projects_200_ok.json",
 			},
 			out: struct {
 				projects []*Project
@@ -103,7 +103,7 @@ func TestGetWorkspaceProjects(t *testing.T) {
 				testdataFile string
 			}{
 				statusCode:   http.StatusBadRequest,
-				testdataFile: "testdata/projects/get_workspace_projects_400_bad_request.json",
+				testdataFile: "testdata/projects/get_projects_400_bad_request.json",
 			},
 			out: struct {
 				projects []*Project
@@ -128,7 +128,7 @@ func TestGetWorkspaceProjects(t *testing.T) {
 				testdataFile string
 			}{
 				statusCode:   http.StatusForbidden,
-				testdataFile: "testdata/projects/get_workspace_projects_403_forbidden",
+				testdataFile: "testdata/projects/get_projects_403_forbidden",
 			},
 			out: struct {
 				projects []*Project
@@ -152,7 +152,7 @@ func TestGetWorkspaceProjects(t *testing.T) {
 				testdataFile string
 			}{
 				statusCode:   http.StatusInternalServerError,
-				testdataFile: "testdata/projects/get_workspace_projects_500_internal_server_error",
+				testdataFile: "testdata/projects/get_projects_500_internal_server_error",
 			},
 			out: struct {
 				projects []*Project
@@ -178,7 +178,7 @@ func TestGetWorkspaceProjects(t *testing.T) {
 			defer mockServer.Close()
 
 			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			projects, err := client.GetWorkspaceProjects(context.Background(), workspaceID, &GetWorkspaceProjectsQuery{})
+			projects, err := client.GetProjects(context.Background(), workspaceID, &GetProjectsQuery{})
 
 			if !reflect.DeepEqual(projects, tt.out.projects) {
 				internal.Errorf(t, projects, tt.out.projects)
@@ -198,35 +198,35 @@ func TestGetWorkspaceProjects(t *testing.T) {
 	}
 }
 
-func TestGetWorkspaceProjectsQuery(t *testing.T) {
+func TestGetProjectsQuery(t *testing.T) {
 	tests := []struct {
 		name string
-		in   *GetWorkspaceProjectsQuery
+		in   *GetProjectsQuery
 		out  string
 	}{
 		{
-			name: "GetWorkspaceProjectsQuery is nil",
+			name: "GetProjectsQuery is nil",
 			in:   nil,
 			out:  "",
 		},
 		{
 			name: "active=true",
-			in:   &GetWorkspaceProjectsQuery{Active: track.Ptr(true)},
+			in:   &GetProjectsQuery{Active: track.Ptr(true)},
 			out:  "active=true",
 		},
 		{
 			name: "active=true&name=MyProject",
-			in:   &GetWorkspaceProjectsQuery{Active: track.Ptr(true), Name: track.Ptr("MyProject")},
+			in:   &GetProjectsQuery{Active: track.Ptr(true), Name: track.Ptr("MyProject")},
 			out:  "active=true&name=MyProject",
 		},
 		{
 			name: "active=true&name=MyProject&page=2",
-			in:   &GetWorkspaceProjectsQuery{Active: track.Ptr(true), Name: track.Ptr("MyProject"), Page: track.Ptr(2)},
+			in:   &GetProjectsQuery{Active: track.Ptr(true), Name: track.Ptr("MyProject"), Page: track.Ptr(2)},
 			out:  "active=true&name=MyProject&page=2",
 		},
 		{
-			name: "GetWorkspaceProjectsQuery is empty",
-			in:   &GetWorkspaceProjectsQuery{},
+			name: "GetProjectsQuery is empty",
+			in:   &GetProjectsQuery{},
 			out:  "",
 		},
 	}
@@ -237,7 +237,7 @@ func TestGetWorkspaceProjectsQuery(t *testing.T) {
 
 			workspaceID := 1234567
 			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			_, _ = client.GetWorkspaceProjects(context.Background(), workspaceID, tt.in)
+			_, _ = client.GetProjects(context.Background(), workspaceID, tt.in)
 		})
 	}
 }

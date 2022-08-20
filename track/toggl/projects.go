@@ -57,9 +57,9 @@ type currentPeriod struct {
 	EndDate   *string `json:"end_date,omitempty"`
 }
 
-// GetWorkspaceProjectsQuery represents the additional parameters of GetWorkspaceProjects.
+// GetProjectsQuery represents the additional parameters of GetProjects.
 // Currently user_ids, client_ids, and group_ids are not supported.
-type GetWorkspaceProjectsQuery struct {
+type GetProjectsQuery struct {
 	Active        *bool   `url:"active,omitempty"`
 	Since         *int    `url:"since,omitempty"`
 	Billable      *bool   `url:"billable,omitempty"`
@@ -70,8 +70,8 @@ type GetWorkspaceProjectsQuery struct {
 	OnlyTemplates *bool   `url:"only_templates,omitempty"`
 }
 
-// GetWorkspaceProjects gets projects for given workspace.
-func (c *Client) GetWorkspaceProjects(ctx context.Context, workspaceID int, query *GetWorkspaceProjectsQuery) ([]*Project, error) {
+// GetProjects gets projects for given workspace.
+func (c *Client) GetProjects(ctx context.Context, workspaceID int, query *GetProjectsQuery) ([]*Project, error) {
 	var projects []*Project
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "projects")
 	if err := c.httpGet(ctx, apiSpecificPath, query, &projects); err != nil {
