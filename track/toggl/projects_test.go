@@ -433,3 +433,200 @@ func TestGetProjectQuery(t *testing.T) {
 		})
 	}
 }
+
+func TestCreateProject(t *testing.T) {
+	tests := []struct {
+		name string
+		in   struct {
+			statusCode   int
+			testdataFile string
+		}
+		out struct {
+			project *Project
+			err     error
+		}
+	}{
+		{
+			name: "200 OK",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusOK,
+				testdataFile: "testdata/projects/create_project_200_ok.json",
+			},
+			out: struct {
+				project *Project
+				err     error
+			}{
+				project: &Project{
+					ID:                  track.Ptr(123456789),
+					WorkspaceID:         track.Ptr(1234567),
+					ClientID:            nil,
+					Name:                track.Ptr("MyProject"),
+					IsPrivate:           track.Ptr(false),
+					Active:              track.Ptr(true),
+					At:                  track.Ptr(time.Date(2021, time.February, 3, 4, 5, 6, 0, time.FixedZone("", 0))),
+					ServerDeletedAt:     nil,
+					Color:               track.Ptr("#0a1b2c"),
+					Billable:            nil,
+					Template:            nil,
+					AutoEstimates:       nil,
+					EstimatedHours:      nil,
+					Rate:                nil,
+					RateLastUpdated:     nil,
+					Currency:            nil,
+					Recurring:           track.Ptr(false),
+					RecurringParameters: nil,
+					CurrentPeriod:       nil,
+					FixedFee:            nil,
+					ActualHours:         nil,
+					WID:                 track.Ptr(1234567),
+					CID:                 nil,
+				},
+				err: nil,
+			},
+		},
+		{
+			name: "400 Bad Request",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusBadRequest,
+				testdataFile: "testdata/projects/create_project_400_bad_request.json",
+			},
+			out: struct {
+				project *Project
+				err     error
+			}{
+				project: nil,
+				err: &internal.ErrorResponse{
+					StatusCode: 400,
+					Message:    "\"JSON is not valid\"\n",
+					Header: http.Header{
+						"Content-Length": []string{"20"},
+						"Content-Type":   []string{"application/json; charset=utf-8"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
+			name: "403 Forbidden",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusForbidden,
+				testdataFile: "testdata/projects/create_project_403_forbidden",
+			},
+			out: struct {
+				project *Project
+				err     error
+			}{
+				project: nil,
+				err: &internal.ErrorResponse{
+					StatusCode: 403,
+					Message:    "",
+					Header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
+			name: "500 Internal Server Error",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusInternalServerError,
+				testdataFile: "testdata/projects/create_project_500_internal_server_error",
+			},
+			out: struct {
+				project *Project
+				err     error
+			}{
+				project: nil,
+				err: &internal.ErrorResponse{
+					StatusCode: 500,
+					Message:    "",
+					Header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			workspaceID := 1234567
+			apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "projects")
+			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
+			defer mockServer.Close()
+
+			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			project, err := client.CreateProject(context.Background(), workspaceID, &CreateProjectRequestBody{})
+
+			if !reflect.DeepEqual(project, tt.out.project) {
+				internal.Errorf(t, project, tt.out.project)
+			}
+
+			errorResp := new(internal.ErrorResponse)
+			if errors.As(err, &errorResp) {
+				if !reflect.DeepEqual(errorResp, tt.out.err) {
+					internal.Errorf(t, errorResp, tt.out.err)
+				}
+			} else {
+				if !reflect.DeepEqual(err, tt.out.err) {
+					internal.Errorf(t, err, tt.out.err)
+				}
+			}
+		})
+	}
+}
+
+func TestCreateProjectRequestBody(t *testing.T) {
+	tests := []struct {
+		name string
+		in   *CreateProjectRequestBody
+		out  string
+	}{
+		{
+			name: "string",
+			in: &CreateProjectRequestBody{
+				Name: track.Ptr("MyProject"),
+			},
+			out: "{\"name\":\"MyProject\"}",
+		},
+		{
+			name: "bool and string",
+			in: &CreateProjectRequestBody{
+				Active: track.Ptr(true),
+				Name:   track.Ptr("MyProject"),
+			},
+			out: "{\"active\":true,\"name\":\"MyProject\"}",
+		},
+		{
+			name: "bool, integer, and string",
+			in: &CreateProjectRequestBody{
+				Active:         track.Ptr(true),
+				EstimatedHours: track.Ptr(3),
+				Name:           track.Ptr("MyProject"),
+			},
+			out: "{\"active\":true,\"estimated_hours\":3,\"name\":\"MyProject\"}",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockServer := internal.NewMockServerToAssertRequestBody(t, tt.out)
+			defer mockServer.Close()
+			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			workspaceID := 1234567
+			_, _ = client.CreateProject(context.Background(), workspaceID, tt.in)
+		})
+	}
+}

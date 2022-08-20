@@ -94,3 +94,32 @@ func (c *Client) GetProject(ctx context.Context, workspaceID, projectID int, que
 	}
 	return project, nil
 }
+
+// CreateProjectRequestBody represents a request body of CreateProject.
+type CreateProjectRequestBody struct {
+	Active              *bool                `json:"active,omitempty"`
+	AutoEstimates       *bool                `json:"auto_estimates,omitempty"`
+	Billable            *bool                `json:"billable,omitempty"`
+	CID                 *int                 `json:"cid,omitempty"`
+	ClientID            *int                 `json:"client_id,omitempty"`
+	ClientName          *string              `json:"client_name,omitempty"`
+	Color               *string              `json:"color,omitempty"`
+	Currency            *string              `json:"currency,omitempty"`
+	EstimatedHours      *int                 `json:"estimated_hours,omitempty"`
+	FixedFee            *int                 `json:"fixed_fee,omitempty"`
+	ForeignID           *string              `json:"foreign_id,omitempty"`
+	IsPrivate           *bool                `json:"is_private,omitempty"`
+	Name                *string              `json:"name,omitempty"`
+	PostedFields        []*string            `json:"postedFields,omitempty"`
+	Rate                *int                 `json:"rate,omitempty"`
+	RateChangeMode      *string              `json:"rate_change_mode,omitempty"`
+	Recurring           *bool                `json:"recurring,omitempty"`
+	RecurringParameters *recurringParameters `json:"recurring_parameters,omitempty"`
+	Template            *bool                `json:"template,omitempty"`
+	TemplateID          *int                 `json:"template_id,omitempty"`
+}
+
+// CreateProject creates project for given workspace.
+func (c *Client) CreateProject(ctx context.Context, workspaceID int, reqBody *CreateProjectRequestBody) (*Project, error) {
+	return nil, nil
+}
