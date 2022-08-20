@@ -464,7 +464,7 @@ func TestGetMyOrganizations(t *testing.T) {
 	}
 }
 
-func TestGetProjects(t *testing.T) {
+func TestGetMyProjects(t *testing.T) {
 	tests := []struct {
 		name string
 		in   struct {
@@ -483,7 +483,7 @@ func TestGetProjects(t *testing.T) {
 				testdataFile string
 			}{
 				statusCode:   http.StatusOK,
-				testdataFile: "testdata/me/get_projects_200_ok.json",
+				testdataFile: "testdata/me/get_my_projects_200_ok.json",
 			},
 			out: struct {
 				projects []*Project
@@ -553,7 +553,7 @@ func TestGetProjects(t *testing.T) {
 				testdataFile string
 			}{
 				statusCode:   http.StatusForbidden,
-				testdataFile: "testdata/me/get_projects_403_forbidden",
+				testdataFile: "testdata/me/get_my_projects_403_forbidden",
 			},
 			out: struct {
 				projects []*Project
@@ -577,7 +577,7 @@ func TestGetProjects(t *testing.T) {
 				testdataFile string
 			}{
 				statusCode:   http.StatusNotFound,
-				testdataFile: "testdata/me/get_projects_404_not_found.json",
+				testdataFile: "testdata/me/get_my_projects_404_not_found.json",
 			},
 			out: struct {
 				projects []*Project
@@ -602,7 +602,7 @@ func TestGetProjects(t *testing.T) {
 				testdataFile string
 			}{
 				statusCode:   http.StatusInternalServerError,
-				testdataFile: "testdata/me/get_projects_500_internal_server_error",
+				testdataFile: "testdata/me/get_my_projects_500_internal_server_error",
 			},
 			out: struct {
 				projects []*Project
@@ -627,7 +627,7 @@ func TestGetProjects(t *testing.T) {
 			defer mockServer.Close()
 
 			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			projects, err := client.GetProjects(context.Background(), nil)
+			projects, err := client.GetMyProjects(context.Background(), nil)
 
 			if !reflect.DeepEqual(projects, tt.out.projects) {
 				internal.Errorf(t, projects, tt.out.projects)
@@ -647,30 +647,30 @@ func TestGetProjects(t *testing.T) {
 	}
 }
 
-func TestGetProjectsQuery(t *testing.T) {
+func TestGetMyProjectsQuery(t *testing.T) {
 	tests := []struct {
 		name string
-		in   *GetProjectsQuery
+		in   *GetMyProjectsQuery
 		out  string
 	}{
 		{
-			name: "GetProjectsQuery is nil",
+			name: "GetMyProjectsQuery is nil",
 			in:   nil,
 			out:  "",
 		},
 		{
 			name: "include_archived=true",
-			in:   &GetProjectsQuery{IncludeArchived: track.Ptr("true")},
+			in:   &GetMyProjectsQuery{IncludeArchived: track.Ptr("true")},
 			out:  "include_archived=true",
 		},
 		{
 			name: "include_archived=false",
-			in:   &GetProjectsQuery{IncludeArchived: track.Ptr("false")},
+			in:   &GetMyProjectsQuery{IncludeArchived: track.Ptr("false")},
 			out:  "include_archived=false",
 		},
 		{
-			name: "GetProjectsQuery is empty",
-			in:   &GetProjectsQuery{},
+			name: "GetMyProjectsQuery is empty",
+			in:   &GetMyProjectsQuery{},
 			out:  "",
 		},
 	}
@@ -680,12 +680,12 @@ func TestGetProjectsQuery(t *testing.T) {
 			defer mockServer.Close()
 
 			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			_, _ = client.GetProjects(context.Background(), tt.in)
+			_, _ = client.GetMyProjects(context.Background(), tt.in)
 		})
 	}
 }
 
-func TestGetProjectsPaginated(t *testing.T) {
+func TestGetMyProjectsPaginated(t *testing.T) {
 	tests := []struct {
 		name string
 		in   struct {
@@ -704,7 +704,7 @@ func TestGetProjectsPaginated(t *testing.T) {
 				testdataFile string
 			}{
 				statusCode:   http.StatusOK,
-				testdataFile: "testdata/me/get_projects_paginated_200_ok.json",
+				testdataFile: "testdata/me/get_my_projects_paginated_200_ok.json",
 			},
 			out: struct {
 				projects []*Project
@@ -774,7 +774,7 @@ func TestGetProjectsPaginated(t *testing.T) {
 				testdataFile string
 			}{
 				statusCode:   http.StatusBadRequest,
-				testdataFile: "testdata/me/get_projects_paginated_400_bad_request.json",
+				testdataFile: "testdata/me/get_my_projects_paginated_400_bad_request.json",
 			},
 			out: struct {
 				projects []*Project
@@ -799,7 +799,7 @@ func TestGetProjectsPaginated(t *testing.T) {
 				testdataFile string
 			}{
 				statusCode:   http.StatusForbidden,
-				testdataFile: "testdata/me/get_projects_paginated_403_forbidden",
+				testdataFile: "testdata/me/get_my_projects_paginated_403_forbidden",
 			},
 			out: struct {
 				projects []*Project
@@ -823,7 +823,7 @@ func TestGetProjectsPaginated(t *testing.T) {
 				testdataFile string
 			}{
 				statusCode:   http.StatusInternalServerError,
-				testdataFile: "testdata/me/get_projects_paginated_500_internal_server_error",
+				testdataFile: "testdata/me/get_my_projects_paginated_500_internal_server_error",
 			},
 			out: struct {
 				projects []*Project
@@ -848,7 +848,7 @@ func TestGetProjectsPaginated(t *testing.T) {
 			defer mockServer.Close()
 
 			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			projects, err := client.GetProjectsPaginated(context.Background(), nil)
+			projects, err := client.GetMyProjectsPaginated(context.Background(), nil)
 
 			if !reflect.DeepEqual(projects, tt.out.projects) {
 				internal.Errorf(t, projects, tt.out.projects)
@@ -868,30 +868,30 @@ func TestGetProjectsPaginated(t *testing.T) {
 	}
 }
 
-func TestGetProjectsPaginatedQuery(t *testing.T) {
+func TestGetMyProjectsPaginatedQuery(t *testing.T) {
 	tests := []struct {
 		name string
-		in   *GetProjectsPaginatedQuery
+		in   *GetMyProjectsPaginatedQuery
 		out  string
 	}{
 		{
-			name: "GetProjectsPaginatedQuery is nil",
+			name: "GetMyProjectsPaginatedQuery is nil",
 			in:   nil,
 			out:  "",
 		},
 		{
 			name: "start_project_id=12345",
-			in:   &GetProjectsPaginatedQuery{StartProjectID: track.Ptr(12345)},
+			in:   &GetMyProjectsPaginatedQuery{StartProjectID: track.Ptr(12345)},
 			out:  "start_project_id=12345",
 		},
 		{
 			name: "start_project_id=0",
-			in:   &GetProjectsPaginatedQuery{StartProjectID: track.Ptr(0)},
+			in:   &GetMyProjectsPaginatedQuery{StartProjectID: track.Ptr(0)},
 			out:  "start_project_id=0",
 		},
 		{
-			name: "GetProjectsPaginatedQuery is empty",
-			in:   &GetProjectsPaginatedQuery{},
+			name: "GetMyProjectsPaginatedQuery is empty",
+			in:   &GetMyProjectsPaginatedQuery{},
 			out:  "",
 		},
 	}
@@ -901,7 +901,7 @@ func TestGetProjectsPaginatedQuery(t *testing.T) {
 			defer mockServer.Close()
 
 			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			_, _ = client.GetProjectsPaginated(context.Background(), tt.in)
+			_, _ = client.GetMyProjectsPaginated(context.Background(), tt.in)
 		})
 	}
 }
