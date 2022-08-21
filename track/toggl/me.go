@@ -106,5 +106,9 @@ func (c *Client) GetMyProjectsPaginated(ctx context.Context, query *GetMyProject
 
 // GetMyTags returns tags for the current user.
 func (c *Client) GetMyTags(ctx context.Context) ([]*Tag, error) {
-	return nil, nil
+	var tags []*Tag
+	if err := c.httpGet(ctx, mePath, nil, &tags); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return tags, nil
 }
