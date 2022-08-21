@@ -905,3 +905,126 @@ func TestGetMyProjectsPaginatedQuery(t *testing.T) {
 		})
 	}
 }
+
+func TestGetMyTags(t *testing.T) {
+	tests := []struct {
+		name string
+		in   struct {
+			statusCode   int
+			testdataFile string
+		}
+		out struct {
+			tags []*Tag
+			err  error
+		}
+	}{
+		{
+			name: "200 OK",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusOK,
+				testdataFile: "testdata/me/get_my_tags_200_ok.json",
+			},
+			out: struct {
+				tags []*Tag
+				err  error
+			}{
+				tags: []*Tag{
+					{
+						ID:          track.Ptr(1234567),
+						WorkspaceID: track.Ptr(1234567),
+						Name:        track.Ptr("tag"),
+						At:          track.Ptr(time.Date(2020, time.January, 2, 3, 4, 5, 678900000, time.UTC)),
+					},
+					{
+						ID:          track.Ptr(23456789),
+						WorkspaceID: track.Ptr(2345678),
+						Name:        track.Ptr("newtag"),
+						At:          track.Ptr(time.Date(2020, time.January, 2, 3, 4, 5, 678901000, time.UTC)),
+					},
+					{
+						ID:          track.Ptr(3456789),
+						WorkspaceID: track.Ptr(1234567),
+						Name:        track.Ptr("toggl-go"),
+						At:          track.Ptr(time.Date(2020, time.January, 2, 3, 4, 5, 678901000, time.UTC)),
+					},
+				},
+				err: nil,
+			},
+		},
+		{
+			name: "403 Forbidden",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusForbidden,
+				testdataFile: "testdata/me/get_my_tags_403_forbidden",
+			},
+			out: struct {
+				tags []*Tag
+				err  error
+			}{
+				tags: nil,
+				err: &internal.ErrorResponse{
+					StatusCode: 403,
+					Message:    "",
+					Header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
+			name: "500 Internal Server Error",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusInternalServerError,
+				testdataFile: "testdata/me/get_my_tags_500_internal_server_error",
+			},
+			out: struct {
+				tags []*Tag
+				err  error
+			}{
+				tags: nil,
+				err: &internal.ErrorResponse{
+					StatusCode: 500,
+					Message:    "",
+					Header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockServer := internal.NewMockServer(t, mePath, tt.in.statusCode, tt.in.testdataFile)
+			defer mockServer.Close()
+
+			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			tags, err := client.GetMyTags(context.Background())
+
+			if !reflect.DeepEqual(tags, tt.out.tags) {
+				internal.Errorf(t, tags, tt.out.tags)
+			}
+
+			errorResp := new(internal.ErrorResponse)
+			if errors.As(err, &errorResp) {
+				if !reflect.DeepEqual(errorResp, tt.out.err) {
+					internal.Errorf(t, errorResp, tt.out.err)
+				}
+			} else {
+				if !reflect.DeepEqual(err, tt.out.err) {
+					internal.Errorf(t, err, tt.out.err)
+				}
+			}
+		})
+	}
+}

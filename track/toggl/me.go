@@ -103,3 +103,8 @@ func (c *Client) GetMyProjectsPaginated(ctx context.Context, query *GetMyProject
 	}
 	return projects, nil
 }
+
+// GetMyTags returns tags for the current user.
+func (c *Client) GetMyTags(ctx context.Context) ([]*Tag, error) {
+	return nil, nil
+}
