@@ -131,5 +131,9 @@ func (c *Client) CreateProject(ctx context.Context, workspaceID int, reqBody *Cr
 
 // DeleteProject deletes project for given workspace.
 func (c *Client) DeleteProject(ctx context.Context, workspaceID, projectID int) error {
+	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "projects", strconv.Itoa(projectID))
+	if err := c.httpDelete(ctx, apiSpecificPath); err != nil {
+		return errors.Wrap(err, "")
+	}
 	return nil
 }
