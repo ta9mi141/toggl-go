@@ -128,3 +128,8 @@ func (c *Client) CreateProject(ctx context.Context, workspaceID int, reqBody *Cr
 	}
 	return project, nil
 }
+
+// DeleteProject deletes project for given workspace.
+func (c *Client) DeleteProject(ctx context.Context, workspaceID, projectID int) error {
+	return nil
+}
