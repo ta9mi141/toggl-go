@@ -1,16 +1,18 @@
 toggl-go
 ====
 
-[![test](https://github.com/ta9mi141/toggl-go/actions/workflows/test.yml/badge.svg)](https://github.com/ta9mi141/toggl-go/actions/workflows/test.yml)
+[![GoDoc Badge]][GoDoc] [![GitHub Actions Badge]][GitHub Actions]
 
 The unofficial Go client for [Toggl Track](https://developers.track.toggl.com/)
 
-## GoDoc
+## Overview
 
-* A package `toggl` provides a Go client for Toggl API v9
-  * https://pkg.go.dev/github.com/ta9mi141/toggl-go/track/toggl
-* A package `track` provides utilities for the above packages
-  * https://pkg.go.dev/github.com/ta9mi141/toggl-go/track
+toggl-go currently provides the following packages.
+
+* `toggl`
+  * This package provides a Go client for Toggl API v9
+* `track`
+  * This package provides utilities for the above packages
 
 ## Author
 
@@ -19,3 +21,8 @@ The unofficial Go client for [Toggl Track](https://developers.track.toggl.com/)
 ## License
 
 [MIT](https://github.com/ta9mi141/toggl-go/blob/master/LICENSE)
+
+[GoDoc]: https://pkg.go.dev/github.com/ta9mi141/toggl-go
+[GoDoc Badge]: https://pkg.go.dev/badge/github.com/ta9mi141/toggl-go.svg
+[GitHub Actions]: https://github.com/ta9mi141/toggl-go/actions/workflows/test.yml
+[GitHub Actions Badge]: https://github.com/ta9mi141/toggl-go/actions/workflows/test.yml/badge.svg
