@@ -5,9 +5,15 @@ import (
 	"net/url"
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/ta9mi141/toggl-go/track/internal"
 )
+
+func TestMain(m *testing.M) {
+	time.Local = time.FixedZone("", 0)
+	m.Run()
+}
 
 func TestNewClient(t *testing.T) {
 	client := NewClient()
