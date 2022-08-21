@@ -1,6 +1,8 @@
 toggl-go
 ====
 
+[![test](https://github.com/ta9mi141/toggl-go/actions/workflows/test.yml/badge.svg)](https://github.com/ta9mi141/toggl-go/actions/workflows/test.yml)
+
 The unofficial Go client for [Toggl Track](https://developers.track.toggl.com/)
 
 ## GoDoc
