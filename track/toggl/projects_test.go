@@ -703,6 +703,29 @@ func TestDeleteProject(t *testing.T) {
 			},
 		},
 		{
+			name: "404 Not Found",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusNotFound,
+				testdataFile: "testdata/projects/delete_project_404_not_found.json",
+			},
+			out: struct {
+				err error
+			}{
+				err: &internal.ErrorResponse{
+					StatusCode: 404,
+					Message:    "\"Resource can not be found\"\n",
+					Header: http.Header{
+						"Content-Length": []string{"28"},
+						"Content-Type":   []string{"application/json; charset=utf-8"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
 			name: "500 Internal Server Error",
 			in: struct {
 				statusCode   int
