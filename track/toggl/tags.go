@@ -36,5 +36,10 @@ type CreateTagRequestBody struct {
 
 // CreateTag creates workspace tags.
 func (c *Client) CreateTag(ctx context.Context, workspaceID int, reqBody *CreateTagRequestBody) (*Tag, error) {
-	return nil, nil
+	var tag *Tag
+	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "tags")
+	if err := c.httpPost(ctx, apiSpecificPath, reqBody, &tag); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return tag, nil
 }
