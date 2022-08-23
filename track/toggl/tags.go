@@ -27,3 +27,14 @@ func (c *Client) GetTags(ctx context.Context, workspaceID int) ([]*Tag, error) {
 	}
 	return tags, nil
 }
+
+// CreateTagRequestBody represents a request body of CreateTag.
+type CreateTagRequestBody struct {
+	Name        *string `json:"name,omitempty"`
+	WorkspaceID *int    `json:"workspace_id,omitempty"`
+}
+
+// CreateTag creates workspace tags.
+func (c *Client) CreateTag(ctx context.Context, workspaceID int, reqBody *CreateTagRequestBody) (*Tag, error) {
+	return nil, nil
+}
