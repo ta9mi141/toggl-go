@@ -689,6 +689,31 @@ func TestUpdateTimeEntry(t *testing.T) {
 			},
 		},
 		{
+			name: "404 Not Found",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusNotFound,
+				testdataFile: "testdata/time_entries/update_time_entry_404_not_found.json",
+			},
+			out: struct {
+				timeEntry *TimeEntry
+				err       error
+			}{
+				timeEntry: nil,
+				err: &internal.ErrorResponse{
+					StatusCode: 404,
+					Message:    "\"Time entry not found\"\n",
+					Header: http.Header{
+						"Content-Length": []string{"23"},
+						"Content-Type":   []string{"application/json; charset=utf-8"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
 			name: "500 Internal Server Error",
 			in: struct {
 				statusCode   int
