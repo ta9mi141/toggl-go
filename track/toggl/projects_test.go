@@ -611,7 +611,7 @@ func TestCreateProjectRequestBody(t *testing.T) {
 			out: "{\"active\":true,\"name\":\"MyProject\"}",
 		},
 		{
-			name: "bool, integer, and string",
+			name: "bool, int, and string",
 			in: &CreateProjectRequestBody{
 				Active:         track.Ptr(true),
 				EstimatedHours: track.Ptr(3),
