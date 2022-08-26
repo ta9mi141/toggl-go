@@ -59,3 +59,8 @@ func (c *Client) UpdateTag(ctx context.Context, workspaceID, tagID int, reqBody 
 	}
 	return tag, nil
 }
+
+// DeleteTag deletes workspace tags.
+func (c *Client) DeleteTag(ctx context.Context, workspaceID, tagID int) error {
+	return nil
+}

@@ -516,3 +516,145 @@ func TestUpdateTagRequestBody(t *testing.T) {
 		})
 	}
 }
+
+func TestDeleteTag(t *testing.T) {
+	tests := []struct {
+		name string
+		in   struct {
+			statusCode   int
+			testdataFile string
+		}
+		out struct {
+			err error
+		}
+	}{
+		{
+			name: "200 OK",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusOK,
+				testdataFile: "testdata/tags/delete_tag_200_ok.json",
+			},
+			out: struct {
+				err error
+			}{
+				err: nil,
+			},
+		},
+		{
+			name: "400 Bad Request",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusBadRequest,
+				testdataFile: "testdata/tags/delete_tag_400_bad_request.json",
+			},
+			out: struct {
+				err error
+			}{
+				err: &internal.ErrorResponse{
+					StatusCode: 400,
+					Message:    "\"We're expecting an integer as part of the url for tag_id\"\n",
+					Header: http.Header{
+						"Content-Length": []string{"59"},
+						"Content-Type":   []string{"application/json; charset=utf-8"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
+			name: "403 Forbidden",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusForbidden,
+				testdataFile: "testdata/tags/delete_tag_403_forbidden",
+			},
+			out: struct {
+				err error
+			}{
+				err: &internal.ErrorResponse{
+					StatusCode: 403,
+					Message:    "",
+					Header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
+			name: "404 Not Found",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusNotFound,
+				testdataFile: "testdata/tags/delete_tag_404_not_found.json",
+			},
+			out: struct {
+				err error
+			}{
+				err: &internal.ErrorResponse{
+					StatusCode: 404,
+					Message:    "\"Tag was not found\"\n",
+					Header: http.Header{
+						"Content-Length": []string{"20"},
+						"Content-Type":   []string{"application/json; charset=utf-8"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
+			name: "500 Internal Server Error",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusInternalServerError,
+				testdataFile: "testdata/tags/delete_tag_500_internal_server_error",
+			},
+			out: struct {
+				err error
+			}{
+				err: &internal.ErrorResponse{
+					StatusCode: 500,
+					Message:    "",
+					Header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			workspaceID := 1234567
+			tagID := 12345678
+			apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "tags", strconv.Itoa(tagID))
+			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
+			defer mockServer.Close()
+
+			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			err := client.DeleteTag(context.Background(), workspaceID, tagID)
+
+			errorResp := new(internal.ErrorResponse)
+			if errors.As(err, &errorResp) {
+				if !reflect.DeepEqual(errorResp, tt.out.err) {
+					internal.Errorf(t, errorResp, tt.out.err)
+				}
+			} else {
+				if !reflect.DeepEqual(err, tt.out.err) {
+					internal.Errorf(t, err, tt.out.err)
+				}
+			}
+		})
+	}
+}
