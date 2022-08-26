@@ -43,3 +43,14 @@ func (c *Client) CreateTag(ctx context.Context, workspaceID int, reqBody *Create
 	}
 	return tag, nil
 }
+
+// UpdateTagRequestBody represents a request body of UpdateTag.
+type UpdateTagRequestBody struct {
+	Name        *string `json:"name,omitempty"`
+	WorkspaceID *int    `json:"workspace_id,omitempty"`
+}
+
+// UpdateTag creates workspace tags.
+func (c *Client) UpdateTag(ctx context.Context, workspaceID, tagID int, reqBody *UpdateTagRequestBody) (*Tag, error) {
+	return nil, nil
+}
