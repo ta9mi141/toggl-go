@@ -62,5 +62,9 @@ func (c *Client) UpdateTag(ctx context.Context, workspaceID, tagID int, reqBody 
 
 // DeleteTag deletes workspace tags.
 func (c *Client) DeleteTag(ctx context.Context, workspaceID, tagID int) error {
+	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "tags", strconv.Itoa(tagID))
+	if err := c.httpDelete(ctx, apiSpecificPath); err != nil {
+		return errors.Wrap(err, "")
+	}
 	return nil
 }
