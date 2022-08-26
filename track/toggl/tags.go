@@ -50,7 +50,12 @@ type UpdateTagRequestBody struct {
 	WorkspaceID *int    `json:"workspace_id,omitempty"`
 }
 
-// UpdateTag creates workspace tags.
+// UpdateTag updates workspace tags.
 func (c *Client) UpdateTag(ctx context.Context, workspaceID, tagID int, reqBody *UpdateTagRequestBody) (*Tag, error) {
-	return nil, nil
+	var tag *Tag
+	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "tags", strconv.Itoa(tagID))
+	if err := c.httpPut(ctx, apiSpecificPath, reqBody, &tag); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return tag, nil
 }
