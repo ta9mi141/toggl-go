@@ -1005,7 +1005,8 @@ func TestGetMyTags(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockServer := internal.NewMockServer(t, mePath, tt.in.statusCode, tt.in.testdataFile)
+			apiSpecificPath := path.Join(mePath, "tags")
+			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
 			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
