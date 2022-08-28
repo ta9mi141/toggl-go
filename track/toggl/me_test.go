@@ -1028,3 +1028,121 @@ func TestGetMyTags(t *testing.T) {
 		})
 	}
 }
+
+func TestGetClients(t *testing.T) {
+	tests := []struct {
+		name string
+		in   struct {
+			statusCode   int
+			testdataFile string
+		}
+		out struct {
+			clients []*Client
+			err     error
+		}
+	}{
+		{
+			name: "200 OK",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusOK,
+				testdataFile: "testdata/me/get_my_clients_200_ok.json",
+			},
+			out: struct {
+				clients []*Client
+				err     error
+			}{
+				clients: []*Client{
+					{
+						ID:   track.Ptr(12345678),
+						WID:  track.Ptr(1234567),
+						Name: track.Ptr("test client"),
+						At:   track.Ptr(time.Date(2020, time.January, 2, 3, 4, 5, 0, time.FixedZone("", 0))),
+					},
+					{
+						ID:   track.Ptr(23456789),
+						WID:  track.Ptr(2345678),
+						Name: track.Ptr("new client"),
+						At:   track.Ptr(time.Date(2020, time.January, 2, 3, 4, 5, 0, time.FixedZone("", 0))),
+					},
+				},
+				err: nil,
+			},
+		},
+		{
+			name: "403 Forbidden",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusForbidden,
+				testdataFile: "testdata/me/get_my_clients_403_forbidden",
+			},
+			out: struct {
+				clients []*Client
+				err     error
+			}{
+				clients: nil,
+				err: &internal.ErrorResponse{
+					StatusCode: 403,
+					Message:    "",
+					Header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
+			name: "500 Internal Server Error",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusInternalServerError,
+				testdataFile: "testdata/me/get_my_clients_500_internal_server_error",
+			},
+			out: struct {
+				clients []*Client
+				err     error
+			}{
+				clients: nil,
+				err: &internal.ErrorResponse{
+					StatusCode: 500,
+					Message:    "",
+					Header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiSpecificPath := path.Join(mePath, "clients")
+			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
+			defer mockServer.Close()
+
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			clients, err := apiClient.GetMyClients(context.Background())
+
+			if !reflect.DeepEqual(clients, tt.out.clients) {
+				internal.Errorf(t, clients, tt.out.clients)
+			}
+
+			errorResp := new(internal.ErrorResponse)
+			if errors.As(err, &errorResp) {
+				if !reflect.DeepEqual(errorResp, tt.out.err) {
+					internal.Errorf(t, errorResp, tt.out.err)
+				}
+			} else {
+				if !reflect.DeepEqual(err, tt.out.err) {
+					internal.Errorf(t, err, tt.out.err)
+				}
+			}
+		})
+	}
+}

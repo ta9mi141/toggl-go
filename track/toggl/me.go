@@ -112,3 +112,8 @@ func (c *APIClient) GetMyTags(ctx context.Context) ([]*Tag, error) {
 	}
 	return tags, nil
 }
+
+// GetMyClients gets clients.
+func (c *APIClient) GetMyClients(ctx context.Context) ([]*Client, error) {
+	return nil, nil
+}
