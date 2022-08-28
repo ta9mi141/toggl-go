@@ -164,8 +164,8 @@ func TestGetTimeEntries(t *testing.T) {
 			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			timeEntries, err := client.GetTimeEntries(context.Background(), nil)
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			timeEntries, err := apiClient.GetTimeEntries(context.Background(), nil)
 
 			if !reflect.DeepEqual(timeEntries, tt.out.timeEntries) {
 				internal.Errorf(t, timeEntries, tt.out.timeEntries)
@@ -225,8 +225,8 @@ func TestGetTimeEntriesQuery(t *testing.T) {
 			mockServer := internal.NewMockServerToAssertQuery(t, tt.out)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			_, _ = client.GetTimeEntries(context.Background(), tt.in)
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			_, _ = apiClient.GetTimeEntries(context.Background(), tt.in)
 		})
 	}
 }
@@ -351,8 +351,8 @@ func TestGetCurrentTimeEntry(t *testing.T) {
 			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			timeEntry, err := client.GetCurrentTimeEntry(context.Background())
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			timeEntry, err := apiClient.GetCurrentTimeEntry(context.Background())
 
 			if !reflect.DeepEqual(timeEntry, tt.out.timeEntry) {
 				internal.Errorf(t, timeEntry, tt.out.timeEntry)
@@ -501,8 +501,8 @@ func TestCreateTimeEntry(t *testing.T) {
 			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			timeEntry, err := client.CreateTimeEntry(context.Background(), workspaceID, &CreateTimeEntryRequestBody{})
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			timeEntry, err := apiClient.CreateTimeEntry(context.Background(), workspaceID, &CreateTimeEntryRequestBody{})
 
 			if !reflect.DeepEqual(timeEntry, tt.out.timeEntry) {
 				internal.Errorf(t, timeEntry, tt.out.timeEntry)
@@ -584,9 +584,9 @@ func TestCreateTimeEntryRequestBody(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			mockServer := internal.NewMockServerToAssertRequestBody(t, tt.out)
 			defer mockServer.Close()
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
 			workspaceID := 1234567
-			_, _ = client.CreateTimeEntry(context.Background(), workspaceID, tt.in)
+			_, _ = apiClient.CreateTimeEntry(context.Background(), workspaceID, tt.in)
 		})
 	}
 }
@@ -746,8 +746,8 @@ func TestUpdateTimeEntry(t *testing.T) {
 			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			timeEntry, err := client.UpdateTimeEntry(context.Background(), workspaceID, timeEntryID, &UpdateTimeEntryRequestBody{})
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			timeEntry, err := apiClient.UpdateTimeEntry(context.Background(), workspaceID, timeEntryID, &UpdateTimeEntryRequestBody{})
 
 			if !reflect.DeepEqual(timeEntry, tt.out.timeEntry) {
 				internal.Errorf(t, timeEntry, tt.out.timeEntry)
@@ -829,10 +829,10 @@ func TestUpdateTimeEntryRequestBody(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			mockServer := internal.NewMockServerToAssertRequestBody(t, tt.out)
 			defer mockServer.Close()
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
 			workspaceID := 1234567
 			timeEntryID := 1234567890
-			_, _ = client.UpdateTimeEntry(context.Background(), workspaceID, timeEntryID, tt.in)
+			_, _ = apiClient.UpdateTimeEntry(context.Background(), workspaceID, timeEntryID, tt.in)
 		})
 	}
 }
@@ -939,8 +939,8 @@ func TestDeleteTimeEntry(t *testing.T) {
 			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			err := client.DeleteTimeEntry(context.Background(), workspaceID, timeEntryID)
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			err := apiClient.DeleteTimeEntry(context.Background(), workspaceID, timeEntryID)
 
 			errorResp := new(internal.ErrorResponse)
 			if errors.As(err, &errorResp) {

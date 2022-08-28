@@ -41,7 +41,7 @@ type TrialInfo struct {
 }
 
 // GetOrganization returns organization name and current pricing plan.
-func (c *Client) GetOrganization(ctx context.Context, organizationID int) (*Organization, error) {
+func (c *APIClient) GetOrganization(ctx context.Context, organizationID int) (*Organization, error) {
 	var organization *Organization
 	apiSpecificPath := path.Join(organizationsPath, strconv.Itoa(organizationID))
 	if err := c.httpGet(ctx, apiSpecificPath, nil, &organization); err != nil {
@@ -92,7 +92,7 @@ type GetOrganizationUsersQuery struct {
 }
 
 // GetOrganizationUsers returns list of users in an organization.
-func (c *Client) GetOrganizationUsers(ctx context.Context, organizationID int, query *GetOrganizationUsersQuery) ([]*OrganizationUser, error) {
+func (c *APIClient) GetOrganizationUsers(ctx context.Context, organizationID int, query *GetOrganizationUsersQuery) ([]*OrganizationUser, error) {
 	var organizationUsers []*OrganizationUser
 	apiSpecificPath := path.Join(organizationsPath, strconv.Itoa(organizationID), "users")
 	if err := c.httpGet(ctx, apiSpecificPath, query, &organizationUsers); err != nil {

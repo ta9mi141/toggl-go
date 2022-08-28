@@ -16,32 +16,32 @@ import (
 	"github.com/ta9mi141/toggl-go/track/internal"
 )
 
-// Client is a client for interacting with Toggl API v9.
-type Client struct {
+// APIClient is a client for interacting with Toggl API v9.
+type APIClient struct {
 	baseURL    *url.URL
 	httpClient *http.Client
 
 	apiToken string
 }
 
-// NewClient creates a new Toggl API v9 client.
-func NewClient(options ...Option) *Client {
+// NewAPIClient creates a new Toggl API v9 client.
+func NewAPIClient(options ...Option) *APIClient {
 	baseURL, _ := url.Parse(internal.DefaultBaseURL)
-	newClient := &Client{
+	newAPIClient := &APIClient{
 		baseURL:    baseURL,
 		httpClient: http.DefaultClient,
 	}
 
 	for _, option := range options {
-		option.apply(newClient)
+		option.apply(newAPIClient)
 	}
 
-	return newClient
+	return newAPIClient
 }
 
 // Option is an option for a Toggl API v9 client.
 type Option interface {
-	apply(*Client)
+	apply(*APIClient)
 }
 
 // WithHTTPClient returns a Option that specifies the HTTP client for communication.
@@ -53,7 +53,7 @@ type httpClientOption struct {
 	httpClient *http.Client
 }
 
-func (h *httpClientOption) apply(c *Client) {
+func (h *httpClientOption) apply(c *APIClient) {
 	c.httpClient = h.httpClient
 }
 
@@ -64,7 +64,7 @@ func WithAPIToken(apiToken string) Option {
 
 type apiTokenOption string
 
-func (a apiTokenOption) apply(c *Client) {
+func (a apiTokenOption) apply(c *APIClient) {
 	c.apiToken = string(a)
 }
 
@@ -75,12 +75,12 @@ func withBaseURL(baseURL string) Option {
 
 type baseURLOption string
 
-func (b baseURLOption) apply(c *Client) {
+func (b baseURLOption) apply(c *APIClient) {
 	baseURL, _ := url.Parse(string(b))
 	c.baseURL = baseURL
 }
 
-func (c *Client) httpGet(ctx context.Context, apiSpecificPath string, query, respBody any) error {
+func (c *APIClient) httpGet(ctx context.Context, apiSpecificPath string, query, respBody any) error {
 	req, err := c.newRequest(ctx, http.MethodGet, apiSpecificPath, query)
 	if err != nil {
 		return errors.Wrap(err, "")
@@ -88,7 +88,7 @@ func (c *Client) httpGet(ctx context.Context, apiSpecificPath string, query, res
 	return c.do(req, respBody)
 }
 
-func (c *Client) httpPost(ctx context.Context, apiSpecificPath string, reqBody, respBody any) error {
+func (c *APIClient) httpPost(ctx context.Context, apiSpecificPath string, reqBody, respBody any) error {
 	req, err := c.newRequest(ctx, http.MethodPost, apiSpecificPath, reqBody)
 	if err != nil {
 		return errors.Wrap(err, "")
@@ -96,7 +96,7 @@ func (c *Client) httpPost(ctx context.Context, apiSpecificPath string, reqBody, 
 	return c.do(req, respBody)
 }
 
-func (c *Client) httpPut(ctx context.Context, apiSpecificPath string, reqBody, respBody any) error {
+func (c *APIClient) httpPut(ctx context.Context, apiSpecificPath string, reqBody, respBody any) error {
 	req, err := c.newRequest(ctx, http.MethodPut, apiSpecificPath, reqBody)
 	if err != nil {
 		return errors.Wrap(err, "")
@@ -104,7 +104,7 @@ func (c *Client) httpPut(ctx context.Context, apiSpecificPath string, reqBody, r
 	return c.do(req, respBody)
 }
 
-func (c *Client) httpDelete(ctx context.Context, apiSpecificPath string) error {
+func (c *APIClient) httpDelete(ctx context.Context, apiSpecificPath string) error {
 	req, err := c.newRequest(ctx, http.MethodDelete, apiSpecificPath, nil)
 	if err != nil {
 		return errors.Wrap(err, "")
@@ -112,7 +112,7 @@ func (c *Client) httpDelete(ctx context.Context, apiSpecificPath string) error {
 	return c.do(req, nil)
 }
 
-func (c *Client) newRequest(ctx context.Context, httpMethod, apiSpecificPath string, input any) (*http.Request, error) {
+func (c *APIClient) newRequest(ctx context.Context, httpMethod, apiSpecificPath string, input any) (*http.Request, error) {
 	url := c.baseURL
 	url.Path = path.Join(url.Path, apiSpecificPath)
 
@@ -126,6 +126,6 @@ func (c *Client) newRequest(ctx context.Context, httpMethod, apiSpecificPath str
 	return req, nil
 }
 
-func (c *Client) do(req *http.Request, respBody any) error {
+func (c *APIClient) do(req *http.Request, respBody any) error {
 	return internal.Do(c.httpClient, req, respBody)
 }

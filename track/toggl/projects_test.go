@@ -177,8 +177,8 @@ func TestGetProjects(t *testing.T) {
 			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			projects, err := client.GetProjects(context.Background(), workspaceID, &GetProjectsQuery{})
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			projects, err := apiClient.GetProjects(context.Background(), workspaceID, &GetProjectsQuery{})
 
 			if !reflect.DeepEqual(projects, tt.out.projects) {
 				internal.Errorf(t, projects, tt.out.projects)
@@ -236,8 +236,8 @@ func TestGetProjectsQuery(t *testing.T) {
 			defer mockServer.Close()
 
 			workspaceID := 1234567
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			_, _ = client.GetProjects(context.Background(), workspaceID, tt.in)
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			_, _ = apiClient.GetProjects(context.Background(), workspaceID, tt.in)
 		})
 	}
 }
@@ -378,8 +378,8 @@ func TestGetProject(t *testing.T) {
 			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			project, err := client.GetProject(context.Background(), workspaceID, projectID, &GetProjectQuery{})
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			project, err := apiClient.GetProject(context.Background(), workspaceID, projectID, &GetProjectQuery{})
 
 			if !reflect.DeepEqual(project, tt.out.project) {
 				internal.Errorf(t, project, tt.out.project)
@@ -428,8 +428,8 @@ func TestGetProjectQuery(t *testing.T) {
 
 			workspaceID := 1234567
 			projectID := 123456789
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			_, _ = client.GetProject(context.Background(), workspaceID, projectID, tt.in)
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			_, _ = apiClient.GetProject(context.Background(), workspaceID, projectID, tt.in)
 		})
 	}
 }
@@ -568,8 +568,8 @@ func TestCreateProject(t *testing.T) {
 			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			project, err := client.CreateProject(context.Background(), workspaceID, &CreateProjectRequestBody{})
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			project, err := apiClient.CreateProject(context.Background(), workspaceID, &CreateProjectRequestBody{})
 
 			if !reflect.DeepEqual(project, tt.out.project) {
 				internal.Errorf(t, project, tt.out.project)
@@ -624,9 +624,9 @@ func TestCreateProjectRequestBody(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			mockServer := internal.NewMockServerToAssertRequestBody(t, tt.out)
 			defer mockServer.Close()
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
 			workspaceID := 1234567
-			_, _ = client.CreateProject(context.Background(), workspaceID, tt.in)
+			_, _ = apiClient.CreateProject(context.Background(), workspaceID, tt.in)
 		})
 	}
 }
@@ -756,8 +756,8 @@ func TestDeleteProject(t *testing.T) {
 			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			err := client.DeleteProject(context.Background(), workspaceID, projectID)
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			err := apiClient.DeleteProject(context.Background(), workspaceID, projectID)
 
 			errorResp := new(internal.ErrorResponse)
 			if errors.As(err, &errorResp) {

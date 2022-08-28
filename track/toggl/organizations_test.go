@@ -146,8 +146,8 @@ func TestGetOrganization(t *testing.T) {
 			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			organization, err := client.GetOrganization(context.Background(), organizationID)
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			organization, err := apiClient.GetOrganization(context.Background(), organizationID)
 
 			if !reflect.DeepEqual(organization, tt.out.organization) {
 				internal.Errorf(t, organization, tt.out.organization)
@@ -298,8 +298,8 @@ func TestGetOrganizationUsers(t *testing.T) {
 			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			organizationUsers, err := client.GetOrganizationUsers(context.Background(), organizationID, &GetOrganizationUsersQuery{})
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			organizationUsers, err := apiClient.GetOrganizationUsers(context.Background(), organizationID, &GetOrganizationUsersQuery{})
 
 			if !reflect.DeepEqual(organizationUsers, tt.out.organizationUsers) {
 				internal.Errorf(t, organizationUsers, tt.out.organizationUsers)
@@ -364,8 +364,8 @@ func TestGetOrganizationUsersQuery(t *testing.T) {
 			defer mockServer.Close()
 
 			organizationID := 1234567
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			_, _ = client.GetOrganizationUsers(context.Background(), organizationID, tt.in)
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			_, _ = apiClient.GetOrganizationUsers(context.Background(), organizationID, tt.in)
 		})
 	}
 }

@@ -41,7 +41,7 @@ type GetTimeEntriesQuery struct {
 }
 
 // GetTimeEntries lists latest time entries.
-func (c *Client) GetTimeEntries(ctx context.Context, query *GetTimeEntriesQuery) ([]*TimeEntry, error) {
+func (c *APIClient) GetTimeEntries(ctx context.Context, query *GetTimeEntriesQuery) ([]*TimeEntry, error) {
 	var timeEntries []*TimeEntry
 	apiSpecificPath := path.Join(mePath, "time_entries")
 	if err := c.httpGet(ctx, apiSpecificPath, query, &timeEntries); err != nil {
@@ -51,7 +51,7 @@ func (c *Client) GetTimeEntries(ctx context.Context, query *GetTimeEntriesQuery)
 }
 
 // GetCurrentTimeEntry loads running time entry for user id.
-func (c *Client) GetCurrentTimeEntry(ctx context.Context) (*TimeEntry, error) {
+func (c *APIClient) GetCurrentTimeEntry(ctx context.Context) (*TimeEntry, error) {
 	var timeEntry *TimeEntry
 	apiSpecificPath := path.Join(mePath, "time_entries/current")
 	if err := c.httpGet(ctx, apiSpecificPath, nil, &timeEntry); err != nil {
@@ -85,7 +85,7 @@ type CreateTimeEntryRequestBody struct {
 }
 
 // CreateTimeEntry creates a new workspace time entry.
-func (c *Client) CreateTimeEntry(ctx context.Context, workspaceID int, reqBody *CreateTimeEntryRequestBody) (*TimeEntry, error) {
+func (c *APIClient) CreateTimeEntry(ctx context.Context, workspaceID int, reqBody *CreateTimeEntryRequestBody) (*TimeEntry, error) {
 	var timeEntry *TimeEntry
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "time_entries")
 	if err := c.httpPost(ctx, apiSpecificPath, reqBody, &timeEntry); err != nil {
@@ -119,7 +119,7 @@ type UpdateTimeEntryRequestBody struct {
 }
 
 // UpdateTimeEntry updates a workspace time entry.
-func (c *Client) UpdateTimeEntry(ctx context.Context, workspaceID, timeEntryID int, reqBody *UpdateTimeEntryRequestBody) (*TimeEntry, error) {
+func (c *APIClient) UpdateTimeEntry(ctx context.Context, workspaceID, timeEntryID int, reqBody *UpdateTimeEntryRequestBody) (*TimeEntry, error) {
 	var timeEntry *TimeEntry
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "time_entries", strconv.Itoa(timeEntryID))
 	if err := c.httpPut(ctx, apiSpecificPath, reqBody, &timeEntry); err != nil {
@@ -129,7 +129,7 @@ func (c *Client) UpdateTimeEntry(ctx context.Context, workspaceID, timeEntryID i
 }
 
 // DeleteTimeEntry deletes a workspace time entry.
-func (c *Client) DeleteTimeEntry(ctx context.Context, workspaceID, timeEntryID int) error {
+func (c *APIClient) DeleteTimeEntry(ctx context.Context, workspaceID, timeEntryID int) error {
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "time_entries", strconv.Itoa(timeEntryID))
 	if err := c.httpDelete(ctx, apiSpecificPath); err != nil {
 		return errors.Wrap(err, "")

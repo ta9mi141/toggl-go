@@ -19,7 +19,7 @@ type Tag struct {
 }
 
 // GetTags lists workspace tags.
-func (c *Client) GetTags(ctx context.Context, workspaceID int) ([]*Tag, error) {
+func (c *APIClient) GetTags(ctx context.Context, workspaceID int) ([]*Tag, error) {
 	var tags []*Tag
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "tags")
 	if err := c.httpGet(ctx, apiSpecificPath, nil, &tags); err != nil {
@@ -35,7 +35,7 @@ type CreateTagRequestBody struct {
 }
 
 // CreateTag creates workspace tags.
-func (c *Client) CreateTag(ctx context.Context, workspaceID int, reqBody *CreateTagRequestBody) (*Tag, error) {
+func (c *APIClient) CreateTag(ctx context.Context, workspaceID int, reqBody *CreateTagRequestBody) (*Tag, error) {
 	var tag *Tag
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "tags")
 	if err := c.httpPost(ctx, apiSpecificPath, reqBody, &tag); err != nil {
@@ -51,7 +51,7 @@ type UpdateTagRequestBody struct {
 }
 
 // UpdateTag updates workspace tags.
-func (c *Client) UpdateTag(ctx context.Context, workspaceID, tagID int, reqBody *UpdateTagRequestBody) (*Tag, error) {
+func (c *APIClient) UpdateTag(ctx context.Context, workspaceID, tagID int, reqBody *UpdateTagRequestBody) (*Tag, error) {
 	var tag *Tag
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "tags", strconv.Itoa(tagID))
 	if err := c.httpPut(ctx, apiSpecificPath, reqBody, &tag); err != nil {
@@ -61,7 +61,7 @@ func (c *Client) UpdateTag(ctx context.Context, workspaceID, tagID int, reqBody 
 }
 
 // DeleteTag deletes workspace tags.
-func (c *Client) DeleteTag(ctx context.Context, workspaceID, tagID int) error {
+func (c *APIClient) DeleteTag(ctx context.Context, workspaceID, tagID int) error {
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "tags", strconv.Itoa(tagID))
 	if err := c.httpDelete(ctx, apiSpecificPath); err != nil {
 		return errors.Wrap(err, "")

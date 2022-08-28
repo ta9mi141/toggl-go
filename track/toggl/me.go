@@ -35,7 +35,7 @@ type Me struct {
 }
 
 // GetMe returns details for the current user.
-func (c *Client) GetMe(ctx context.Context) (*Me, error) {
+func (c *APIClient) GetMe(ctx context.Context) (*Me, error) {
 	var me *Me
 	if err := c.httpGet(ctx, mePath, nil, &me); err != nil {
 		return nil, errors.Wrap(err, "")
@@ -56,7 +56,7 @@ type UpdateMeRequestBody struct {
 }
 
 // UpdateMe updates details for the current user.
-func (c *Client) UpdateMe(ctx context.Context, reqBody *UpdateMeRequestBody) (*Me, error) {
+func (c *APIClient) UpdateMe(ctx context.Context, reqBody *UpdateMeRequestBody) (*Me, error) {
 	var me *Me
 	if err := c.httpPut(ctx, mePath, reqBody, &me); err != nil {
 		return nil, errors.Wrap(err, "")
@@ -65,7 +65,7 @@ func (c *Client) UpdateMe(ctx context.Context, reqBody *UpdateMeRequestBody) (*M
 }
 
 // GetMyOrganizations gets all organizations a given user is part of.
-func (c *Client) GetMyOrganizations(ctx context.Context) ([]*Organization, error) {
+func (c *APIClient) GetMyOrganizations(ctx context.Context) ([]*Organization, error) {
 	var organizations []*Organization
 	apiSpecificPath := path.Join(mePath, "organizations")
 	if err := c.httpGet(ctx, apiSpecificPath, nil, &organizations); err != nil {
@@ -80,7 +80,7 @@ type GetMyProjectsQuery struct {
 }
 
 // GetMyProjects gets projects.
-func (c *Client) GetMyProjects(ctx context.Context, query *GetMyProjectsQuery) ([]*Project, error) {
+func (c *APIClient) GetMyProjects(ctx context.Context, query *GetMyProjectsQuery) ([]*Project, error) {
 	var projects []*Project
 	apiSpecificPath := path.Join(mePath, "projects")
 	if err := c.httpGet(ctx, apiSpecificPath, query, &projects); err != nil {
@@ -95,7 +95,7 @@ type GetMyProjectsPaginatedQuery struct {
 }
 
 // GetMyProjectsPaginated gets paginated projects.
-func (c *Client) GetMyProjectsPaginated(ctx context.Context, query *GetMyProjectsPaginatedQuery) ([]*Project, error) {
+func (c *APIClient) GetMyProjectsPaginated(ctx context.Context, query *GetMyProjectsPaginatedQuery) ([]*Project, error) {
 	var projects []*Project
 	apiSpecificPath := path.Join(mePath, "projects/paginated")
 	if err := c.httpGet(ctx, apiSpecificPath, query, &projects); err != nil {
@@ -105,7 +105,7 @@ func (c *Client) GetMyProjectsPaginated(ctx context.Context, query *GetMyProject
 }
 
 // GetMyTags returns tags for the current user.
-func (c *Client) GetMyTags(ctx context.Context) ([]*Tag, error) {
+func (c *APIClient) GetMyTags(ctx context.Context) ([]*Tag, error) {
 	var tags []*Tag
 	if err := c.httpGet(ctx, mePath, nil, &tags); err != nil {
 		return nil, errors.Wrap(err, "")

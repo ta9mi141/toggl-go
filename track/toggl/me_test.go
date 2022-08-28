@@ -111,8 +111,8 @@ func TestGetMe(t *testing.T) {
 			mockServer := internal.NewMockServer(t, mePath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			me, err := client.GetMe(context.Background())
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			me, err := apiClient.GetMe(context.Background())
 
 			if !reflect.DeepEqual(me, tt.out.me) {
 				internal.Errorf(t, me, tt.out.me)
@@ -253,8 +253,8 @@ func TestUpdateMe(t *testing.T) {
 			mockServer := internal.NewMockServer(t, mePath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			me, err := client.UpdateMe(context.Background(), &UpdateMeRequestBody{})
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			me, err := apiClient.UpdateMe(context.Background(), &UpdateMeRequestBody{})
 
 			if !reflect.DeepEqual(me, tt.out.me) {
 				internal.Errorf(t, me, tt.out.me)
@@ -308,8 +308,8 @@ func TestUpdateMeRequestBody(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			mockServer := internal.NewMockServerToAssertRequestBody(t, tt.out)
 			defer mockServer.Close()
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			_, _ = client.UpdateMe(context.Background(), tt.in)
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			_, _ = apiClient.UpdateMe(context.Background(), tt.in)
 		})
 	}
 }
@@ -443,8 +443,8 @@ func TestGetMyOrganizations(t *testing.T) {
 			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			organizations, err := client.GetMyOrganizations(context.Background())
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			organizations, err := apiClient.GetMyOrganizations(context.Background())
 
 			if !reflect.DeepEqual(organizations, tt.out.organizations) {
 				internal.Errorf(t, organizations, tt.out.organizations)
@@ -626,8 +626,8 @@ func TestGetMyProjects(t *testing.T) {
 			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			projects, err := client.GetMyProjects(context.Background(), nil)
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			projects, err := apiClient.GetMyProjects(context.Background(), nil)
 
 			if !reflect.DeepEqual(projects, tt.out.projects) {
 				internal.Errorf(t, projects, tt.out.projects)
@@ -679,8 +679,8 @@ func TestGetMyProjectsQuery(t *testing.T) {
 			mockServer := internal.NewMockServerToAssertQuery(t, tt.out)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			_, _ = client.GetMyProjects(context.Background(), tt.in)
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			_, _ = apiClient.GetMyProjects(context.Background(), tt.in)
 		})
 	}
 }
@@ -847,8 +847,8 @@ func TestGetMyProjectsPaginated(t *testing.T) {
 			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			projects, err := client.GetMyProjectsPaginated(context.Background(), nil)
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			projects, err := apiClient.GetMyProjectsPaginated(context.Background(), nil)
 
 			if !reflect.DeepEqual(projects, tt.out.projects) {
 				internal.Errorf(t, projects, tt.out.projects)
@@ -900,8 +900,8 @@ func TestGetMyProjectsPaginatedQuery(t *testing.T) {
 			mockServer := internal.NewMockServerToAssertQuery(t, tt.out)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			_, _ = client.GetMyProjectsPaginated(context.Background(), tt.in)
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			_, _ = apiClient.GetMyProjectsPaginated(context.Background(), tt.in)
 		})
 	}
 }
@@ -1008,8 +1008,8 @@ func TestGetMyTags(t *testing.T) {
 			mockServer := internal.NewMockServer(t, mePath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			tags, err := client.GetMyTags(context.Background())
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			tags, err := apiClient.GetMyTags(context.Background())
 
 			if !reflect.DeepEqual(tags, tt.out.tags) {
 				internal.Errorf(t, tags, tt.out.tags)

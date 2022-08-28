@@ -15,18 +15,18 @@ func TestMain(m *testing.M) {
 	m.Run()
 }
 
-func TestNewClient(t *testing.T) {
-	client := NewClient()
+func TestNewAPIClient(t *testing.T) {
+	apiClient := NewAPIClient()
 
-	if client.baseURL.String() != internal.DefaultBaseURL {
-		internal.Errorf(t, client.baseURL.String(), internal.DefaultBaseURL)
+	if apiClient.baseURL.String() != internal.DefaultBaseURL {
+		internal.Errorf(t, apiClient.baseURL.String(), internal.DefaultBaseURL)
 	}
-	if !reflect.DeepEqual(client.httpClient, http.DefaultClient) {
-		internal.Errorf(t, client.httpClient, http.DefaultClient)
+	if !reflect.DeepEqual(apiClient.httpClient, http.DefaultClient) {
+		internal.Errorf(t, apiClient.httpClient, http.DefaultClient)
 	}
 }
 
-func TestNewClientWithHTTPClient(t *testing.T) {
+func TestNewAPIClientWithHTTPClient(t *testing.T) {
 	proxyURL, _ := url.Parse("http://proxy.example.com:8080")
 	httpClient := &http.Client{
 		Transport: &http.Transport{
@@ -34,17 +34,17 @@ func TestNewClientWithHTTPClient(t *testing.T) {
 		},
 	}
 
-	client := NewClient(WithHTTPClient(httpClient))
+	apiClient := NewAPIClient(WithHTTPClient(httpClient))
 
-	if !reflect.DeepEqual(client.httpClient, httpClient) {
-		internal.Errorf(t, client.httpClient, httpClient)
+	if !reflect.DeepEqual(apiClient.httpClient, httpClient) {
+		internal.Errorf(t, apiClient.httpClient, httpClient)
 	}
 }
 
-func TestNewClientWithAPIToken(t *testing.T) {
-	client := NewClient(WithAPIToken(internal.APIToken))
+func TestNewAPIClientWithAPIToken(t *testing.T) {
+	apiClient := NewAPIClient(WithAPIToken(internal.APIToken))
 
-	if client.apiToken != internal.APIToken {
-		internal.Errorf(t, client.apiToken, internal.APIToken)
+	if apiClient.apiToken != internal.APIToken {
+		internal.Errorf(t, apiClient.apiToken, internal.APIToken)
 	}
 }

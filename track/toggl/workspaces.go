@@ -86,7 +86,7 @@ type TeConstraints struct {
 }
 
 // GetWorkspace gets information of single workspace.
-func (c *Client) GetWorkspace(ctx context.Context, workspaceID int) (*Workspace, error) {
+func (c *APIClient) GetWorkspace(ctx context.Context, workspaceID int) (*Workspace, error) {
 	var workspace *Workspace
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID))
 	if err := c.httpGet(ctx, apiSpecificPath, nil, &workspace); err != nil {
@@ -123,7 +123,7 @@ type groupIDs struct {
 }
 
 // GetWorkspaceUsers returns any users who belong to the workspace directly or through at least one group.
-func (c *Client) GetWorkspaceUsers(ctx context.Context, organizationID, workspaceID int) ([]*WorkspaceUser, error) {
+func (c *APIClient) GetWorkspaceUsers(ctx context.Context, organizationID, workspaceID int) ([]*WorkspaceUser, error) {
 	var workspaceUsers []*WorkspaceUser
 	apiSpecificPath := path.Join(organizationsPath, strconv.Itoa(organizationID), "workspaces", strconv.Itoa(workspaceID))
 	if err := c.httpGet(ctx, apiSpecificPath, nil, &workspaceUsers); err != nil {
@@ -152,7 +152,7 @@ type UpdateWorkspaceRequestBody struct {
 }
 
 // UpdateWorkspace updates a specific workspace.
-func (c *Client) UpdateWorkspace(ctx context.Context, workspaceID int, reqBody *UpdateWorkspaceRequestBody) (*Workspace, error) {
+func (c *APIClient) UpdateWorkspace(ctx context.Context, workspaceID int, reqBody *UpdateWorkspaceRequestBody) (*Workspace, error) {
 	var workspace *Workspace
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID))
 	if err := c.httpPut(ctx, apiSpecificPath, reqBody, &workspace); err != nil {

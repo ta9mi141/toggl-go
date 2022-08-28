@@ -131,8 +131,8 @@ func TestGetTags(t *testing.T) {
 			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			tags, err := client.GetTags(context.Background(), workspaceID)
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			tags, err := apiClient.GetTags(context.Background(), workspaceID)
 
 			if !reflect.DeepEqual(tags, tt.out.tags) {
 				internal.Errorf(t, tags, tt.out.tags)
@@ -267,8 +267,8 @@ func TestCreateTag(t *testing.T) {
 			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			tag, err := client.CreateTag(context.Background(), workspaceID, &CreateTagRequestBody{})
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			tag, err := apiClient.CreateTag(context.Background(), workspaceID, &CreateTagRequestBody{})
 
 			if !reflect.DeepEqual(tag, tt.out.tag) {
 				internal.Errorf(t, tag, tt.out.tag)
@@ -314,9 +314,9 @@ func TestCreateTagRequestBody(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			mockServer := internal.NewMockServerToAssertRequestBody(t, tt.out)
 			defer mockServer.Close()
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
 			workspaceID := 1234567
-			_, _ = client.CreateTag(context.Background(), workspaceID, tt.in)
+			_, _ = apiClient.CreateTag(context.Background(), workspaceID, tt.in)
 		})
 	}
 }
@@ -462,8 +462,8 @@ func TestUpdateTag(t *testing.T) {
 			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			tag, err := client.UpdateTag(context.Background(), workspaceID, tagID, &UpdateTagRequestBody{})
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			tag, err := apiClient.UpdateTag(context.Background(), workspaceID, tagID, &UpdateTagRequestBody{})
 
 			if !reflect.DeepEqual(tag, tt.out.tag) {
 				internal.Errorf(t, tag, tt.out.tag)
@@ -509,10 +509,10 @@ func TestUpdateTagRequestBody(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			mockServer := internal.NewMockServerToAssertRequestBody(t, tt.out)
 			defer mockServer.Close()
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
 			workspaceID := 1234567
 			tagID := 12345678
-			_, _ = client.UpdateTag(context.Background(), workspaceID, tagID, tt.in)
+			_, _ = apiClient.UpdateTag(context.Background(), workspaceID, tagID, tt.in)
 		})
 	}
 }
@@ -642,8 +642,8 @@ func TestDeleteTag(t *testing.T) {
 			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			err := client.DeleteTag(context.Background(), workspaceID, tagID)
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			err := apiClient.DeleteTag(context.Background(), workspaceID, tagID)
 
 			errorResp := new(internal.ErrorResponse)
 			if errors.As(err, &errorResp) {

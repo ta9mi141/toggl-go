@@ -71,7 +71,7 @@ type GetProjectsQuery struct {
 }
 
 // GetProjects gets projects for given workspace.
-func (c *Client) GetProjects(ctx context.Context, workspaceID int, query *GetProjectsQuery) ([]*Project, error) {
+func (c *APIClient) GetProjects(ctx context.Context, workspaceID int, query *GetProjectsQuery) ([]*Project, error) {
 	var projects []*Project
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "projects")
 	if err := c.httpGet(ctx, apiSpecificPath, query, &projects); err != nil {
@@ -86,7 +86,7 @@ type GetProjectQuery struct {
 }
 
 // GetProject gets project for given workspace.
-func (c *Client) GetProject(ctx context.Context, workspaceID, projectID int, query *GetProjectQuery) (*Project, error) {
+func (c *APIClient) GetProject(ctx context.Context, workspaceID, projectID int, query *GetProjectQuery) (*Project, error) {
 	var project *Project
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "projects", strconv.Itoa(projectID))
 	if err := c.httpGet(ctx, apiSpecificPath, query, &project); err != nil {
@@ -120,7 +120,7 @@ type CreateProjectRequestBody struct {
 }
 
 // CreateProject creates project for given workspace.
-func (c *Client) CreateProject(ctx context.Context, workspaceID int, reqBody *CreateProjectRequestBody) (*Project, error) {
+func (c *APIClient) CreateProject(ctx context.Context, workspaceID int, reqBody *CreateProjectRequestBody) (*Project, error) {
 	var project *Project
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "projects")
 	if err := c.httpPost(ctx, apiSpecificPath, reqBody, &project); err != nil {
@@ -130,7 +130,7 @@ func (c *Client) CreateProject(ctx context.Context, workspaceID int, reqBody *Cr
 }
 
 // DeleteProject deletes project for given workspace.
-func (c *Client) DeleteProject(ctx context.Context, workspaceID, projectID int) error {
+func (c *APIClient) DeleteProject(ctx context.Context, workspaceID, projectID int) error {
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "projects", strconv.Itoa(projectID))
 	if err := c.httpDelete(ctx, apiSpecificPath); err != nil {
 		return errors.Wrap(err, "")

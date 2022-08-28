@@ -152,8 +152,8 @@ func TestGetWorkspace(t *testing.T) {
 			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			workspace, err := client.GetWorkspace(context.Background(), workspaceID)
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			workspace, err := apiClient.GetWorkspace(context.Background(), workspaceID)
 
 			if !reflect.DeepEqual(workspace, tt.out.workspace) {
 				internal.Errorf(t, workspace, tt.out.workspace)
@@ -307,8 +307,8 @@ func TestGetWorkspaceUsers(t *testing.T) {
 			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			workspaceUsers, err := client.GetWorkspaceUsers(context.Background(), organizationID, workspaceID)
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			workspaceUsers, err := apiClient.GetWorkspaceUsers(context.Background(), organizationID, workspaceID)
 
 			if !reflect.DeepEqual(workspaceUsers, tt.out.workspaceUsers) {
 				internal.Errorf(t, workspaceUsers, tt.out.workspaceUsers)
@@ -467,8 +467,8 @@ func TestUpdateWorkspace(t *testing.T) {
 			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
 			defer mockServer.Close()
 
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
-			workspace, err := client.UpdateWorkspace(context.Background(), workspaceID, &UpdateWorkspaceRequestBody{})
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			workspace, err := apiClient.UpdateWorkspace(context.Background(), workspaceID, &UpdateWorkspaceRequestBody{})
 
 			if !reflect.DeepEqual(workspace, tt.out.workspace) {
 				internal.Errorf(t, workspace, tt.out.workspace)
@@ -518,9 +518,9 @@ func TestUpdateWorkspaceRequestBody(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			mockServer := internal.NewMockServerToAssertRequestBody(t, tt.out)
 			defer mockServer.Close()
-			client := NewClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
 			workspaceID := 1234567
-			_, _ = client.UpdateWorkspace(context.Background(), workspaceID, tt.in)
+			_, _ = apiClient.UpdateWorkspace(context.Background(), workspaceID, tt.in)
 		})
 	}
 }
