@@ -1030,7 +1030,7 @@ func TestGetMyTags(t *testing.T) {
 	}
 }
 
-func TestGetClients(t *testing.T) {
+func TestGetMyClients(t *testing.T) {
 	tests := []struct {
 		name string
 		in   struct {
