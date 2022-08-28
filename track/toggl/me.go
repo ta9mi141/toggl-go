@@ -115,5 +115,10 @@ func (c *APIClient) GetMyTags(ctx context.Context) ([]*Tag, error) {
 
 // GetMyClients gets clients.
 func (c *APIClient) GetMyClients(ctx context.Context) ([]*Client, error) {
-	return nil, nil
+	var clients []*Client
+	apiSpecificPath := path.Join(mePath, "clients")
+	if err := c.httpGet(ctx, apiSpecificPath, nil, &clients); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return clients, nil
 }
