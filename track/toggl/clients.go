@@ -28,3 +28,8 @@ func (c *APIClient) GetClients(ctx context.Context, workspaceID int) ([]*Client,
 	}
 	return clients, nil
 }
+
+// GetClient loads client from workspace.
+func (c *APIClient) GetClient(ctx context.Context, workspaceID, clientID int) (*Client, error) {
+	return nil, nil
+}
