@@ -31,5 +31,10 @@ func (c *APIClient) GetClients(ctx context.Context, workspaceID int) ([]*Client,
 
 // GetClient loads client from workspace.
 func (c *APIClient) GetClient(ctx context.Context, workspaceID, clientID int) (*Client, error) {
-	return nil, nil
+	var client *Client
+	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "clients", strconv.Itoa(clientID))
+	if err := c.httpGet(ctx, apiSpecificPath, nil, &client); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return client, nil
 }
