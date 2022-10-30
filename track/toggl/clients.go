@@ -48,5 +48,10 @@ type CreateClientRequestBody struct {
 
 // CreateClient creates workspace client.
 func (c *APIClient) CreateClient(ctx context.Context, workspaceID int, reqBody *CreateClientRequestBody) (*Client, error) {
-	return nil, nil
+	var client *Client
+	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "clients")
+	if err := c.httpPost(ctx, apiSpecificPath, reqBody, &client); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return client, nil
 }
