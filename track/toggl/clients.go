@@ -38,3 +38,15 @@ func (c *APIClient) GetClient(ctx context.Context, workspaceID, clientID int) (*
 	}
 	return client, nil
 }
+
+// CreateClientRequestBody represents a request body of CreateClient.
+type CreateClientRequestBody struct {
+	ID   *int    `json:"id,omitempty"`
+	Name *string `json:"name,omitempty"`
+	WID  *int    `json:"wid,omitempty"`
+}
+
+// CreateClient creates workspace client.
+func (c *APIClient) CreateClient(ctx context.Context, workspaceID int, reqBody *CreateClientRequestBody) (*Client, error) {
+	return nil, nil
+}
