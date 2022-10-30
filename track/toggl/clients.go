@@ -15,8 +15,8 @@ type Client struct {
 	WID             *int       `json:"wid,omitempty"`
 	Name            *string    `json:"name,omitempty"`
 	At              *time.Time `json:"at,omitempty"`
-	ForeignID       *string    `json:"foreign_id,omitempty"`
 	ServerDeletedAt *time.Time `json:"server_deleted_at,omitempty"`
+	Archived        *bool      `json:"archived,omitempty"`
 }
 
 // GetClients lists clients from workspace.

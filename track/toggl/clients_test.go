@@ -184,10 +184,11 @@ func TestGetClient(t *testing.T) {
 				err    error
 			}{
 				client: &Client{
-					ID:   track.Ptr(12345678),
-					WID:  track.Ptr(2345678),
-					Name: track.Ptr("test client"),
-					At:   track.Ptr(time.Date(2020, time.January, 2, 3, 4, 5, 0, time.FixedZone("", 0))),
+					ID:       track.Ptr(12345678),
+					WID:      track.Ptr(2345678),
+					Name:     track.Ptr("test client"),
+					At:       track.Ptr(time.Date(2020, time.January, 2, 3, 4, 5, 0, time.FixedZone("", 0))),
+					Archived: track.Ptr(false),
 				},
 				err: nil,
 			},
