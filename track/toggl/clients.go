@@ -55,3 +55,15 @@ func (c *APIClient) CreateClient(ctx context.Context, workspaceID int, reqBody *
 	}
 	return client, nil
 }
+
+// UpdateClientRequestBody represents a request body of UpdateClient.
+type UpdateClientRequestBody struct {
+	ID   *int    `json:"id,omitempty"`
+	Name *string `json:"name,omitempty"`
+	WID  *int    `json:"wid,omitempty"`
+}
+
+// UpdateClient updates workspace client.
+func (c *APIClient) UpdateClient(ctx context.Context, workspaceID, clientID int, reqBody *UpdateClientRequestBody) (*Client, error) {
+	return nil, nil
+}

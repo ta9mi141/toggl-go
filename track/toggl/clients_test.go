@@ -465,3 +465,200 @@ func TestCreateClientRequestBody(t *testing.T) {
 		})
 	}
 }
+
+func TestUpdateClient(t *testing.T) {
+	tests := []struct {
+		name string
+		in   struct {
+			statusCode   int
+			testdataFile string
+		}
+		out struct {
+			client *Client
+			err    error
+		}
+	}{
+		{
+			name: "200 OK",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusOK,
+				testdataFile: "testdata/clients/update_client_200_ok.json",
+			},
+			out: struct {
+				client *Client
+				err    error
+			}{
+				client: &Client{
+					ID:       track.Ptr(12345678),
+					Name:     track.Ptr("updated client"),
+					Archived: track.Ptr(false),
+					WID:      track.Ptr(1234567),
+					At:       track.Ptr(time.Date(2020, time.January, 2, 3, 4, 5, 0, time.FixedZone("", 0))),
+				},
+				err: nil,
+			},
+		},
+		{
+			name: "400 Bad Request",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusBadRequest,
+				testdataFile: "testdata/clients/update_client_400_bad_request.json",
+			},
+			out: struct {
+				client *Client
+				err    error
+			}{
+				client: nil,
+				err: &internal.ErrorResponse{
+					StatusCode: 400,
+					Message:    "\"JSON is not valid\"\n",
+					Header: http.Header{
+						"Content-Length": []string{"20"},
+						"Content-Type":   []string{"application/json; charset=utf-8"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
+			name: "403 Forbidden",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusForbidden,
+				testdataFile: "testdata/clients/update_client_403_forbidden",
+			},
+			out: struct {
+				client *Client
+				err    error
+			}{
+				client: nil,
+				err: &internal.ErrorResponse{
+					StatusCode: 403,
+					Message:    "",
+					Header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
+			name: "404 Not Found",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusNotFound,
+				testdataFile: "testdata/clients/update_client_404_not_found.json",
+			},
+			out: struct {
+				client *Client
+				err    error
+			}{
+				client: nil,
+				err: &internal.ErrorResponse{
+					StatusCode: 404,
+					Message:    "\"Client doesn't exist in the workspace.\"\n",
+					Header: http.Header{
+						"Content-Length": []string{"41"},
+						"Content-Type":   []string{"application/json; charset=utf-8"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
+			name: "500 Internal Server Error",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusInternalServerError,
+				testdataFile: "testdata/clients/update_client_500_internal_server_error",
+			},
+			out: struct {
+				client *Client
+				err    error
+			}{
+				client: nil,
+				err: &internal.ErrorResponse{
+					StatusCode: 500,
+					Message:    "",
+					Header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			workspaceID := 1234567
+			clientID := 12345678
+			apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "clients", strconv.Itoa(clientID))
+			mockServer := internal.NewMockServer(t, apiSpecificPath, tt.in.statusCode, tt.in.testdataFile)
+			defer mockServer.Close()
+
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			client, err := apiClient.UpdateClient(context.Background(), workspaceID, clientID, &UpdateClientRequestBody{})
+
+			if !reflect.DeepEqual(client, tt.out.client) {
+				internal.Errorf(t, client, tt.out.client)
+			}
+
+			errorResp := new(internal.ErrorResponse)
+			if errors.As(err, &errorResp) {
+				if !reflect.DeepEqual(errorResp, tt.out.err) {
+					internal.Errorf(t, errorResp, tt.out.err)
+				}
+			} else {
+				if !reflect.DeepEqual(err, tt.out.err) {
+					internal.Errorf(t, err, tt.out.err)
+				}
+			}
+		})
+	}
+}
+
+func TestUpdateClientRequestBody(t *testing.T) {
+	tests := []struct {
+		name string
+		in   *UpdateClientRequestBody
+		out  string
+	}{
+		{
+			name: "string",
+			in: &UpdateClientRequestBody{
+				Name: track.Ptr("updated client"),
+			},
+			out: "{\"name\":\"updated client\"}",
+		},
+		{
+			name: "string and int",
+			in: &UpdateClientRequestBody{
+				Name: track.Ptr("updated"),
+				WID:  track.Ptr(1234567),
+			},
+			out: "{\"name\":\"updated\",\"wid\":1234567}",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockServer := internal.NewMockServerToAssertRequestBody(t, tt.out)
+			defer mockServer.Close()
+			apiClient := NewAPIClient(WithAPIToken(internal.APIToken), withBaseURL(mockServer.URL))
+			workspaceID := 1234567
+			clientID := 12345678
+			_, _ = apiClient.UpdateClient(context.Background(), workspaceID, clientID, tt.in)
+		})
+	}
+}
