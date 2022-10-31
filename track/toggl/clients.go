@@ -65,5 +65,10 @@ type UpdateClientRequestBody struct {
 
 // UpdateClient updates workspace client.
 func (c *APIClient) UpdateClient(ctx context.Context, workspaceID, clientID int, reqBody *UpdateClientRequestBody) (*Client, error) {
-	return nil, nil
+	var client *Client
+	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "clients", strconv.Itoa(clientID))
+	if err := c.httpPut(ctx, apiSpecificPath, reqBody, &client); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return client, nil
 }
