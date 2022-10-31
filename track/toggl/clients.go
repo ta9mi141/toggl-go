@@ -75,5 +75,9 @@ func (c *APIClient) UpdateClient(ctx context.Context, workspaceID, clientID int,
 
 // DeleteClient deletes workspace client.
 func (c *APIClient) DeleteClient(ctx context.Context, workspaceID, clientID int) error {
+	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "clients", strconv.Itoa(clientID))
+	if err := c.httpDelete(ctx, apiSpecificPath); err != nil {
+		return errors.Wrap(err, "")
+	}
 	return nil
 }
