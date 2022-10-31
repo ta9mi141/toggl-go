@@ -72,3 +72,8 @@ func (c *APIClient) UpdateClient(ctx context.Context, workspaceID, clientID int,
 	}
 	return client, nil
 }
+
+// DeleteClient deletes workspace client.
+func (c *APIClient) DeleteClient(ctx context.Context, workspaceID, clientID int) error {
+	return nil
+}
