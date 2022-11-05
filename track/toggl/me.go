@@ -8,10 +8,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-const (
-	mePath string = "api/v9/me"
-)
-
 // Me represents the properties of an user.
 // Some properties not listed in the documentation are also included.
 type Me struct {

@@ -9,10 +9,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-const (
-	workspacesPath string = "api/v9/workspaces"
-)
-
 // Workspace represents the properties of a workspace.
 type Workspace struct {
 	ID                          *int           `json:"id,omitempty"`

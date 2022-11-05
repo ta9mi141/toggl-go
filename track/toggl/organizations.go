@@ -9,10 +9,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-const (
-	organizationsPath string = "api/v9/organizations"
-)
-
 // Organization represents the properties of an organization.
 type Organization struct {
 	ID                      *int       `json:"id,omitempty"`

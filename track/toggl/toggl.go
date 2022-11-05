@@ -16,6 +16,12 @@ import (
 	"github.com/ta9mi141/toggl-go/track/internal"
 )
 
+const (
+	mePath            string = "api/v9/me"
+	organizationsPath string = "api/v9/organizations"
+	workspacesPath    string = "api/v9/workspaces"
+)
+
 // APIClient is a client for interacting with Toggl API v9.
 type APIClient struct {
 	baseURL    *url.URL
