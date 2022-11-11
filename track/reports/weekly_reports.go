@@ -2,7 +2,11 @@ package reports
 
 import (
 	"context"
+	"path"
+	"strconv"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 // WeeklyReport represents the properties of a weekly report.
@@ -34,5 +38,10 @@ type SearchWeeklyReportRequestBody struct {
 
 // SearchWeeklyReport returns time entries for weekly report.
 func (c *APIClient) SearchWeeklyReport(ctx context.Context, workspaceID int, reqBody *SearchWeeklyReportRequestBody) (*WeeklyReport, error) {
-	return nil, nil
+	var weeklyReport *WeeklyReport
+	apiSpecificPath := path.Join(reportsPath, strconv.Itoa(workspaceID), "weekly/time_entries")
+	if err := c.httpPost(ctx, apiSpecificPath, reqBody, &weeklyReport); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return weeklyReport, nil
 }
