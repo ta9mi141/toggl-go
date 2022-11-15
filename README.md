@@ -11,6 +11,8 @@ toggl-go currently provides the following packages.
 
 * `toggl`
   * This package provides a Go client for Toggl API v9
+* `webhooks`
+  * This package provides a Go client for Toggl Webhooks API
 * `reports`
   * This package provides a Go client for Toggl Reports API v3
 * `track`
