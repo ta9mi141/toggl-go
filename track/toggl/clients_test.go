@@ -82,6 +82,30 @@ func TestGetClients(t *testing.T) {
 			},
 		},
 		{
+			name: "401 Unauthorized",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusUnauthorized,
+				testdataFile: "testdata/clients/get_clients_401_unauthorized",
+			},
+			out: struct {
+				clients []*Client
+				err     error
+			}{
+				clients: nil,
+				err: &internal.ErrorResponse{
+					StatusCode: 401,
+					Message:    "",
+					Header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
 			name: "403 Forbidden",
 			in: struct {
 				statusCode   int
@@ -97,30 +121,6 @@ func TestGetClients(t *testing.T) {
 				clients: nil,
 				err: &internal.ErrorResponse{
 					StatusCode: 403,
-					Message:    "",
-					Header: http.Header{
-						"Content-Length": []string{"0"},
-						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
-					},
-				},
-			},
-		},
-		{
-			name: "500 Internal Server Error",
-			in: struct {
-				statusCode   int
-				testdataFile string
-			}{
-				statusCode:   http.StatusInternalServerError,
-				testdataFile: "testdata/clients/get_clients_500_internal_server_error",
-			},
-			out: struct {
-				clients []*Client
-				err     error
-			}{
-				clients: nil,
-				err: &internal.ErrorResponse{
-					StatusCode: 500,
 					Message:    "",
 					Header: http.Header{
 						"Content-Length": []string{"0"},
@@ -194,6 +194,30 @@ func TestGetClient(t *testing.T) {
 			},
 		},
 		{
+			name: "401 Unauthorized",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusUnauthorized,
+				testdataFile: "testdata/clients/get_client_401_unauthorized",
+			},
+			out: struct {
+				client *Client
+				err    error
+			}{
+				client: nil,
+				err: &internal.ErrorResponse{
+					StatusCode: 401,
+					Message:    "",
+					Header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
 			name: "403 Forbidden",
 			in: struct {
 				statusCode   int
@@ -237,30 +261,6 @@ func TestGetClient(t *testing.T) {
 					Header: http.Header{
 						"Content-Length": []string{"32"},
 						"Content-Type":   []string{"application/json; charset=utf-8"},
-						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
-					},
-				},
-			},
-		},
-		{
-			name: "500 Internal Server Error",
-			in: struct {
-				statusCode   int
-				testdataFile string
-			}{
-				statusCode:   http.StatusInternalServerError,
-				testdataFile: "testdata/clients/get_client_500_internal_server_error",
-			},
-			out: struct {
-				client *Client
-				err    error
-			}{
-				client: nil,
-				err: &internal.ErrorResponse{
-					StatusCode: 500,
-					Message:    "",
-					Header: http.Header{
-						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
 				},
@@ -357,6 +357,30 @@ func TestCreateClient(t *testing.T) {
 			},
 		},
 		{
+			name: "401 Unauthorized",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusUnauthorized,
+				testdataFile: "testdata/clients/create_client_401_unauthorized",
+			},
+			out: struct {
+				client *Client
+				err    error
+			}{
+				client: nil,
+				err: &internal.ErrorResponse{
+					StatusCode: 401,
+					Message:    "",
+					Header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
 			name: "403 Forbidden",
 			in: struct {
 				statusCode   int
@@ -372,30 +396,6 @@ func TestCreateClient(t *testing.T) {
 				client: nil,
 				err: &internal.ErrorResponse{
 					StatusCode: 403,
-					Message:    "",
-					Header: http.Header{
-						"Content-Length": []string{"0"},
-						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
-					},
-				},
-			},
-		},
-		{
-			name: "500 Internal Server Error",
-			in: struct {
-				statusCode   int
-				testdataFile string
-			}{
-				statusCode:   http.StatusInternalServerError,
-				testdataFile: "testdata/clients/create_client_500_internal_server_error",
-			},
-			out: struct {
-				client *Client
-				err    error
-			}{
-				client: nil,
-				err: &internal.ErrorResponse{
-					StatusCode: 500,
 					Message:    "",
 					Header: http.Header{
 						"Content-Length": []string{"0"},
@@ -527,6 +527,30 @@ func TestUpdateClient(t *testing.T) {
 			},
 		},
 		{
+			name: "401 Unauthorized",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusUnauthorized,
+				testdataFile: "testdata/clients/update_client_401_unauthorized",
+			},
+			out: struct {
+				client *Client
+				err    error
+			}{
+				client: nil,
+				err: &internal.ErrorResponse{
+					StatusCode: 401,
+					Message:    "",
+					Header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
 			name: "403 Forbidden",
 			in: struct {
 				statusCode   int
@@ -570,30 +594,6 @@ func TestUpdateClient(t *testing.T) {
 					Header: http.Header{
 						"Content-Length": []string{"41"},
 						"Content-Type":   []string{"application/json; charset=utf-8"},
-						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
-					},
-				},
-			},
-		},
-		{
-			name: "500 Internal Server Error",
-			in: struct {
-				statusCode   int
-				testdataFile string
-			}{
-				statusCode:   http.StatusInternalServerError,
-				testdataFile: "testdata/clients/update_client_500_internal_server_error",
-			},
-			out: struct {
-				client *Client
-				err    error
-			}{
-				client: nil,
-				err: &internal.ErrorResponse{
-					StatusCode: 500,
-					Message:    "",
-					Header: http.Header{
-						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
 				},
@@ -713,6 +713,28 @@ func TestDeleteClient(t *testing.T) {
 			},
 		},
 		{
+			name: "401 Unauthorized",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusUnauthorized,
+				testdataFile: "testdata/clients/delete_client_401_unauthorized",
+			},
+			out: struct {
+				err error
+			}{
+				err: &internal.ErrorResponse{
+					StatusCode: 401,
+					Message:    "",
+					Header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
 			name: "403 Forbidden",
 			in: struct {
 				statusCode   int
@@ -752,28 +774,6 @@ func TestDeleteClient(t *testing.T) {
 					Header: http.Header{
 						"Content-Length": []string{"39"},
 						"Content-Type":   []string{"application/json; charset=utf-8"},
-						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
-					},
-				},
-			},
-		},
-		{
-			name: "500 Internal Server Error",
-			in: struct {
-				statusCode   int
-				testdataFile string
-			}{
-				statusCode:   http.StatusInternalServerError,
-				testdataFile: "testdata/clients/delete_client_500_internal_server_error",
-			},
-			out: struct {
-				err error
-			}{
-				err: &internal.ErrorResponse{
-					StatusCode: 500,
-					Message:    "",
-					Header: http.Header{
-						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
 				},

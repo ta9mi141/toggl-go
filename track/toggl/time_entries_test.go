@@ -110,6 +110,30 @@ func TestGetTimeEntries(t *testing.T) {
 			},
 		},
 		{
+			name: "401 Unauthorized",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusUnauthorized,
+				testdataFile: "testdata/time_entries/get_time_entries_401_unauthorized",
+			},
+			out: struct {
+				timeEntries []*TimeEntry
+				err         error
+			}{
+				timeEntries: nil,
+				err: &internal.ErrorResponse{
+					StatusCode: 401,
+					Message:    "",
+					Header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
 			name: "403 Forbidden",
 			in: struct {
 				statusCode   int
@@ -125,30 +149,6 @@ func TestGetTimeEntries(t *testing.T) {
 				timeEntries: nil,
 				err: &internal.ErrorResponse{
 					StatusCode: 403,
-					Message:    "",
-					Header: http.Header{
-						"Content-Length": []string{"0"},
-						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
-					},
-				},
-			},
-		},
-		{
-			name: "500 Internal Server Error",
-			in: struct {
-				statusCode   int
-				testdataFile string
-			}{
-				statusCode:   http.StatusInternalServerError,
-				testdataFile: "testdata/time_entries/get_time_entries_500_internal_server_error",
-			},
-			out: struct {
-				timeEntries []*TimeEntry
-				err         error
-			}{
-				timeEntries: nil,
-				err: &internal.ErrorResponse{
-					StatusCode: 500,
 					Message:    "",
 					Header: http.Header{
 						"Content-Length": []string{"0"},
@@ -297,6 +297,30 @@ func TestGetCurrentTimeEntry(t *testing.T) {
 			},
 		},
 		{
+			name: "401 Unauthorized",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusUnauthorized,
+				testdataFile: "testdata/time_entries/get_current_time_entry_401_unauthorized",
+			},
+			out: struct {
+				timeEntry *TimeEntry
+				err       error
+			}{
+				timeEntry: nil,
+				err: &internal.ErrorResponse{
+					StatusCode: 401,
+					Message:    "",
+					Header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
 			name: "403 Forbidden",
 			in: struct {
 				statusCode   int
@@ -312,30 +336,6 @@ func TestGetCurrentTimeEntry(t *testing.T) {
 				timeEntry: nil,
 				err: &internal.ErrorResponse{
 					StatusCode: 403,
-					Message:    "",
-					Header: http.Header{
-						"Content-Length": []string{"0"},
-						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
-					},
-				},
-			},
-		},
-		{
-			name: "500 Internal Server Error",
-			in: struct {
-				statusCode   int
-				testdataFile string
-			}{
-				statusCode:   http.StatusInternalServerError,
-				testdataFile: "testdata/time_entries/get_current_time_entry_500_internal_server_error",
-			},
-			out: struct {
-				timeEntry *TimeEntry
-				err       error
-			}{
-				timeEntry: nil,
-				err: &internal.ErrorResponse{
-					StatusCode: 500,
 					Message:    "",
 					Header: http.Header{
 						"Content-Length": []string{"0"},
@@ -446,6 +446,30 @@ func TestCreateTimeEntry(t *testing.T) {
 			},
 		},
 		{
+			name: "401 Unauthorized",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusUnauthorized,
+				testdataFile: "testdata/time_entries/create_time_entry_401_unauthorized",
+			},
+			out: struct {
+				timeEntry *TimeEntry
+				err       error
+			}{
+				timeEntry: nil,
+				err: &internal.ErrorResponse{
+					StatusCode: 401,
+					Message:    "",
+					Header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
 			name: "403 Forbidden",
 			in: struct {
 				statusCode   int
@@ -461,30 +485,6 @@ func TestCreateTimeEntry(t *testing.T) {
 				timeEntry: nil,
 				err: &internal.ErrorResponse{
 					StatusCode: 403,
-					Message:    "",
-					Header: http.Header{
-						"Content-Length": []string{"0"},
-						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
-					},
-				},
-			},
-		},
-		{
-			name: "500 Internal Server Error",
-			in: struct {
-				statusCode   int
-				testdataFile string
-			}{
-				statusCode:   http.StatusInternalServerError,
-				testdataFile: "testdata/time_entries/create_time_entry_500_internal_server_error",
-			},
-			out: struct {
-				timeEntry *TimeEntry
-				err       error
-			}{
-				timeEntry: nil,
-				err: &internal.ErrorResponse{
-					StatusCode: 500,
 					Message:    "",
 					Header: http.Header{
 						"Content-Length": []string{"0"},
@@ -665,6 +665,30 @@ func TestUpdateTimeEntry(t *testing.T) {
 			},
 		},
 		{
+			name: "401 Unauthorized",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusUnauthorized,
+				testdataFile: "testdata/time_entries/update_time_entry_401_unauthorized",
+			},
+			out: struct {
+				timeEntry *TimeEntry
+				err       error
+			}{
+				timeEntry: nil,
+				err: &internal.ErrorResponse{
+					StatusCode: 401,
+					Message:    "",
+					Header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
 			name: "403 Forbidden",
 			in: struct {
 				statusCode   int
@@ -708,30 +732,6 @@ func TestUpdateTimeEntry(t *testing.T) {
 					Header: http.Header{
 						"Content-Length": []string{"23"},
 						"Content-Type":   []string{"application/json; charset=utf-8"},
-						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
-					},
-				},
-			},
-		},
-		{
-			name: "500 Internal Server Error",
-			in: struct {
-				statusCode   int
-				testdataFile string
-			}{
-				statusCode:   http.StatusInternalServerError,
-				testdataFile: "testdata/time_entries/update_time_entry_500_internal_server_error",
-			},
-			out: struct {
-				timeEntry *TimeEntry
-				err       error
-			}{
-				timeEntry: nil,
-				err: &internal.ErrorResponse{
-					StatusCode: 500,
-					Message:    "",
-					Header: http.Header{
-						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
 				},
@@ -864,6 +864,28 @@ func TestDeleteTimeEntry(t *testing.T) {
 			},
 		},
 		{
+			name: "401 Unauthorized",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusUnauthorized,
+				testdataFile: "testdata/time_entries/delete_time_entry_401_unauthorized",
+			},
+			out: struct {
+				err error
+			}{
+				err: &internal.ErrorResponse{
+					StatusCode: 401,
+					Message:    "",
+					Header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
 			name: "403 Forbidden",
 			in: struct {
 				statusCode   int
@@ -903,28 +925,6 @@ func TestDeleteTimeEntry(t *testing.T) {
 					Header: http.Header{
 						"Content-Length": []string{"23"},
 						"Content-Type":   []string{"application/json; charset=utf-8"},
-						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
-					},
-				},
-			},
-		},
-		{
-			name: "500 Internal Server Error",
-			in: struct {
-				statusCode   int
-				testdataFile string
-			}{
-				statusCode:   http.StatusInternalServerError,
-				testdataFile: "testdata/time_entries/delete_time_entry_500_internal_server_error",
-			},
-			out: struct {
-				err error
-			}{
-				err: &internal.ErrorResponse{
-					StatusCode: 500,
-					Message:    "",
-					Header: http.Header{
-						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
 				},

@@ -91,6 +91,30 @@ func TestGetOrganization(t *testing.T) {
 			},
 		},
 		{
+			name: "401 Unauthorized",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusUnauthorized,
+				testdataFile: "testdata/organizations/get_organization_401_unauthorized",
+			},
+			out: struct {
+				organization *Organization
+				err          error
+			}{
+				organization: nil,
+				err: &internal.ErrorResponse{
+					StatusCode: 401,
+					Message:    "",
+					Header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
 			name: "403 Forbidden",
 			in: struct {
 				statusCode   int
@@ -106,30 +130,6 @@ func TestGetOrganization(t *testing.T) {
 				organization: nil,
 				err: &internal.ErrorResponse{
 					StatusCode: 403,
-					Message:    "",
-					Header: http.Header{
-						"Content-Length": []string{"0"},
-						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
-					},
-				},
-			},
-		},
-		{
-			name: "500 Internal Server Error",
-			in: struct {
-				statusCode   int
-				testdataFile string
-			}{
-				statusCode:   http.StatusInternalServerError,
-				testdataFile: "testdata/organizations/get_organization_500_internal_server_error",
-			},
-			out: struct {
-				organization *Organization
-				err          error
-			}{
-				organization: nil,
-				err: &internal.ErrorResponse{
-					StatusCode: 500,
 					Message:    "",
 					Header: http.Header{
 						"Content-Length": []string{"0"},
@@ -243,6 +243,30 @@ func TestGetOrganizationUsers(t *testing.T) {
 			},
 		},
 		{
+			name: "401 Unauthorized",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusUnauthorized,
+				testdataFile: "testdata/organizations/get_organization_users_401_unauthorized",
+			},
+			out: struct {
+				organizationUsers []*OrganizationUser
+				err               error
+			}{
+				organizationUsers: nil,
+				err: &internal.ErrorResponse{
+					StatusCode: 401,
+					Message:    "",
+					Header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
 			name: "403 Forbidden",
 			in: struct {
 				statusCode   int
@@ -258,30 +282,6 @@ func TestGetOrganizationUsers(t *testing.T) {
 				organizationUsers: nil,
 				err: &internal.ErrorResponse{
 					StatusCode: 403,
-					Message:    "",
-					Header: http.Header{
-						"Content-Length": []string{"0"},
-						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
-					},
-				},
-			},
-		},
-		{
-			name: "500 Internal Server Error",
-			in: struct {
-				statusCode   int
-				testdataFile string
-			}{
-				statusCode:   http.StatusInternalServerError,
-				testdataFile: "testdata/organizations/get_organization_users_500_internal_server_error",
-			},
-			out: struct {
-				organizationUsers []*OrganizationUser
-				err               error
-			}{
-				organizationUsers: nil,
-				err: &internal.ErrorResponse{
-					StatusCode: 500,
 					Message:    "",
 					Header: http.Header{
 						"Content-Length": []string{"0"},

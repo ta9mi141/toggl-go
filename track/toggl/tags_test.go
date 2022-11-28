@@ -76,6 +76,30 @@ func TestGetTags(t *testing.T) {
 			},
 		},
 		{
+			name: "401 Unauthorized",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusUnauthorized,
+				testdataFile: "testdata/tags/get_tags_401_unauthorized",
+			},
+			out: struct {
+				tags []*Tag
+				err  error
+			}{
+				tags: nil,
+				err: &internal.ErrorResponse{
+					StatusCode: 401,
+					Message:    "",
+					Header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
 			name: "403 Forbidden",
 			in: struct {
 				statusCode   int
@@ -91,30 +115,6 @@ func TestGetTags(t *testing.T) {
 				tags: nil,
 				err: &internal.ErrorResponse{
 					StatusCode: 403,
-					Message:    "",
-					Header: http.Header{
-						"Content-Length": []string{"0"},
-						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
-					},
-				},
-			},
-		},
-		{
-			name: "500 Internal Server Error",
-			in: struct {
-				statusCode   int
-				testdataFile string
-			}{
-				statusCode:   http.StatusInternalServerError,
-				testdataFile: "testdata/tags/get_tags_500_internal_server_error",
-			},
-			out: struct {
-				tags []*Tag
-				err  error
-			}{
-				tags: nil,
-				err: &internal.ErrorResponse{
-					StatusCode: 500,
 					Message:    "",
 					Header: http.Header{
 						"Content-Length": []string{"0"},
@@ -212,6 +212,30 @@ func TestCreateTag(t *testing.T) {
 			},
 		},
 		{
+			name: "401 Unauthorized",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusUnauthorized,
+				testdataFile: "testdata/tags/create_tag_401_unauthorized",
+			},
+			out: struct {
+				tag *Tag
+				err error
+			}{
+				tag: nil,
+				err: &internal.ErrorResponse{
+					StatusCode: 401,
+					Message:    "",
+					Header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
 			name: "403 Forbidden",
 			in: struct {
 				statusCode   int
@@ -227,30 +251,6 @@ func TestCreateTag(t *testing.T) {
 				tag: nil,
 				err: &internal.ErrorResponse{
 					StatusCode: 403,
-					Message:    "",
-					Header: http.Header{
-						"Content-Length": []string{"0"},
-						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
-					},
-				},
-			},
-		},
-		{
-			name: "500 Internal Server Error",
-			in: struct {
-				statusCode   int
-				testdataFile string
-			}{
-				statusCode:   http.StatusInternalServerError,
-				testdataFile: "testdata/tags/create_tag_500_internal_server_error",
-			},
-			out: struct {
-				tag *Tag
-				err error
-			}{
-				tag: nil,
-				err: &internal.ErrorResponse{
-					StatusCode: 500,
 					Message:    "",
 					Header: http.Header{
 						"Content-Length": []string{"0"},
@@ -381,6 +381,30 @@ func TestUpdateTag(t *testing.T) {
 			},
 		},
 		{
+			name: "401 Unauthorized",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusUnauthorized,
+				testdataFile: "testdata/tags/update_tag_401_unauthorized",
+			},
+			out: struct {
+				tag *Tag
+				err error
+			}{
+				tag: nil,
+				err: &internal.ErrorResponse{
+					StatusCode: 401,
+					Message:    "",
+					Header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
 			name: "403 Forbidden",
 			in: struct {
 				statusCode   int
@@ -424,30 +448,6 @@ func TestUpdateTag(t *testing.T) {
 					Header: http.Header{
 						"Content-Length": []string{"20"},
 						"Content-Type":   []string{"application/json; charset=utf-8"},
-						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
-					},
-				},
-			},
-		},
-		{
-			name: "500 Internal Server Error",
-			in: struct {
-				statusCode   int
-				testdataFile string
-			}{
-				statusCode:   http.StatusInternalServerError,
-				testdataFile: "testdata/tags/update_tag_500_internal_server_error",
-			},
-			out: struct {
-				tag *Tag
-				err error
-			}{
-				tag: nil,
-				err: &internal.ErrorResponse{
-					StatusCode: 500,
-					Message:    "",
-					Header: http.Header{
-						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
 				},
@@ -567,6 +567,28 @@ func TestDeleteTag(t *testing.T) {
 			},
 		},
 		{
+			name: "401 Unauthorized",
+			in: struct {
+				statusCode   int
+				testdataFile string
+			}{
+				statusCode:   http.StatusUnauthorized,
+				testdataFile: "testdata/tags/delete_tag_401_unauthorized",
+			},
+			out: struct {
+				err error
+			}{
+				err: &internal.ErrorResponse{
+					StatusCode: 401,
+					Message:    "",
+					Header: http.Header{
+						"Content-Length": []string{"0"},
+						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
+					},
+				},
+			},
+		},
+		{
 			name: "403 Forbidden",
 			in: struct {
 				statusCode   int
@@ -606,28 +628,6 @@ func TestDeleteTag(t *testing.T) {
 					Header: http.Header{
 						"Content-Length": []string{"20"},
 						"Content-Type":   []string{"application/json; charset=utf-8"},
-						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
-					},
-				},
-			},
-		},
-		{
-			name: "500 Internal Server Error",
-			in: struct {
-				statusCode   int
-				testdataFile string
-			}{
-				statusCode:   http.StatusInternalServerError,
-				testdataFile: "testdata/tags/delete_tag_500_internal_server_error",
-			},
-			out: struct {
-				err error
-			}{
-				err: &internal.ErrorResponse{
-					StatusCode: 500,
-					Message:    "",
-					Header: http.Header{
-						"Content-Length": []string{"0"},
 						"Date":           []string{time.Now().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)},
 					},
 				},
