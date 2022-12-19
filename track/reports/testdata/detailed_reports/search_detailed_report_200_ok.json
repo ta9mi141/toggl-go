@@ -1,0 +1,68 @@
+[
+  {
+    "user_id": 1234567,
+    "username": "Toggl",
+    "project_id": 123456789,
+    "task_id": null,
+    "billable": false,
+    "description": "Awesome Description",
+    "tag_ids": [],
+    "billable_amount_in_cents": null,
+    "hourly_rate_in_cents": null,
+    "currency": "USD",
+    "time_entries": [
+      {
+        "id": 1234567890,
+        "seconds": 8040,
+        "start": "2020-01-02T09:59:09+00:00",
+        "stop": "2020-01-02T12:13:09+00:00",
+        "at": "2020-01-02T14:30:36+00:00"
+      }
+    ],
+    "row_number": 1
+  },
+  {
+    "user_id": 1234567,
+    "username": "Toggl",
+    "project_id": 234567890,
+    "task_id": null,
+    "billable": false,
+    "description": "NewDescription",
+    "tag_ids": [],
+    "billable_amount_in_cents": null,
+    "hourly_rate_in_cents": null,
+    "currency": "USD",
+    "time_entries": [
+      {
+        "id": 2345678901,
+        "seconds": 30,
+        "start": "2020-01-02T13:17:57+00:00",
+        "stop": "2020-01-02T13:18:27+00:00",
+        "at": "2020-01-02T14:18:38+00:00"
+      }
+    ],
+    "row_number": 2
+  },
+  {
+    "user_id": 1234567,
+    "username": "Toggl",
+    "project_id": 234567890,
+    "task_id": null,
+    "billable": false,
+    "description": "NewDescription",
+    "tag_ids": [],
+    "billable_amount_in_cents": null,
+    "hourly_rate_in_cents": null,
+    "currency": "USD",
+    "time_entries": [
+      {
+        "id": 3456789012,
+        "seconds": 8,
+        "start": "2020-01-02T13:24:49+00:00",
+        "stop": "2020-01-02T13:24:57+00:00",
+        "at": "2020-01-02T14:25:07+00:00"
+      }
+    ],
+    "row_number": 3
+  }
+]
