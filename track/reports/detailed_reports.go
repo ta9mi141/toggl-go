@@ -2,7 +2,11 @@ package reports
 
 import (
 	"context"
+	"path"
+	"strconv"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 // DetailedReport represents the properties of a detailed report.
@@ -59,5 +63,10 @@ type SearchDetailedReportRequestBody struct {
 
 // SearchDetailedReport returns time entries for detailed report.
 func (c *APIClient) SearchDetailedReport(ctx context.Context, workspaceID int, reqBody *SearchDetailedReportRequestBody) (*DetailedReport, error) {
-	return nil, nil
+	var detailedReport *DetailedReport
+	apiSpecificPath := path.Join(reportsPath, strconv.Itoa(workspaceID), "search/time_entries")
+	if err := c.httpPost(ctx, apiSpecificPath, reqBody, &detailedReport); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return detailedReport, nil
 }
