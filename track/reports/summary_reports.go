@@ -2,7 +2,11 @@ package reports
 
 import (
 	"context"
+	"path"
+	"strconv"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 // SummaryReport represents the properties of a summary report.
@@ -61,5 +65,10 @@ type groupFilter struct {
 
 // SearchSummaryReport returns time entries for summary report.
 func (c *APIClient) SearchSummaryReport(ctx context.Context, workspaceID int, reqBody *SearchSummaryReportRequestBody) (*SummaryReport, error) {
-	return nil, nil
+	var summaryReport *SummaryReport
+	apiSpecificPath := path.Join(reportsPath, strconv.Itoa(workspaceID), "summary/time_entries")
+	if err := c.httpPost(ctx, apiSpecificPath, reqBody, &summaryReport); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return summaryReport, nil
 }
