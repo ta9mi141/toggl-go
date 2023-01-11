@@ -88,5 +88,10 @@ type LoadProjectSummaryRequestBody struct {
 
 // LoadProjectSummary returns project's summary.
 func (c *APIClient) LoadProjectSummary(ctx context.Context, workspaceID, projectID int, reqBody *LoadProjectSummaryRequestBody) (*ProjectSummary, error) {
-	return nil, nil
+	var projectSummary *ProjectSummary
+	apiSpecificPath := path.Join(reportsPath, strconv.Itoa(workspaceID), "projects", strconv.Itoa(projectID), "summary")
+	if err := c.httpPost(ctx, apiSpecificPath, reqBody, &projectSummary); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return projectSummary, nil
 }
