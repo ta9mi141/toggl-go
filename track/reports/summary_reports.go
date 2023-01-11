@@ -72,3 +72,21 @@ func (c *APIClient) SearchSummaryReport(ctx context.Context, workspaceID int, re
 	}
 	return summaryReport, nil
 }
+
+// ProjectSummary represents the properties of a project's summary.
+type ProjectSummary struct {
+	Seconds    *int    `json:"seconds,omitempty"`
+	Resolution *string `json:"resolution,omitempty"`
+}
+
+// LoadProjectSummaryRequestBody represents a request body of LoadProjectSummary.
+type LoadProjectSummaryRequestBody struct {
+	EndDate   *string    `json:"end_date,omitempty"`
+	StartTime *time.Time `json:"startTime,omitempty"`
+	StartDate *string    `json:"start_date,omitempty"`
+}
+
+// LoadProjectSummary returns project's summary.
+func (c *APIClient) LoadProjectSummary(ctx context.Context, workspaceID, projectID int, reqBody *LoadProjectSummaryRequestBody) (*ProjectSummary, error) {
+	return nil, nil
+}
