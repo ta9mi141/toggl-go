@@ -2,6 +2,10 @@ package reports
 
 import (
 	"context"
+	"path"
+	"strconv"
+
+	"github.com/pkg/errors"
 )
 
 // Project represents the properties of a filtered project.
@@ -29,5 +33,10 @@ type ListProjectsRequestBody struct {
 
 // ListProjects returns filtered projects from a workspace.
 func (c *APIClient) ListProjects(ctx context.Context, workspaceID int, reqBody *ListProjectsRequestBody) ([]*Project, error) {
-	return nil, nil
+	var projects []*Project
+	apiSpecificPath := path.Join(reportsPath, strconv.Itoa(workspaceID), "filters/projects")
+	if err := c.httpPost(ctx, apiSpecificPath, reqBody, &projects); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return projects, nil
 }
