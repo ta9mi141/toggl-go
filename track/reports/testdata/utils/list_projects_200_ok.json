@@ -1,0 +1,20 @@
+[
+  {
+    "id": 12345678,
+    "name": "Project1",
+    "client_id": null,
+    "color": "#000000",
+    "active": true,
+    "currency": null,
+    "billable": null
+  },
+  {
+    "id": 23456789,
+    "name": "Project2",
+    "client_id": null,
+    "color": "#ffffff",
+    "active": true,
+    "currency": null,
+    "billable": null
+  }
+]
