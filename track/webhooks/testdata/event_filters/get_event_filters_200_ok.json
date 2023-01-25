@@ -1,0 +1,47 @@
+{
+  "client": [
+    "created",
+    "updated",
+    "deleted"
+  ],
+  "project": [
+    "created",
+    "updated",
+    "deleted"
+  ],
+  "project_group": [
+    "created",
+    "updated",
+    "deleted"
+  ],
+  "project_user": [
+    "created",
+    "updated",
+    "deleted"
+  ],
+  "tag": [
+    "created",
+    "updated",
+    "deleted"
+  ],
+  "task": [
+    "created",
+    "updated",
+    "deleted"
+  ],
+  "time_entry": [
+    "created",
+    "updated",
+    "deleted"
+  ],
+  "workspace": [
+    "created",
+    "updated",
+    "deleted"
+  ],
+  "workspace_user": [
+    "created",
+    "updated",
+    "deleted"
+  ]
+}
