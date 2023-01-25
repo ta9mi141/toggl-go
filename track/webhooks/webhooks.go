@@ -13,6 +13,10 @@ import (
 	"github.com/ta9mi141/toggl-go/track/internal"
 )
 
+const (
+	webhooksPath string = "webhooks/api/v1"
+)
+
 // APIClient is a client for interacting with Toggl Webhooks API.
 type APIClient struct {
 	baseURL    *url.URL
@@ -52,4 +56,16 @@ type httpClientOption struct {
 
 func (h *httpClientOption) apply(c *APIClient) {
 	c.httpClient = h.httpClient
+}
+
+// withBaseURL makes client testable by configurable URL.
+func withBaseURL(baseURL string) Option {
+	return baseURLOption(baseURL)
+}
+
+type baseURLOption string
+
+func (b baseURLOption) apply(c *APIClient) {
+	baseURL, _ := url.Parse(string(b))
+	c.baseURL = baseURL
 }
