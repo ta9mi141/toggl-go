@@ -7,9 +7,12 @@ https://developers.track.toggl.com/docs/webhooks_start
 package webhooks
 
 import (
+	"context"
 	"net/http"
 	"net/url"
+	"path"
 
+	"github.com/pkg/errors"
 	"github.com/ta9mi141/toggl-go/track/internal"
 )
 
@@ -68,4 +71,30 @@ type baseURLOption string
 func (b baseURLOption) apply(c *APIClient) {
 	baseURL, _ := url.Parse(string(b))
 	c.baseURL = baseURL
+}
+
+func (c *APIClient) httpGet(ctx context.Context, apiSpecificPath string, query, respBody any) error {
+	req, err := c.newRequest(ctx, http.MethodGet, apiSpecificPath, query)
+	if err != nil {
+		return errors.Wrap(err, "")
+	}
+	return c.do(req, respBody)
+}
+
+func (c *APIClient) newRequest(ctx context.Context, httpMethod, apiSpecificPath string, input any) (*http.Request, error) {
+	url := c.baseURL
+	url.Path = path.Join(url.Path, apiSpecificPath)
+
+	req, err := internal.NewRequest(ctx, httpMethod, url, input)
+	if err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+
+	req.SetBasicAuth(c.apiToken, internal.BasicAuthPassword)
+
+	return req, nil
+}
+
+func (c *APIClient) do(req *http.Request, respBody any) error {
+	return internal.Do(c.httpClient, req, respBody)
 }

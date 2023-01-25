@@ -1,6 +1,11 @@
 package webhooks
 
-import "context"
+import (
+	"context"
+	"path"
+
+	"github.com/pkg/errors"
+)
 
 // EventFilters represents the properties of event filters.
 type EventFilters struct {
@@ -17,5 +22,10 @@ type EventFilters struct {
 
 // GetEventFilters gets the list of supported event filters.
 func (c *APIClient) GetEventFilters(ctx context.Context) (*EventFilters, error) {
-	return nil, nil
+	var eventFilters *EventFilters
+	apiSpecificPath := path.Join(webhooksPath, "event_filters")
+	if err := c.httpGet(ctx, apiSpecificPath, nil, &eventFilters); err != nil {
+		return nil, errors.Wrap(err, "")
+	}
+	return eventFilters, nil
 }
