@@ -24,7 +24,7 @@ func (c *APIClient) GetClients(ctx context.Context, workspaceID int) ([]*Client,
 	var clients []*Client
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "clients")
 	if err := c.httpGet(ctx, apiSpecificPath, nil, &clients); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to get clients")
 	}
 	return clients, nil
 }
@@ -34,7 +34,7 @@ func (c *APIClient) GetClient(ctx context.Context, workspaceID, clientID int) (*
 	var client *Client
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "clients", strconv.Itoa(clientID))
 	if err := c.httpGet(ctx, apiSpecificPath, nil, &client); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to get client")
 	}
 	return client, nil
 }
@@ -51,7 +51,7 @@ func (c *APIClient) CreateClient(ctx context.Context, workspaceID int, reqBody *
 	var client *Client
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "clients")
 	if err := c.httpPost(ctx, apiSpecificPath, reqBody, &client); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to create client")
 	}
 	return client, nil
 }
@@ -68,7 +68,7 @@ func (c *APIClient) UpdateClient(ctx context.Context, workspaceID, clientID int,
 	var client *Client
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "clients", strconv.Itoa(clientID))
 	if err := c.httpPut(ctx, apiSpecificPath, reqBody, &client); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to update client")
 	}
 	return client, nil
 }
@@ -77,7 +77,7 @@ func (c *APIClient) UpdateClient(ctx context.Context, workspaceID, clientID int,
 func (c *APIClient) DeleteClient(ctx context.Context, workspaceID, clientID int) error {
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "clients", strconv.Itoa(clientID))
 	if err := c.httpDelete(ctx, apiSpecificPath); err != nil {
-		return errors.Wrap(err, "")
+		return errors.Wrap(err, "failed to delete client")
 	}
 	return nil
 }

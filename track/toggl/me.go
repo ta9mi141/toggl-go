@@ -34,7 +34,7 @@ type Me struct {
 func (c *APIClient) GetMe(ctx context.Context) (*Me, error) {
 	var me *Me
 	if err := c.httpGet(ctx, mePath, nil, &me); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to get me")
 	}
 	return me, nil
 }
@@ -55,7 +55,7 @@ type UpdateMeRequestBody struct {
 func (c *APIClient) UpdateMe(ctx context.Context, reqBody *UpdateMeRequestBody) (*Me, error) {
 	var me *Me
 	if err := c.httpPut(ctx, mePath, reqBody, &me); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to update me")
 	}
 	return me, nil
 }
@@ -65,7 +65,7 @@ func (c *APIClient) GetMyOrganizations(ctx context.Context) ([]*Organization, er
 	var organizations []*Organization
 	apiSpecificPath := path.Join(mePath, "organizations")
 	if err := c.httpGet(ctx, apiSpecificPath, nil, &organizations); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to get my organizations")
 	}
 	return organizations, nil
 }
@@ -80,7 +80,7 @@ func (c *APIClient) GetMyProjects(ctx context.Context, query *GetMyProjectsQuery
 	var projects []*Project
 	apiSpecificPath := path.Join(mePath, "projects")
 	if err := c.httpGet(ctx, apiSpecificPath, query, &projects); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to get my projects")
 	}
 	return projects, nil
 }
@@ -95,7 +95,7 @@ func (c *APIClient) GetMyProjectsPaginated(ctx context.Context, query *GetMyProj
 	var projects []*Project
 	apiSpecificPath := path.Join(mePath, "projects/paginated")
 	if err := c.httpGet(ctx, apiSpecificPath, query, &projects); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to get my projects paginated")
 	}
 	return projects, nil
 }
@@ -105,7 +105,7 @@ func (c *APIClient) GetMyTags(ctx context.Context) ([]*Tag, error) {
 	var tags []*Tag
 	apiSpecificPath := path.Join(mePath, "tags")
 	if err := c.httpGet(ctx, apiSpecificPath, nil, &tags); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to get my tags")
 	}
 	return tags, nil
 }
@@ -115,7 +115,7 @@ func (c *APIClient) GetMyClients(ctx context.Context) ([]*Client, error) {
 	var clients []*Client
 	apiSpecificPath := path.Join(mePath, "clients")
 	if err := c.httpGet(ctx, apiSpecificPath, nil, &clients); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to get my clients")
 	}
 	return clients, nil
 }

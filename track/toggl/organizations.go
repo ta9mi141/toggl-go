@@ -41,7 +41,7 @@ func (c *APIClient) GetOrganization(ctx context.Context, organizationID int) (*O
 	var organization *Organization
 	apiSpecificPath := path.Join(organizationsPath, strconv.Itoa(organizationID))
 	if err := c.httpGet(ctx, apiSpecificPath, nil, &organization); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to get organization")
 	}
 	return organization, nil
 }
@@ -92,7 +92,7 @@ func (c *APIClient) GetOrganizationUsers(ctx context.Context, organizationID int
 	var organizationUsers []*OrganizationUser
 	apiSpecificPath := path.Join(organizationsPath, strconv.Itoa(organizationID), "users")
 	if err := c.httpGet(ctx, apiSpecificPath, query, &organizationUsers); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to get organization users")
 	}
 	return organizationUsers, nil
 }

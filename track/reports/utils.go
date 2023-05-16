@@ -36,7 +36,7 @@ func (c *APIClient) ListProjects(ctx context.Context, workspaceID int, reqBody *
 	var projects []*Project
 	apiSpecificPath := path.Join(reportsPath, strconv.Itoa(workspaceID), "filters/projects")
 	if err := c.httpPost(ctx, apiSpecificPath, reqBody, &projects); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to list projects")
 	}
 	return projects, nil
 }

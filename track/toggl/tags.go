@@ -23,7 +23,7 @@ func (c *APIClient) GetTags(ctx context.Context, workspaceID int) ([]*Tag, error
 	var tags []*Tag
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "tags")
 	if err := c.httpGet(ctx, apiSpecificPath, nil, &tags); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to get tags")
 	}
 	return tags, nil
 }
@@ -39,7 +39,7 @@ func (c *APIClient) CreateTag(ctx context.Context, workspaceID int, reqBody *Cre
 	var tag *Tag
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "tags")
 	if err := c.httpPost(ctx, apiSpecificPath, reqBody, &tag); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to create tag")
 	}
 	return tag, nil
 }
@@ -55,7 +55,7 @@ func (c *APIClient) UpdateTag(ctx context.Context, workspaceID, tagID int, reqBo
 	var tag *Tag
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "tags", strconv.Itoa(tagID))
 	if err := c.httpPut(ctx, apiSpecificPath, reqBody, &tag); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to update tag")
 	}
 	return tag, nil
 }
@@ -64,7 +64,7 @@ func (c *APIClient) UpdateTag(ctx context.Context, workspaceID, tagID int, reqBo
 func (c *APIClient) DeleteTag(ctx context.Context, workspaceID, tagID int) error {
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "tags", strconv.Itoa(tagID))
 	if err := c.httpDelete(ctx, apiSpecificPath); err != nil {
-		return errors.Wrap(err, "")
+		return errors.Wrap(err, "failed to delete tag")
 	}
 	return nil
 }

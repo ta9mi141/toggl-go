@@ -45,7 +45,7 @@ func (c *APIClient) GetTimeEntries(ctx context.Context, query *GetTimeEntriesQue
 	var timeEntries []*TimeEntry
 	apiSpecificPath := path.Join(mePath, "time_entries")
 	if err := c.httpGet(ctx, apiSpecificPath, query, &timeEntries); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to get time entries")
 	}
 	return timeEntries, nil
 }
@@ -55,7 +55,7 @@ func (c *APIClient) GetCurrentTimeEntry(ctx context.Context) (*TimeEntry, error)
 	var timeEntry *TimeEntry
 	apiSpecificPath := path.Join(mePath, "time_entries/current")
 	if err := c.httpGet(ctx, apiSpecificPath, nil, &timeEntry); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to get current time entry")
 	}
 	return timeEntry, nil
 }
@@ -89,7 +89,7 @@ func (c *APIClient) CreateTimeEntry(ctx context.Context, workspaceID int, reqBod
 	var timeEntry *TimeEntry
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "time_entries")
 	if err := c.httpPost(ctx, apiSpecificPath, reqBody, &timeEntry); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to create time entry")
 	}
 	return timeEntry, nil
 }
@@ -123,7 +123,7 @@ func (c *APIClient) UpdateTimeEntry(ctx context.Context, workspaceID, timeEntryI
 	var timeEntry *TimeEntry
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "time_entries", strconv.Itoa(timeEntryID))
 	if err := c.httpPut(ctx, apiSpecificPath, reqBody, &timeEntry); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to update time entry")
 	}
 	return timeEntry, nil
 }
@@ -132,7 +132,7 @@ func (c *APIClient) UpdateTimeEntry(ctx context.Context, workspaceID, timeEntryI
 func (c *APIClient) DeleteTimeEntry(ctx context.Context, workspaceID, timeEntryID int) error {
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "time_entries", strconv.Itoa(timeEntryID))
 	if err := c.httpDelete(ctx, apiSpecificPath); err != nil {
-		return errors.Wrap(err, "")
+		return errors.Wrap(err, "failed to delete time entry")
 	}
 	return nil
 }

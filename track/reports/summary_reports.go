@@ -68,7 +68,7 @@ func (c *APIClient) SearchSummaryReport(ctx context.Context, workspaceID int, re
 	var summaryReport *SummaryReport
 	apiSpecificPath := path.Join(reportsPath, strconv.Itoa(workspaceID), "summary/time_entries")
 	if err := c.httpPost(ctx, apiSpecificPath, reqBody, &summaryReport); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to search summary report")
 	}
 	return summaryReport, nil
 }
@@ -91,7 +91,7 @@ func (c *APIClient) LoadProjectSummary(ctx context.Context, workspaceID, project
 	var projectSummary *ProjectSummary
 	apiSpecificPath := path.Join(reportsPath, strconv.Itoa(workspaceID), "projects", strconv.Itoa(projectID), "summary")
 	if err := c.httpPost(ctx, apiSpecificPath, reqBody, &projectSummary); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to load project summary")
 	}
 	return projectSummary, nil
 }

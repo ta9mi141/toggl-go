@@ -23,20 +23,20 @@ func NewRequest(ctx context.Context, httpMethod string, url *url.URL, input any)
 	case http.MethodPost, http.MethodPut:
 		b, err := json.Marshal(input)
 		if err != nil {
-			return nil, errors.Wrap(err, "")
+			return nil, errors.Wrap(err, "failed to marshal input")
 		}
 		requestBody = bytes.NewReader(b)
 	case http.MethodGet:
 		values, err := query.Values(input)
 		if err != nil {
-			return nil, errors.Wrap(err, "")
+			return nil, errors.Wrap(err, "failed to encode input")
 		}
 		url.RawQuery = values.Encode()
 	}
 
 	req, err := http.NewRequestWithContext(ctx, httpMethod, url.String(), requestBody)
 	if err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to create a new request with context")
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -47,19 +47,19 @@ func NewRequest(ctx context.Context, httpMethod string, url *url.URL, input any)
 func Do(client *http.Client, req *http.Request, respBody any) error {
 	resp, err := client.Do(req)
 	if err != nil {
-		return errors.Wrap(err, "")
+		return errors.Wrap(err, "failed to send a request")
 	}
 
 	err = checkResponse(resp)
 	if err != nil {
-		return errors.Wrap(err, "")
+		return errors.Wrap(err, "failed to complete a request")
 	}
 
 	switch req.Method {
 	case http.MethodGet, http.MethodPost, http.MethodPut:
 		err = decodeJSON(resp, respBody)
 		if err != nil {
-			return errors.Wrap(err, "")
+			return errors.Wrap(err, "failed to decode response body")
 		}
 	}
 
@@ -75,7 +75,7 @@ func checkResponse(resp *http.Response) error {
 	errorResponse := &ErrorResponse{StatusCode: resp.StatusCode, Header: resp.Header}
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return errors.Wrap(err, "")
+		return errors.Wrap(err, "failed to read error response")
 	}
 	errorResponse.Message = string(body)
 

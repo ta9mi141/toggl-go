@@ -25,7 +25,7 @@ func (c *APIClient) GetEventFilters(ctx context.Context) (*EventFilters, error) 
 	var eventFilters *EventFilters
 	apiSpecificPath := path.Join(webhooksPath, "event_filters")
 	if err := c.httpGet(ctx, apiSpecificPath, nil, &eventFilters); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to get event filters")
 	}
 	return eventFilters, nil
 }

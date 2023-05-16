@@ -75,7 +75,7 @@ func (c *APIClient) GetProjects(ctx context.Context, workspaceID int, query *Get
 	var projects []*Project
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "projects")
 	if err := c.httpGet(ctx, apiSpecificPath, query, &projects); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to get projects")
 	}
 	return projects, nil
 }
@@ -90,7 +90,7 @@ func (c *APIClient) GetProject(ctx context.Context, workspaceID, projectID int, 
 	var project *Project
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "projects", strconv.Itoa(projectID))
 	if err := c.httpGet(ctx, apiSpecificPath, query, &project); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to get project")
 	}
 	return project, nil
 }
@@ -124,7 +124,7 @@ func (c *APIClient) CreateProject(ctx context.Context, workspaceID int, reqBody 
 	var project *Project
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "projects")
 	if err := c.httpPost(ctx, apiSpecificPath, reqBody, &project); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to create project")
 	}
 	return project, nil
 }
@@ -133,7 +133,7 @@ func (c *APIClient) CreateProject(ctx context.Context, workspaceID int, reqBody 
 func (c *APIClient) DeleteProject(ctx context.Context, workspaceID, projectID int) error {
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID), "projects", strconv.Itoa(projectID))
 	if err := c.httpDelete(ctx, apiSpecificPath); err != nil {
-		return errors.Wrap(err, "")
+		return errors.Wrap(err, "failed to delete project")
 	}
 	return nil
 }

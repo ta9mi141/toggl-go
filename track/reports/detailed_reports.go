@@ -66,7 +66,7 @@ func (c *APIClient) SearchDetailedReport(ctx context.Context, workspaceID int, r
 	var detailedReport *DetailedReport
 	apiSpecificPath := path.Join(reportsPath, strconv.Itoa(workspaceID), "search/time_entries")
 	if err := c.httpPost(ctx, apiSpecificPath, reqBody, &detailedReport); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to search detailed report")
 	}
 	return detailedReport, nil
 }

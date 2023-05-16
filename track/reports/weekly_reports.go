@@ -41,7 +41,7 @@ func (c *APIClient) SearchWeeklyReport(ctx context.Context, workspaceID int, req
 	var weeklyReport *WeeklyReport
 	apiSpecificPath := path.Join(reportsPath, strconv.Itoa(workspaceID), "weekly/time_entries")
 	if err := c.httpPost(ctx, apiSpecificPath, reqBody, &weeklyReport); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to search weekly report")
 	}
 	return weeklyReport, nil
 }

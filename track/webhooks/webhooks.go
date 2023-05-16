@@ -76,7 +76,7 @@ func (b baseURLOption) apply(c *APIClient) {
 func (c *APIClient) httpGet(ctx context.Context, apiSpecificPath string, query, respBody any) error {
 	req, err := c.newRequest(ctx, http.MethodGet, apiSpecificPath, query)
 	if err != nil {
-		return errors.Wrap(err, "")
+		return errors.Wrap(err, "failed to create a new GET request")
 	}
 	return c.do(req, respBody)
 }
@@ -87,7 +87,7 @@ func (c *APIClient) newRequest(ctx context.Context, httpMethod, apiSpecificPath 
 
 	req, err := internal.NewRequest(ctx, httpMethod, url, input)
 	if err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to create a new request")
 	}
 
 	req.SetBasicAuth(c.apiToken, internal.BasicAuthPassword)

@@ -86,7 +86,7 @@ func (c *APIClient) GetWorkspace(ctx context.Context, workspaceID int) (*Workspa
 	var workspace *Workspace
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID))
 	if err := c.httpGet(ctx, apiSpecificPath, nil, &workspace); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to get workspace")
 	}
 	return workspace, nil
 }
@@ -123,7 +123,7 @@ func (c *APIClient) GetWorkspaceUsers(ctx context.Context, organizationID, works
 	var workspaceUsers []*WorkspaceUser
 	apiSpecificPath := path.Join(organizationsPath, strconv.Itoa(organizationID), "workspaces", strconv.Itoa(workspaceID))
 	if err := c.httpGet(ctx, apiSpecificPath, nil, &workspaceUsers); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to get workspace users")
 	}
 	return workspaceUsers, nil
 }
@@ -152,7 +152,7 @@ func (c *APIClient) UpdateWorkspace(ctx context.Context, workspaceID int, reqBod
 	var workspace *Workspace
 	apiSpecificPath := path.Join(workspacesPath, strconv.Itoa(workspaceID))
 	if err := c.httpPut(ctx, apiSpecificPath, reqBody, &workspace); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "failed to update workspace")
 	}
 	return workspace, nil
 }
